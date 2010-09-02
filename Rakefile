@@ -10,6 +10,7 @@ begin
     gem.authors = ['John Ash']
     gem.email = ['jash@k3integrations.com']
     gem.homepage = 'http://www.k3integrations.com'
+    gem.add_dependency('k3_core')
   end
 rescue
   puts "Jeweler or one of its dependencies is not installed."

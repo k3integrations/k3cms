@@ -9,12 +9,13 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["John Ash"]
-  s.date = %q{2010-08-31}
+  s.date = %q{2010-09-02}
   s.description = %q{Provides the ability to create static pages in a website}
   s.email = ["jash@k3integrations.com"]
   s.files = [
     "app/controllers/k3_pages/pages_controller.rb",
      "app/helpers/k3_pages/pages_helper.rb",
+     "app/models/k3_pages.rb",
      "app/models/k3_pages/page.rb",
      "app/views/k3_pages/pages/_form.html.erb",
      "app/views/k3_pages/pages/edit.html.erb",
@@ -23,22 +24,31 @@ Gem::Specification.new do |s|
      "app/views/k3_pages/pages/show.html.erb",
      "config/routes.rb",
      "lib/k3_pages.rb",
-     "lib/k3_pages/engine.rb"
+     "lib/k3_pages/engine.rb",
+     "lib/tasks/tasks.rake"
   ]
   s.homepage = %q{http://www.k3integrations.com}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{K3 Static Pages}
+  s.test_files = [
+    "test/functional/k3_pages/pages_controller_test.rb",
+     "test/unit/helpers/k3_pages/pages_helper_test.rb",
+     "test/unit/k3_pages/page_test.rb"
+  ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<k3_core>, [">= 0"])
     else
+      s.add_dependency(%q<k3_core>, [">= 0"])
     end
   else
+    s.add_dependency(%q<k3_core>, [">= 0"])
   end
 end
 
