@@ -8,16 +8,29 @@ Gem::Specification.new do |s|
   s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.date = %q{2010-08-31}
+  s.authors = ["John Ash"]
+  s.date = %q{2010-09-02}
+  s.default_executable = %q{k3}
+  s.description = %q{Provides the basic framework for K3 gems}
+  s.email = ["jash@k3integrations.com"]
+  s.executables = ["k3"]
   s.files = [
-    "lib/k3_core.rb",
-     "lib/k3_core/engine.rb",
-     "lib/k3_core/railties/tasks.rake"
+    "bin/k3",
+     "lib/k3/engine.rb",
+     "lib/k3/file_utils.rb",
+     "lib/k3_core.rb",
+     "lib/tasks/tasks.rake",
+     "templates/k3.rb"
   ]
+  s.homepage = %q{http://www.k3integrations.com}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{K3 Framework Core}
+  s.test_files = [
+    "spec/lib/k3/file_utils_spec.rb",
+     "spec/spec_helper.rb"
+  ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
