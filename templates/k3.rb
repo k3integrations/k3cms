@@ -24,7 +24,7 @@ end
 get "http://code.jquery.com/jquery-latest.min.js", "public/javascripts/jquery.js"
 
 # Download latest jQuery drivers
-get "http://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
+get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
 
 # Override :defaults and setup :jquery expansion
 initializer 'jquery.rb', <<-CODE
