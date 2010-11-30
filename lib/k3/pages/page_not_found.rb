@@ -1,6 +1,6 @@
 module K3
   module Pages
-    class ResponseTimer
+    class PageNotFound
       def initialize(app, message = "Response Time")
         @app = app
         @message = message
@@ -14,7 +14,9 @@ module K3
       end
 
       def each(&block)
-        block.call("<!-- #{@message}: #{@stop - @start} -->\n") if @headers["Content-Type"] and @headers["Content-Type"].include? "text/html"
+        if @headers["Content-Type"] and @headers["Content-Type"].include? "text/html"
+          block.call("<!-- #{Page.count} pages -->\n")
+        end
         @response.each(&block)
       end
     end

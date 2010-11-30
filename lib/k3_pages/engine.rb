@@ -11,7 +11,7 @@ module K3Pages
       Cell::Base.view_paths = Cell::Base.view_paths + [File.join(File.dirname(__FILE__),'..','..','app','cells'), File.join(File.dirname(__FILE__),'..','..','app','views')]
     end
     initializer 'k3_pages.add_middleware' do |app|
-      app.middleware.use K3::Pages::ResponseTimer, 'Page generated in'
+      app.middleware.use K3::Pages::PageNotFound
     end
   end
 end
