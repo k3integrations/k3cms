@@ -1,6 +1,9 @@
 <h2>Page not found</h2>
-<p>The page you have requested could not be found.</p>
+<p>The page you requested could not be found.</p>
 
 <% if logged_in? %>
-  <p>Would you like to create it now?</p>
+  <p>
+    Would you like to
+    <%= link_to 'create it now', new_page_path(:k3_pages_page => {:url => params[:requested_path]}) %>?
+  </p>
 <% end %>

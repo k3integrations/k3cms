@@ -20,7 +20,7 @@ module K3
       end
 
       def new
-        @page = K3::Pages::Page.new
+        @page = K3::Pages::Page.new(params[:k3_pages_page])
 
         respond_to do |format|
           format.html # new.html.erb

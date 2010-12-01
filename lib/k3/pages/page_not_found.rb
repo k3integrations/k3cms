@@ -1,11 +1,10 @@
+require 'pp'
+
 module K3
   module Pages
     class PageNotFound
-      unloadable
-
-      def initialize(app, message = "Response Time")
+      def initialize(app)
         @app = app
-        @message = message
       end
 
       def call(env)
@@ -14,15 +13,19 @@ module K3
 
         if pages.any? and (page = pages.first)
           env['PATH_INFO'] = "/pages/#{page.id}"
-          Rails.logger.debug "... Serving page via #{env['PATH_INFO']}"
+          Rails.logger.debug "... Serving page #{page.id} via #{env['PATH_INFO']}"
           @app.call(env)
 
         else
           # Continue processing stack
           @status, @headers, @response = @app.call(env)
+
           if @status == 404
+            # Use our custom 404 handler
             Rails.logger.debug "... PageNotFound: Handling 404"
-            env['PATH_INFO'] = "/pages/not_found"
+            encoded_path = env['PATH_INFO'].to_s.gsub('&', '%26')
+            env['QUERY_STRING'] = "requested_path=#{encoded_path}"
+            env['PATH_INFO']    = "/pages/not_found"
             @status, @headers, @response = @app.call(env)
             [404, @headers, @response]
 
@@ -30,6 +33,7 @@ module K3
             [@status, @headers, @response]
           end
         end
+        #@app.call(env)
       end
     end
   end
