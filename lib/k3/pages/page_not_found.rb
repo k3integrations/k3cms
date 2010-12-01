@@ -15,14 +15,16 @@ module K3
         if pages.any? and (page = pages.first)
           env['PATH_INFO'] = "/pages/#{page.id}"
           Rails.logger.debug "... Serving page via #{env['PATH_INFO']}"
-          @status, @headers, @response = @app.call(env)
+          @app.call(env)
 
         else
           # Continue processing stack
           @status, @headers, @response = @app.call(env)
           if @status == 404
             Rails.logger.debug "... PageNotFound: Handling 404"
-            [404, {"Content-Type" => "text/html"}, 'The page you have requested could not be found. Create it now? (if logged in)']
+            env['PATH_INFO'] = "/pages/not_found"
+            @status, @headers, @response = @app.call(env)
+            [404, @headers, @response]
 
           else
             [@status, @headers, @response]
