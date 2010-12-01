@@ -1,2 +1,4 @@
-pkg
+pkg/*
+*.gem
+.bundle
 *.sw?
