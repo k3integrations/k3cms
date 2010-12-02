@@ -1,14 +1,5 @@
-require File.expand_path('../../spec_helper', __FILE__)
+require 'spec_helper'
 require 'app/models/k3/pages/page'
-require 'rails'
-
-class ApplicationController < ActionController::Base
-end
-module TestApp
-  class Application < Rails::Application
-  end
-end
-TestApp::Application.initialize!
 
 module K3
   module Pages

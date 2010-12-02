@@ -1,5 +1,4 @@
 require 'active_record'
-require 'action_controller'
 
 class K3::Pages::Page < ActiveRecord::Base
   validates :title, :presence => true
@@ -7,6 +6,7 @@ class K3::Pages::Page < ActiveRecord::Base
   class RouteDoesNotConflictWithRailsRoutesValidator < ActiveModel::EachValidator
     def validate_each(record, attribute, value)
       begin
+        #puts Rails.application.routes.routes
         if rails_route = Rails.application.routes.recognize_path(value)
           Rails.logger.debug "... The url of #{record.to_s} conflicts with #{rails_route.inspect}."
           record.errors[attribute] << ": The URL of this user-created page is the same as that of a built-in page. Please choose a different URL for your page."
