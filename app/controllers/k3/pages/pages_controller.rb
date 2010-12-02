@@ -30,6 +30,7 @@ module K3
 
       def edit
         @page = K3::Pages::Page.find(params[:id])
+        @page.valid?
       end
 
       def create
