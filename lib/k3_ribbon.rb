@@ -1,0 +1,3 @@
+module K3Ribbon
+  # Your code goes here...
+end
