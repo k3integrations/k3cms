@@ -52,7 +52,12 @@ module K3
         end
 
         describe "when it has the same url as another page" do
-          it "should fail validation"
+          it "should fail validation" do
+            page1 = Page.create(url: '/page1')
+            page2 = Page.create(url: '/page1')
+            page2.should_not be_valid
+            page2.errors[:url].should be_present
+          end
         end
       end
 

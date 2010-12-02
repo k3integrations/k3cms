@@ -16,13 +16,14 @@ class K3::Pages::Page < ActiveRecord::Base
       end
     end
   end
-  validates :url, :route_does_not_conflict_with_rails_routes => true
+  validates :url, :route_does_not_conflict_with_rails_routes => true,
+                  :uniqueness => true
 
   after_initialize :set_default_title_or_url
 
   def set_default_title_or_url
-    self.title ||= url.gsub(%r[^/], '').humanize.gsub('-', ' ') if url
-    self.url   ||= '/' + title.humanize.gsub(' ', '-').downcase if title
+    self.title ||= url.gsub(%r[^/], '').humanize.gsub('-', ' ') if self.attributes['url']
+    self.url   ||= '/' + title.humanize.gsub(' ', '-').downcase if self.attributes['title']
   end
 
   def to_s
