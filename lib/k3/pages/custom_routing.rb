@@ -2,7 +2,7 @@ require 'pp'
 
 module K3
   module Pages
-    class PageNotFound
+    class CustomRouting
       def initialize(app)
         @app = app
       end
@@ -43,7 +43,7 @@ module K3
 
           if @status == 404
             # Use our custom 404 handler
-            Rails.logger.debug "... PageNotFound: Handling 404"
+            Rails.logger.debug "... CustomRouting: Handling 404"
             encoded_path = env['PATH_INFO'].to_s.gsub('&', '%26')
             env['PATH_INFO']    = "/pages/not_found"
             env['QUERY_STRING'] = "requested_path=#{encoded_path}"
