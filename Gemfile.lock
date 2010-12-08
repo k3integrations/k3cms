@@ -3,6 +3,7 @@ PATH
   specs:
     k3_ribbon (0.0.1)
       activerecord (~> 3.0.0)
+      facets
       k3_core
       rails (~> 3.0.0)
 
@@ -43,6 +44,7 @@ GEM
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    facets (2.9.0)
     i18n (0.4.2)
     k3_core (0.1.0)
     linecache19 (0.5.11)
@@ -105,6 +107,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 3.0.0)
+  facets
   k3_core
   k3_ribbon!
   rails (~> 3.0.0)
