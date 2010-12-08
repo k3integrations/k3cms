@@ -1,3 +1,0 @@
-module K3Ribbon
-  VERSION = "0.0.1"
-end
