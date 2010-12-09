@@ -15,6 +15,9 @@
 %ul.ribbon
   %li.new_page.button
     New Page
+  - if respond_to?(:k3_pages_path)
+    %li
+      = link_to 'List pages', k3_pages_path
   %li.toggle_edit_mode
     Edit mode: off
   %li.logged_in_as
