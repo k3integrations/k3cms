@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Inline HTML Editing Test</title>
+    <link type="text/css" rel="stylesheet" href="example.css" />
+    <script type="text/javascript" src="../dependencies/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="../core/inline_editor.js"></script>
+    <script type="text/javascript" src="example.js"></script>
+  </head>
+  <body>
+    
+    <ul class="buttons" id="mainToolbar"></ul>
+    
+    <div class="editable" id="exampleHtml"><h1>Example Test Page</h1><p>This is a test page intended to show by example how to use the inline editor.  As you hover the mouse over certain areas of this page, you will see some are editable. Simply click on them to edit. To show just how powerful the event system can be, you can see the source HTML code and cursor position information about this area below too.</p><p>Feel free to view the source of the files in this example directory to see how it works.</p><pre>code example</pre><address>address block</address></div>
+    
+    <p>some uneditable text</p>
+    
+    <form>
+      <table>
+        <tr>
+          <td><textarea id="exampleSource" rows="8" cols="75"></textarea></td>
+          <td>
+            anchorNode: <span id="anchorNode"></span>, <span id="anchorOffset"></span><br />
+            focusNode: <span id="focusNode"></span>, <span id="focusOffset"></span>
+          </td>
+        </tr>
+      </table>
+    </form>
+    
+    <div class="editable"><p>another example editable block</p></div>
+  </body>
+</html>
