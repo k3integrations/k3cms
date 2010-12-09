@@ -1,8 +1,7 @@
-.new_page.form.hidden
-  = form_for @page do |f|
-    Title:
-    = f.text_field :title
-    = f.submit 'Create'
+= form_for @page, :html => {:id => 'ribbon_new_page_form', :class => 'new_page form hidden'} do |f|
+  Title:
+  = f.text_field :title
+  = f.submit 'Create'
 
 :javascript
   jQuery(function() {
