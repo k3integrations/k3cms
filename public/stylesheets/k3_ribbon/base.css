@@ -1,1 +1,29 @@
-/* Cool CSS file */
+body {
+  margin-top: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+.ribbon {
+  margin: 0;
+  padding: 0;
+  /*border: 1px solid gray;*/
+}
+.ribbon li {
+  display: block;
+  float: left;
+  padding: 2px 5px;
+  background-color: white;
+
+  border-width: 1px;
+  border-style: solid;
+  border-top-color: #ddd;
+  border-right-color: #666;
+  border-bottom-color: #666;
+  border-left-color: #ddd;
+}
+.ribbon + * {
+  clear: both;
+}

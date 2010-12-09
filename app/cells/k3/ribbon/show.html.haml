@@ -1,0 +1,24 @@
+.new_page.form.hidden
+  = form_for @page do |f|
+    Title:
+    = f.text_field :title
+    = f.submit 'Create'
+
+:javascript
+  jQuery(function() {
+    jQuery('.new_page.button').click(function() {
+      console.log('clicked')
+      jQuery('.new_page.form').show()
+      jQuery('#k3_page_title').focus()
+    })
+  })
+
+%ul.ribbon
+  %li.new_page.button
+    New Page
+  %li.toggle_edit_mode
+    Edit mode: off
+  %li.logged_in_as
+    Logged in as: An editor
+
+
