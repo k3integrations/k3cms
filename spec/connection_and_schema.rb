@@ -8,7 +8,7 @@ ActiveRecord::Base.establish_connection({
 
 ActiveRecord::Schema.define do
   # TODO: Don't duplicate the migrations. Invoke them directly the same way rake db:migrate does it.
-  create_table :pages do |t|
+  create_table :k3_pages do |t|
     t.string :title
     t.string :url
     t.text :body

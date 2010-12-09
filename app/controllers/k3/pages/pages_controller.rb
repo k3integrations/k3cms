@@ -2,7 +2,7 @@ module K3
   module Pages
     class PagesController < ApplicationController
       def index
-        @pages = K3::Pages::Page.all
+        @pages = K3::Page.all
 
         respond_to do |format|
           format.html # index.html.erb
@@ -11,7 +11,7 @@ module K3
       end
 
       def show
-        @page = K3::Pages::Page.find(params[:id])
+        @page = K3::Page.find(params[:id])
 
         respond_to do |format|
           format.html # show.html.erb
@@ -20,7 +20,7 @@ module K3
       end
 
       def new
-        @page = K3::Pages::Page.new(params[:k3_pages_page])
+        @page = K3::Page.new(params[:k3_page])
 
         respond_to do |format|
           format.html # new.html.erb
@@ -29,12 +29,12 @@ module K3
       end
 
       def edit
-        @page = K3::Pages::Page.find(params[:id])
+        @page = K3::Page.find(params[:id])
         @page.valid?
       end
 
       def create
-        @page = K3::Pages::Page.new(params[:k3_pages_page])
+        @page = K3::Page.new(params[:k3_page])
 
         respond_to do |format|
           if @page.save
@@ -48,10 +48,10 @@ module K3
       end
 
       def update
-        @page = K3::Pages::Page.find(params[:id])
+        @page = K3::Page.find(params[:id])
 
         respond_to do |format|
-          if @page.update_attributes(params[:k3_pages_page])
+          if @page.update_attributes(params[:k3_page])
             format.html { redirect_to(page_url(@page), :notice => 'Page was successfully updated.') }
             format.xml  { head :ok }
           else
@@ -62,7 +62,7 @@ module K3
       end
 
       def destroy
-        @page = K3::Pages::Page.find(params[:id])
+        @page = K3::Page.find(params[:id])
         @page.destroy
 
         respond_to do |format|

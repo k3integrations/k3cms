@@ -1,6 +1,8 @@
 require 'active_record'
 
-class K3::Pages::Page < ActiveRecord::Base
+class K3::Page < ActiveRecord::Base
+  set_table_name 'k3_pages'
+
   validates :title, :presence => true
 
   class RouteDoesNotConflictWithRailsRoutesValidator < ActiveModel::EachValidator

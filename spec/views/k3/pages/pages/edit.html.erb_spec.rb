@@ -1,8 +1,8 @@
 #require 'spec_helper'
 #
-#describe "k3_pages_pages/edit.html.erb" do
+#describe "k3_pages/edit.html.erb" do
 #  before(:each) do
-#    @page = assign(:page, stub_model(K3::Pages::Page))
+#    @page = assign(:page, stub_model(K3::Page))
 #  end
 #
 #  it "renders the edit page form" do
