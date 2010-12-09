@@ -15,11 +15,15 @@
 %ul.ribbon
   %li.new_page.button
     New Page
+
   - if respond_to?(:k3_pages_path)
     %li
       = link_to 'List pages', k3_pages_path
+
   %li.toggle_edit_mode
-    Edit mode: off
+    Edit mode: #{{true => 'on', false => 'off'}[edit_mode?]}
+    = link_to "Turn #{{false => 'on', true => 'off'}[edit_mode?]}", p=params.merge({:edit => (!edit_mode?).to_s})
+
   %li.logged_in_as
     Logged in as: An editor
 
