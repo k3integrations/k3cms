@@ -5,5 +5,6 @@ require 'k3_pages/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
 module K3
   module Pages
     autoload :CustomRouting, 'k3/pages/custom_routing'
+    #autoload :PagesHelper,   'k3/pages/pages_helper'
   end
 end

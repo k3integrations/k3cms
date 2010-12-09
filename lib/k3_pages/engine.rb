@@ -7,6 +7,7 @@ require "rails"
 
 module K3Pages
   class Engine < Rails::Engine
+    #puts "paths.app.helpers=#{paths.app.helpers}"
     initializer 'k3_pages.add_cells_paths' do |app|
       Cell::Base.view_paths = Cell::Base.view_paths + [File.join(File.dirname(__FILE__),'..','..','app','cells'), File.join(File.dirname(__FILE__),'..','..','app','views')]
     end
