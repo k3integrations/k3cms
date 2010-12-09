@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'app/controllers/k3/pages/pages_controller'
 
+# See framework_demo/features/custom_routing.feature
 describe K3::Pages::PagesController do
 
   describe "when you request a page by its custom url" do
