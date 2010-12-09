@@ -4,6 +4,6 @@
 <% if logged_in? %>
   <p>
     Would you like to
-    <%= link_to 'create it now', new_page_path(:k3_page => {:url => params[:requested_path]}) %>?
+    <%= link_to 'create it now', new_k3_page_path(:k3_page => {:url => params[:requested_path]}) %>?
   </p>
 <% end %>

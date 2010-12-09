@@ -38,7 +38,7 @@ module K3
 
         respond_to do |format|
           if @page.save
-            format.html { redirect_to(page_url(@page), :notice => 'Page was successfully created.') }
+            format.html { redirect_to(k3_page_url(@page), :notice => 'Page was successfully created.') }
             format.xml  { render :xml => @page, :status => :created, :location => @page }
           else
             format.html { render :action => "new" }
@@ -52,7 +52,7 @@ module K3
 
         respond_to do |format|
           if @page.update_attributes(params[:k3_page])
-            format.html { redirect_to(page_url(@page), :notice => 'Page was successfully updated.') }
+            format.html { redirect_to(k3_page_url(@page), :notice => 'Page was successfully updated.') }
             format.xml  { head :ok }
           else
             format.html { render :action => "edit" }
@@ -66,7 +66,7 @@ module K3
         @page.destroy
 
         respond_to do |format|
-          format.html { redirect_to(pages_url) }
+          format.html { redirect_to(k3_pages_url) }
           format.xml  { head :ok }
         end
       end

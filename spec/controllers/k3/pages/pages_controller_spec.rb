@@ -53,7 +53,7 @@ describe K3::Pages::PagesController do
       it "redirects to the created page" do
         K3::Page.stub(:new) { mock_page(:save => true) }
         post :create, :k3_page => {}
-        response.should redirect_to(page_url(mock_page))
+        response.should redirect_to(k3_page_url(mock_page))
       end
     end
 
@@ -91,7 +91,7 @@ describe K3::Pages::PagesController do
       it "redirects to the page" do
         K3::Page.stub(:find) { mock_page(:update_attributes => true) }
         put :update, :id => "1"
-        response.should redirect_to(page_url(mock_page))
+        response.should redirect_to(k3_page_url(mock_page))
       end
     end
 
@@ -121,7 +121,7 @@ describe K3::Pages::PagesController do
     it "redirects to the pages list" do
       K3::Page.stub(:find) { mock_page }
       delete :destroy, :id => "1"
-      response.should redirect_to(pages_url)
+      response.should redirect_to(k3_pages_url)
     end
   end
 

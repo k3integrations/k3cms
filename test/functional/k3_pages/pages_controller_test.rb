@@ -21,7 +21,7 @@ class K3Pages::PagesControllerTest < ActionController::TestCase
       post :create, :page => @page.attributes
     end
 
-    assert_redirected_to page_path(assigns(:page))
+    assert_redirected_to k3_page_path(assigns(:page))
   end
 
   test "should show page" do
@@ -36,7 +36,7 @@ class K3Pages::PagesControllerTest < ActionController::TestCase
 
   test "should update page" do
     put :update, :id => @page.to_param, :page => @page.attributes
-    assert_redirected_to page_path(assigns(:page))
+    assert_redirected_to k3_page_path(assigns(:page))
   end
 
   test "should destroy page" do

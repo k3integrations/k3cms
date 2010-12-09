@@ -15,13 +15,13 @@
     <td><%= page.title %></td>
     <td><%= page.url %></td>
     <td><%= page.body %></td>
-    <td><%= link_to 'Show', page_path(page) %></td>
-    <td><%= link_to 'Edit', edit_page_path(page) %></td>
-    <td><%= link_to 'Destroy', page_path(page), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Show', k3_page_path(page) %></td>
+    <td><%= link_to 'Edit', edit_k3_page_path(page) %></td>
+    <td><%= link_to 'Destroy', k3_page_path(page), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New Page', new_page_path %>
+<%= link_to 'New Page', new_k3_page_path %>

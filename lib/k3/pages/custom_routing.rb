@@ -23,7 +23,7 @@ module K3
           # But how do we check if they're logged in? Inspect rack.session manually?
           #
           if !page.valid?
-            env['PATH_INFO'] = "/pages/#{page.id}/edit"
+            env['PATH_INFO'] = "/k3_pages/#{page.id}/edit"
             @app.call(env)
 
           else
@@ -32,7 +32,7 @@ module K3
             # TODO: Instantiate PagesController and render view more directly, bypassing the Rails router
             #PagesController.new.process_action('show') #render_to_string
 
-            env['PATH_INFO'] = "/pages/#{page.id}"
+            env['PATH_INFO'] = "/k3_pages/#{page.id}"
             Rails.logger.debug "... Serving page #{page.id} via #{env['PATH_INFO']}"
             @app.call(env)
           end
@@ -45,7 +45,7 @@ module K3
             # Use our custom 404 handler
             Rails.logger.debug "... CustomRouting: Handling 404"
             encoded_path = env['PATH_INFO'].to_s.gsub('&', '%26')
-            env['PATH_INFO']    = "/pages/not_found"
+            env['PATH_INFO']    = "/k3_pages/not_found"
             env['QUERY_STRING'] = "requested_path=#{encoded_path}"
             @status, @headers, @response = @app.call(env)
             [404, @headers, @response]
