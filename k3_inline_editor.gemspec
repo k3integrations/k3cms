@@ -1,0 +1,26 @@
+# -*- encoding: utf-8 -*-
+$:.push File.expand_path("../lib", __FILE__)
+require "k3/inline_editor/version"
+
+Gem::Specification.new do |s|
+  s.name        = "k3_inline_editor"
+  s.version     = K3::InlineEditor::VERSION
+  s.platform    = Gem::Platform::RUBY
+  s.summary     = %q{Inline HTML editor for the K3 CMS framework}
+  s.description = s.summary
+  s.authors     = ["K3 Integrations"]
+  s.email       = ["k3_cms@k3integrations.com"]
+  s.homepage    = 'http://www.k3integrations.com'
+
+  s.add_dependency 'k3_core'
+  s.add_dependency 'rails',        '~> 3.0.0'
+  s.add_dependency 'facets'
+  s.add_development_dependency 'rspec', '~> 2.2.0'
+  s.add_development_dependency 'rspec-rails', '~> 2.2.0'
+  s.add_development_dependency 'ruby-debug19'
+
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.require_paths = ["lib"]
+end

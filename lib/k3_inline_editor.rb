@@ -1,0 +1,3 @@
+module K3InlineEditor
+  # Your code goes here...
+end
