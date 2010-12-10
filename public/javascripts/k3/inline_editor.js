@@ -83,6 +83,12 @@ function initEditor() {
     });
   });
   
+  if (typeof Pages != 'undefined') { 
+    $('.editable').bind('blur', function (evt) {
+      console.log('blur');
+      //PagesSerialize()
+    });
+  }
 }
 
 // refreshing toolbar button classes to show toggled/disabled states, depending on where the cursor currently is
