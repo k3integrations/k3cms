@@ -3,13 +3,15 @@
   <head>
     <title>Inline HTML Editing Test</title>
     <link type="text/css" rel="stylesheet" href="example.css" />
+    <link type="text/css" rel="stylesheet" href="../../public/stylesheets/k3/inline_editor.css" />
     <script type="text/javascript" src="../dependencies/jquery-1.4.4.min.js"></script>
     <script type="text/javascript" src="../core/inline_editor.js"></script>
+    <script type="text/javascript" src="../../public/javascripts/k3/inline_editor.js"></script>
     <script type="text/javascript" src="example.js"></script>
   </head>
   <body>
     
-    <ul class="buttons" id="mainToolbar"></ul>
+    <ul id="ribbon"></ul>
     
     <div class="editable" id="exampleHtml"><h1>Example Test Page</h1><p>This is a test page intended to show by example how to use the inline editor.  As you hover the mouse over certain areas of this page, you will see some are editable. Simply click on them to edit. To show just how powerful the event system can be, you can see the source HTML code and cursor position information about this area below too.</p><p>Feel free to view the source of the files in this example directory to see how it works.</p><pre>code example</pre><address>address block</address></div>
     

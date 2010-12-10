@@ -1,0 +1,52 @@
+/* editor outlines, to indicate editableness and focus */
+.editable:hover, .editing {
+  margin: 0 -2px;
+  padding: 0 2px;
+  outline-style: solid;
+  outline-width: 2px;
+  cursor: text;
+}
+.editable:hover {
+  outline-color: #DDD;
+}
+.editing, .editing:hover {
+  outline-color: #999;
+}
+
+li.button {
+  cursor: pointer;
+  /*cursor: hand; /* use for old ie, but breaks ie9 */
+  display: block;
+  float: left;
+  padding: 2px 5px;
+  border-width: 2px;
+  border-style: solid;
+  background-color: white;
+  border-top-color: #ddd;
+  border-right-color: #666;
+  border-bottom-color: #666;
+  border-left-color: #ddd;
+}
+li.button.toggledOn {
+  border-top-color: #666;
+  border-right-color: #ddd;
+  border-bottom-color: #ddd;
+  border-left-color: #666;
+}
+li.button.disabled {
+  color: #ccc;
+  border-color: #eee;
+}
+li.button.toggleBold { font-weight: bold; }
+li.button.toggleItalic { font-style: italic; }
+li.button.toggleUnderline { text-decoration: underline; }
+li.button.toggleStrikethrough { text-decoration: line-through; }
+
+/* superscreipt/subscript look (browsers are horrible-looking by default!) */
+sup, sub {
+  vertical-align: baseline;
+  position: relative;
+  font-size: 0.83em;
+}
+sup { top: -0.33em; }
+sub { bottom: -0.19em; }
