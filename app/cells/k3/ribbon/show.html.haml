@@ -21,11 +21,18 @@
   = f.submit 'Create'
 
 :javascript
+  // TODO: Move out to k3_pages
   jQuery(function() {
     jQuery('.new_page.link').click(function() {
       console.log('clicked')
       jQuery('.new_page.form').slideDown()
       jQuery('#k3_page_title').focus()
     })
+
   })
 
+- if edit_mode?
+  :javascript
+    jQuery(function() {
+      initEditor();
+    })
