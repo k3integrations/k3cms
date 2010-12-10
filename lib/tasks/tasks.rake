@@ -6,8 +6,13 @@ namespace :k3 do
     
     desc "Copy public files"
     task :copy_public do
-      #K3::FileUtils.copy_from_gem(K3::InlineEditor, 'public')
-      K3::FileUtils.symlink_from_gem K3::InlineEditor, 'inline_editor/core/inline_editor.js', 'public/javascripts/k3/inline_editor.js'
+      # This will probably be released as a separate jQuery plugin (and simply be a dependency), so we don't put it under k3/
+      K3::FileUtils.symlink_from_gem K3::InlineEditor, 'inline_editor/core/inline_editor.js', 'public/javascripts/inline_editor.js'
+
+     #K3::FileUtils.copy_from_gem    K3::InlineEditor, 'public'
+      # But this is more convenient for development:
+      K3::FileUtils.symlink_from_gem K3::InlineEditor, file='public/javascripts/k3/inline_editor.js',  file
+      K3::FileUtils.symlink_from_gem K3::InlineEditor, file='public/stylesheets/k3/inline_editor.css', file
     end
   end
 end
