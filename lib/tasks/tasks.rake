@@ -6,12 +6,14 @@ namespace :k3 do
     
     desc "Copy public files"
     task :copy_public do
-      K3::FileUtils.copy_from_gem(K3Pages,'public')
+      K3::FileUtils.symlink_from_gem K3::Pages, file='public/javascripts/k3/pages.js',  file
+      K3::FileUtils.symlink_from_gem K3::Pages, file='public/stylesheets/k3/pages.css',  file
+      #K3::FileUtils.copy_from_gem(K3::Pages,'public')
     end
     
     desc "Copy migrations"
     task :copy_migrations do
-      K3::FileUtils.copy_from_gem(K3Pages,File.join('db','migrate'))
+      K3::FileUtils.copy_from_gem    K3::Pages, File.join('db','migrate')
     end
   end
 end
