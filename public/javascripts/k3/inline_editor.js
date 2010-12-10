@@ -35,7 +35,19 @@ toolbar_options = [
   ['Heading 6', 'blockH6',                'switchToBlock', 'isCurrentBlock',   false,                ['h6']]
 ];
 
-
+var structured_toolbar_options = [];
+$(toolbar_options).each(function (i) {
+  option = {
+    label:             this[0],
+    class:             this[1],
+    editor_cmd:        this[2],
+    query_state_cmd:   this[3],
+    query_enabled_cmd: this[4],
+    cmd_args:          this[5],
+  };
+  structured_toolbar_options = $.merge(structured_toolbar_options, [option]);
+});
+toolbar_options = structured_toolbar_options;
 
   
 function initEditor() {
@@ -44,33 +56,31 @@ function initEditor() {
   $ribbon = $('#ribbon')
   
   // show initial toolbar button layout, according to table at top
-  $(toolbar_options).each(function (idx) {
+  $(toolbar_options).each(function (index) {
     var elem = document.createElement('li');
-    // {title: this[0], ... }
-    //console.log(this)
-    $(elem).addClass(this[1]);
+    $(elem).addClass(this.class);
     $(elem).addClass('button');
-    elem.innerHTML = this[0];
+    elem.innerHTML = this.label;
     $ribbon.append(elem);
   });
   
   // set initial toolbar button state, and set handler to keep up to date
   refreshButtons();
-  $('.editable').bind('cursormove', function (evt) {
+  $('.editable').bind('cursormove', function (event) {
     refreshButtons();
   });
   
   // toolbar button command handlers
-  $(toolbar_options).each(function (idx) {
+  $(toolbar_options).each(function (index) {
     var self = this;
-    $ribbon.find('.' + this[1]).mousedown(function (evt) {
+    $ribbon.find('.' + this.class).mousedown(function (event) {
       var editor = InlineEditor.focusedEditor();
       // ignore button presses if no editable area is selected (you can also use InlineEditor.isFocusedEditor())
       if (! editor || ! editor.isEnabled()) {
         return false;
       }
       // execute the command
-      editor[self[2]](self[5][0], self[5][1]); // executes command here!
+      editor[self.editor_cmd](self.cmd_args[0], self.cmd_args[1]); // executes command here!
       // refresh button state
       refreshButtons();
       // returning false doesn't cancel losing editor focus in IE, here's a nasty hacky fix!
@@ -84,7 +94,7 @@ function initEditor() {
   });
   
   if (typeof Pages != 'undefined') { 
-    $('.editable').bind('blur', function (evt) {
+    $('.editable').bind('blur', function (event) {
       console.log('blur');
       //PagesSerialize()
     });
@@ -94,17 +104,17 @@ function initEditor() {
 // refreshing toolbar button classes to show toggled/disabled states, depending on where the cursor currently is
 function refreshButtons() {
   var editable_active = InlineEditor.isFocusedEditor();
-  $(toolbar_options).each(function (idx) {
-    var btn = $('#ribbon .' + this[1]);
+  $(toolbar_options).each(function (index) {
+    var btn = $('#ribbon .' + this.class);
     if (! editable_active) {
       btn.addClass('disabled');
     } else {
       var ined = InlineEditor.focusedEditor();
-      if (this[3]) {
-        ined[this[3]](this[5][0], this[5][1]) ? btn.addClass('toggledOn') : btn.removeClass('toggledOn');
+      if (this.query_state_cmd) {
+        ined[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.addClass('toggledOn') : btn.removeClass('toggledOn');
       }
-      if (this[4]) {
-        ined[this[4]](this[5][0], this[5][1]) ? btn.removeClass('disabled') : btn.addClass('disabled');
+      if (this.query_enabled_cmd) {
+        ined[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.removeClass('disabled') : btn.addClass('disabled');
       } else {
         btn.removeClass('disabled');
       }
