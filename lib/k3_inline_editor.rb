@@ -1,3 +1,6 @@
-module K3InlineEditor
-  # Your code goes here...
+require 'k3/inline_editor/engine'
+
+module K3
+  module InlineEditor
+  end
 end
