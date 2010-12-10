@@ -1,20 +1,6 @@
-= form_for @page, :html => {:id => 'ribbon_new_page_form', :class => 'new_page form hidden'} do |f|
-  Title:
-  = f.text_field :title
-  = f.submit 'Create'
-
-:javascript
-  jQuery(function() {
-    jQuery('.new_page.button').click(function() {
-      console.log('clicked')
-      jQuery('.new_page.form').show()
-      jQuery('#k3_page_title').focus()
-    })
-  })
-
-%ul.ribbon
-  %li.new_page.button
-    New Page
+%ul#ribbon
+  %li.new_page.link
+    = link_to_function 'New Page', 'javascript: void()'
 
   - if respond_to?(:k3_pages_path)
     %li
@@ -26,5 +12,20 @@
 
   %li.logged_in_as
     Logged in as: An editor
+.clear
 
+
+= form_for @page, :html => {:id => 'ribbon_new_page_form', :class => 'new_page form hidden'} do |f|
+  Title:
+  = f.text_field :title
+  = f.submit 'Create'
+
+:javascript
+  jQuery(function() {
+    jQuery('.new_page.link').click(function() {
+      console.log('clicked')
+      jQuery('.new_page.form').slideDown()
+      jQuery('#k3_page_title').focus()
+    })
+  })
 

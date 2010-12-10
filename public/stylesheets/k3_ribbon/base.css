@@ -6,12 +6,12 @@ body {
   display: none;
 }
 
-.ribbon {
+#ribbon {
   margin: 0;
   padding: 0;
   /*border: 1px solid gray;*/
 }
-.ribbon li {
+#ribbon li {
   display: block;
   float: left;
   padding: 2px 5px;
@@ -24,6 +24,6 @@ body {
   border-bottom-color: #666;
   border-left-color: #ddd;
 }
-.ribbon + * {
+.clear {
   clear: both;
 }
