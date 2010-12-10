@@ -36,17 +36,18 @@ toolbar_options = [
 ];
 
 
-$(document).ready(function () {
+
   
+function initEditor() {
   $('.editable').inlineEditor();
 
-  var $ribbon = $('#ribbon')
+  $ribbon = $('#ribbon')
   
   // show initial toolbar button layout, according to table at top
   $(toolbar_options).each(function (idx) {
     var elem = document.createElement('li');
     // {title: this[0], ... }
-    console.log(this)
+    //console.log(this)
     $(elem).addClass(this[1]);
     $(elem).addClass('button');
     elem.innerHTML = this[0];
@@ -82,7 +83,7 @@ $(document).ready(function () {
     });
   });
   
-});
+}
 
 // refreshing toolbar button classes to show toggled/disabled states, depending on where the cursor currently is
 function refreshButtons() {

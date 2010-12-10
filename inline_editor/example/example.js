@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  initEditor();
   
   // link source and html areas together to auto update each other
   $('#exampleSource')[0].value = $('#exampleHtml')[0].innerHTML;
@@ -15,4 +16,5 @@ $(document).ready(function () {
     $('#focusNode')[0].innerHTML     = sel.focusNode;
     $('#focusOffset')[0].innerHTML   = sel.focusOffset;
   });
+
 });
