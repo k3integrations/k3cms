@@ -2,6 +2,16 @@
 
 <h2><%= @page.title %></h2>
 
-<div class="editable">
+<div class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="body">
 <%= @page.body %>
 </div>
+
+<span class="rest_in_place" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="body">
+Body:
+<%= @page.body %>
+</span>
+
+<script type="text/javascript">
+  jQuery(".rest_in_place").rest_in_place();
+</script>
+
