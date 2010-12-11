@@ -1,3 +1,20 @@
+//==================================================================================================
+if (typeof(RestInPlaceEditor) != 'undefined' && RestInPlaceEditor.forms) {
+  RestInPlaceEditor.forms = $.extend(RestInPlaceEditor.forms, {
+    inline_editor : {
+      activateForm : function() {
+      },
+      
+      getValue : function() {
+        var value = InlineEditor.getEditor(this.element).lastSource
+        //console.log('getValue:', value)
+        return value;
+      },
+    }
+  })
+}
+
+//==================================================================================================
 // label text, css class, command to do functionality, command to check state, command to check if enabled, args to pass commands
 toolbar_options = [
   ['B',         'toggleBold',             'execCommand', 'queryCommandState', 'queryCommandEnabled', ['bold']],
@@ -50,8 +67,23 @@ $(toolbar_options).each(function (i) {
 toolbar_options = structured_toolbar_options;
 
   
-function initEditor() {
-  $('.editable').inlineEditor();
+//==================================================================================================
+function initInlineEditor(options) {
+  $('.editable').inlineEditor(options);
+
+  // inline_editor handles enabling contentEditable, etc.
+  // We just tell inline_editor to come back and call our saveHandler whenever a save is triggered (blur or livechange)
+  // Now that it's initialized, configure the inline_editor with rest_in_place callbacks to handle saving
+  jQuery(".editable").rest_in_place();
+  $('.editable').inlineEditor({
+    saveHandler:     function(event) {
+      console.log('saveHandler')
+      console.log("$(this).data()=", $(this).data());
+      $(this).data('restInPlaceEditor').update();
+    },
+    saveHandlerData: {editor: this},
+  });
+
 
   $ribbon = $('#ribbon')
   
@@ -92,13 +124,6 @@ function initEditor() {
       return false;
     });
   });
-  
-  if (typeof Pages != 'undefined') { 
-    $('.editable').bind('blur', function (event) {
-      console.log('blur');
-      //PagesSerialize()
-    });
-  }
 }
 
 // refreshing toolbar button classes to show toggled/disabled states, depending on where the cursor currently is

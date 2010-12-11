@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  initEditor();
+  initInlineEditor();
   
   // link source and html areas together to auto update each other
   $('#exampleSource')[0].value = $('#exampleHtml')[0].innerHTML;

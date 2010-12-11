@@ -6,13 +6,16 @@
 $.fn.inlineEditor = function (options) {
   return this.each(function () {
     var editor;
-    // editor = $(this).data('inlineEditor');
-    // if (editor) {
-    //   // TODO: update options on existing editor
-    // } else {
-    editor = new InlineEditor(this, options);
-    $(this).data('inlineEditor', editor);
-    // }
+
+    editor = $(this).data('inlineEditor');
+    console.log("editor=", editor);
+    if (editor) {
+      // Update options on existing editor
+      editor.mergeOptions($.extend(editor.options, options))
+    } else {
+      editor = new InlineEditor(this, options);
+      $(this).data('inlineEditor', editor);
+    }
   });
 };
 
@@ -26,29 +29,56 @@ window.InlineEditor = function (node, options) {
   this.document = node.ownerDocument;
   this.window = this.document.defaultView;
   var $node = $(node);
+
   // set args
   this.node = node;
-  $node.data($.extend(InlineEditor.DEFAULT_OPTIONS, options, $node.data()));
+  //this.mergeOptions($.extend(InlineEditor.DEFAULT_OPTIONS, options, $node.data()));
+  options = $.extend(InlineEditor.DEFAULT_OPTIONS, options, $node.data());
+  $node.data(options);
+
   // set to editable, and hack for browsers that don't support isContentEditable (like FF3.6)
   node.contentEditable = true;
   if (! node.isContentEditable) {
     node.isContentEditable = true;
   }
+
   // initialize source/position for change/move detection
   this.lastSource = node.innerHTML;
   this.lastFocusNode = null;
   this.lastFocusOffset = 0;
-  // bind default event handlers
-  $node.bind('focus', InlineEditor.defaultFocusHandler);
-  $node.bind('blur', InlineEditor.defaultBlurHandler);
-  $node.bind('blur mousedown mouseup keydown keyup keypress', InlineEditor.checkMoveOrChangeHandler);
-  $node.bind('livechange', InlineEditor.defaultLiveChangeHandler);
-  $node.bind('save', InlineEditor.defaultSaveHandler);
+
+  // bind event handlers
+  $node.bind('focus.inline_editor'                           , {}                      , InlineEditor.defaultFocusHandler);
+  $node.bind('blur.inline_editor'                            , {}                      , InlineEditor.defaultBlurHandler);
+  $node.bind('livechange.inline_editor'                      , {}                      , InlineEditor.defaultLiveChangeHandler);
+  $node.bind('save.inline_editor'                            , options.saveHandlerData , options.saveHandler || InlineEditor.defaultSaveHandler);
+
+  $node.bind('blur mousedown mouseup keydown keyup keypress' , {}                      , InlineEditor.checkMoveOrChangeHandler);
+
   // special command to some browsers to coax them not to use style attributes as much!
   try {
     node.ownerDocument.execCommand('styleWithCSS', false, false);
   } catch (e) {
   }
+};
+
+window.InlineEditor.prototype.mergeOptions = function (options) {
+  console.log('mergeOptions')
+  console.log("options=", options);
+  var $node = $(this.node);
+  var options = $.extend($node.data(), options);
+  $node.data(options);
+
+  $node.unbind('focus.inline_editor')
+  $node.unbind('blur.inline_editor')
+  $node.unbind('livechange.inline_editor')
+  $node.unbind('save.inline_editor')
+
+  // TODO: don't duplicate with constructor! can we call this from constructor?
+  $node.bind('focus.inline_editor'                           , {}                      , InlineEditor.defaultFocusHandler);
+  $node.bind('blur.inline_editor'                            , {}                      , InlineEditor.defaultBlurHandler);
+  $node.bind('livechange.inline_editor'                      , {}                      , InlineEditor.defaultLiveChangeHandler);
+  $node.bind('save.inline_editor'                            , options.saveHandlerData , options.saveHandler || InlineEditor.defaultSaveHandler);
 };
 
 // checks if focus is currently on any active InlineEditor-editable object...
@@ -247,7 +277,9 @@ window.InlineEditor.defaultBlurHandler = function (evt) {
   }
   $this.trigger('save');
 };
+
 window.InlineEditor.defaultSaveHandler = function (evt) {
+  console.log('in defaultSaveHandler')
   var $this = $(this), editor = InlineEditor.getEditor(this), post_url = $this.data('save-url');
   if (post_url) {
     $.ajax($.extend({
@@ -268,7 +300,9 @@ window.InlineEditor.defaultSaveHandler = function (evt) {
 window.InlineEditor.DEFAULT_OPTIONS = {
   'editing-class': 'editing',
   'idle-save-time': 3000, // milliseconds
-  'save-type': 'POST'
+  'save-type': 'POST',
+  saveHandlerData: {},
+  saveHandler: null,
 };
 
 
