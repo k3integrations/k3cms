@@ -33,7 +33,7 @@ RestInPlaceEditor.prototype = {
         });
       }
     });
-    editor.element.html("saving...");
+    editor.saving()
   },
   
   activateForm : function() {
@@ -68,6 +68,7 @@ RestInPlaceEditor.prototype = {
   bindForm : function() {
     this.activateForm = RestInPlaceEditor.forms[this.formType].activateForm;
     this.getValue     = RestInPlaceEditor.forms[this.formType].getValue;
+    this.saving       = RestInPlaceEditor.forms[this.formType].saving;
   },
   
   getValue : function() {
@@ -129,7 +130,11 @@ RestInPlaceEditor.forms = {
     submitHandler : function(event) {
       event.data.editor.update();
       return false;
-    }
+    },
+
+    saving : function(event) {
+      event.data.editor.element.html("saving...");
+    },
   },
 
   "textarea" : {
@@ -147,8 +152,11 @@ RestInPlaceEditor.forms = {
 
     blurHandler : function(event) {
       event.data.editor.update();
-    }
+    },
 
+    saving : function(event) {
+      event.data.editor.element.html("saving...");
+    },
   }
 }
 

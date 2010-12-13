@@ -10,6 +10,10 @@ if (typeof(RestInPlaceEditor) != 'undefined' && RestInPlaceEditor.forms) {
         //console.log('getValue:', value)
         return value;
       },
+
+      saving : function(event) {
+        //event.data.editor.element.after("saving...");
+      },
     }
   })
 }
@@ -81,7 +85,6 @@ function initInlineEditor(options) {
       console.log("$(this).data()=", $(this).data());
       $(this).data('restInPlaceEditor').update();
     },
-    saveHandlerData: {editor: this},
   });
 
 
