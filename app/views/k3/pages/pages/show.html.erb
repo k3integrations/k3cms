@@ -2,9 +2,13 @@
 
 <h2><%= @page.title %></h2>
 
-<div class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="body" data-formtype="inline_editor">
-<%= raw(@page.body) %>
-</div>
+<% if edit_mode? %>
+  <div class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="body" data-formtype="inline_editor">
+  <%= raw(@page.body) %>
+  </div>
+<% else %>
+  <%= raw(@page.body) %>
+<% end %>
 
 <% if edit_mode? %>
   <script type="text/javascript">
