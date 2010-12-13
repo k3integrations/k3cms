@@ -12,7 +12,7 @@
 
 <% @pages.each do |page| %>
   <tr>
-    <td><%= page.title %></td>
+    <td><%= strip_tags page.title %></td>
     <td><%= link_to page.url, page.url %></td>
     <td><%= truncate(page.body, :length => 30) %></td>
     <!--<td><%= link_to 'Show', k3_page_path(page) %></td>-->
