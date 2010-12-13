@@ -5,7 +5,7 @@ class K3::InlineEditor::Installer < Thor
 
   desc 'install', "Install K3 Inline Editor"
   def install
-    get 'https://github.com/janv/rest_in_place/raw/master/javascripts/jquery.rest_in_place.js', 'public/javascripts/jquery.rest_in_place.js'
+    #get 'https://github.com/janv/rest_in_place/raw/master/javascripts/jquery.rest_in_place.js', 'public/javascripts/jquery.rest_in_place.js'
   end
 end
 
@@ -23,8 +23,9 @@ namespace :k3 do
 
      #K3::FileUtils.copy_from_gem    K3::InlineEditor, 'public'
       # But this is more convenient for development:
-      K3::FileUtils.symlink_from_gem K3::InlineEditor, file='public/javascripts/k3/inline_editor.js',  file
-      K3::FileUtils.symlink_from_gem K3::InlineEditor, file='public/stylesheets/k3/inline_editor.css', file
+      K3::FileUtils.symlink_from_gem K3::InlineEditor, file='public/javascripts/jquery.rest_in_place.js', file
+      K3::FileUtils.symlink_from_gem K3::InlineEditor, file='public/javascripts/k3/inline_editor.js',     file
+      K3::FileUtils.symlink_from_gem K3::InlineEditor, file='public/stylesheets/k3/inline_editor.css',    file
     end
   end
 end
