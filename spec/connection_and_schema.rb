@@ -8,6 +8,8 @@ ActiveRecord::Base.establish_connection({
 
 ActiveRecord::Schema.define do
   # TODO: Don't duplicate the migrations. Invoke them directly the same way rake db:migrate does it.
+  #ActiveRecord::Migrator.migrate(MIGRATIONS_PATH)
+
   create_table :k3_pages do |t|
     t.string :title
     t.string :url
