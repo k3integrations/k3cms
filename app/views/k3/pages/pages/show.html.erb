@@ -1,10 +1,18 @@
 <p class="notice"><%= notice %></p>
 
-<h2><%= @page.title %></h2>
+<h1>
+  <% if edit_mode? %>
+    <div class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="title" data-formtype="inline_editor">
+      <%= raw(@page.title) %>
+    </div>
+  <% else %>
+    <%= raw(@page.title) %>
+  <% end %>
+</h1>
 
 <% if edit_mode? %>
   <div class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="body" data-formtype="inline_editor">
-  <%= raw(@page.body) %>
+    <%= raw(@page.body) %>
   </div>
 <% else %>
   <%= raw(@page.body) %>
