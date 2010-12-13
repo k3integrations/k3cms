@@ -1,4 +1,7 @@
 /* editor outlines, to indicate editableness and focus */
+.editable {
+  min-height: 20px;
+}
 .editable:hover, .editing {
   margin: 0 -2px;
   padding: 0 2px;
