@@ -88,7 +88,9 @@ function initInlineEditor(options) {
   });
 
 
-  $ribbon = $('#ribbon')
+  $ribbon = $('#ribbon .row_2')
+  if ($ribbon.length == 0)
+    $ribbon = $('#ribbon')
   
   // show initial toolbar button layout, according to table at top
   $(toolbar_options).each(function (index) {
