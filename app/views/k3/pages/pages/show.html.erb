@@ -1,5 +1,8 @@
 <p class="notice"><%= notice %></p>
 
+<% content_for :title do %>
+  <%= strip_tags @page.title %>
+<% end %>
 <h1>
   <% if edit_mode? %>
     <div class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="title" data-formtype="inline_editor">

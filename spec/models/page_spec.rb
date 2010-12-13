@@ -3,6 +3,16 @@ require 'app/models/k3/page'
 
 module K3
   describe Page do
+    describe "when initialized" do
+      before do
+        @page = Page.new
+      end
+
+      it "should have body set to '<p></p>'" do
+        @page.body.should == '<p></p>'
+      end
+    end
+
     describe "when initialized with title 'About Us'" do
       before do
         @page = Page.new(:title => 'About Us')

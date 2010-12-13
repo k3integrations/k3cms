@@ -21,11 +21,15 @@ class K3::Page < ActiveRecord::Base
   validates :url, :route_does_not_conflict_with_rails_routes => true,
                   :uniqueness => true
 
-  after_initialize :set_default_title_or_url
+  after_initialize :set_default_body
+  def set_default_body
+    self.body = '<p></p>' if self.attributes['body'].nil?
+  end
 
+  after_initialize :set_default_title_or_url
   def set_default_title_or_url
-    self.title ||= url.gsub(%r[^/], '').humanize.gsub('-', ' ') if self.attributes['url']
-    self.url   ||= '/' + title.humanize.gsub(' ', '-').downcase if self.attributes['title']
+    self.title = url.gsub(%r[^/], '').humanize.gsub('-', ' ') if self.attributes['url']   && self.attributes['title'].nil?
+    self.url   = '/' + title.humanize.gsub(' ', '-').downcase if self.attributes['title'] && self.attributes['url'].nil?
   end
 
   def to_s
