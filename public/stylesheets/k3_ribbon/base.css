@@ -6,7 +6,9 @@ body {
   display: none;
 }
 
-#ribbon {
+#ribbon,
+#ribbon ul
+{
   margin: 0;
   padding: 0;
   /*border: 1px solid gray;*/
@@ -24,6 +26,11 @@ body {
   border-bottom-color: #666;
   border-left-color: #ddd;
 }
+
+#ribbon ul.row_2 {
+  clear: both;
+}
+
 .clear {
   clear: both;
 }

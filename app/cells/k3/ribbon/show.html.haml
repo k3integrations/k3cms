@@ -1,17 +1,21 @@
 %ul#ribbon
-  %li.new_page.link
-    = link_to_function 'New Page', 'javascript: void()'
+  %ul.row_1
+    %li.new_page.link
+      = link_to_function 'New Page', 'javascript: void()'
 
-  - if respond_to?(:k3_pages_path)
-    %li
-      = link_to 'List pages', k3_pages_path
+    - if respond_to?(:k3_pages_path)
+      %li
+        = link_to 'List pages', k3_pages_path
 
-  %li.toggle_edit_mode
-    Edit mode: #{{true => 'on', false => 'off'}[edit_mode?]}
-    = link_to "Turn #{{false => 'on', true => 'off'}[edit_mode?]}", p=params.merge({:edit => (!edit_mode?).to_s})
+    %li.toggle_edit_mode
+      Edit mode: #{{true => 'on', false => 'off'}[edit_mode?]}
+      = link_to "Turn #{{false => 'on', true => 'off'}[edit_mode?]}", p=params.merge({:edit => (!edit_mode?).to_s})
 
-  %li.logged_in_as
-    Logged in as: An editor
+    %li.logged_in_as
+      Logged in as: An editor
+
+  %ul.row_2
+
 .clear
 
 
