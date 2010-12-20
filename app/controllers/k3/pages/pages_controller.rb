@@ -87,4 +87,12 @@ class K3::Pages::PagesController < ApplicationController
       format.json { render :nothing =>  true }
     end
   end
+
+  def last_saved_status
+    @page = K3::Page.find(params[:id])
+
+    respond_to do |format|
+      format.html { render :text => render_cell('k3/pages', :last_saved_status, :page => @page) }
+    end
+  end
 end

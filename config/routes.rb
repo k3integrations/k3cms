@@ -3,5 +3,8 @@ Rails.application.routes.draw do
     collection do
       get :not_found
     end
+    member do
+      get :last_saved_status
+    end
   end
 end

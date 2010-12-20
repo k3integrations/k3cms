@@ -8,6 +8,10 @@ module K3
   module Pages
 
     class Engine < Rails::Engine
+      config.action_view.javascript_expansions[:k3].concat [
+        'k3/pages.js',
+      ]
+
       initializer 'k3.pages.add_cells_paths' do |app|
         Cell::Base.view_paths += [Pathname[__DIR__] + '../../../app/cells']
       end
