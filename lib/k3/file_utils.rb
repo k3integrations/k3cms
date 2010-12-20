@@ -29,7 +29,8 @@ module K3
       gem_file = gem_class::Engine.root + gem_file
       app_file = Rails.root             + app_file
       app_file.dirname.mkpath
-      Pathname.new(app_file).make_symlink(gem_file.relative_path_from(app_file)) unless app_file.exist?
+      app_file.unlink if app_file.symlink?
+      app_file.make_symlink(gem_file.relative_path_from(app_file)) unless app_file.exist?
     end
 
     def self.copy_from_gem(gem_class, relative_dir, verbose=true)
