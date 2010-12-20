@@ -14,12 +14,16 @@
     %li.logged_in_as
       Logged in as: An editor
 
+    - if @page
+      %li#last_saved_status
+        = render_cell 'k3/pages', :last_saved_status, :page => @page
+
   %ul.row_2
 
 .clear
 
 
-= form_for @page, :html => {:id => 'ribbon_new_page_form', :class => 'new_page form hidden'} do |f|
+= form_for K3::Page.new, :html => {:id => 'ribbon_new_page_form', :class => 'new_page form hidden'} do |f|
   Title:
   = f.text_field :title
   = f.submit 'Create'
