@@ -3,7 +3,11 @@
 
 <% if logged_in? %>
   <p>
-    Would you like to
-    <%= link_to 'create it now', new_k3_page_path(:k3_page => {:url => params[:requested_path]}) %>?
+    <%= form_for @page=K3::Page.new do |f| %>
+      <%= f.hidden_field :title, :value => params[:requested_path] %>
+      <%= f.hidden_field :url,   :value => params[:requested_path] %>
+      Would you like to
+      <%= f.submit 'create it now' %>?
+    <% end %>
   </p>
 <% end %>
