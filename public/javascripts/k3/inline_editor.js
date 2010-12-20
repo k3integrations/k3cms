@@ -12,7 +12,15 @@ if (typeof(RestInPlaceEditor) != 'undefined' && RestInPlaceEditor.forms) {
       },
 
       saving : function(event) {
-        //event.data.editor.element.after("saving...");
+        $('#last_saved_status').html('Saving...');
+      },
+
+      success : function(event) {
+        var $this = $(this.element);
+        Pages.update_last_saved_status({
+          url:       $this.data('url'),
+          attribute: $this.data('attribute'),
+        });
       },
     }
   })
@@ -82,7 +90,18 @@ function initInlineEditor(options) {
   $('.editable').inlineEditor({
     saveHandler:     function(event) {
       console.log('saveHandler')
-      console.log("$(this).data()=", $(this).data());
+      //console.log("$(this).data()=", $(this).data());
+
+    //var klass;
+    //if ($(this).data('object') == 'k3_page') {
+    //  klass = Pages;
+    //}
+    //// Or should this be Ribbon.update_last_saved_status(klass.get_last_saved_status(...))?
+    //klass.update_last_saved_status({
+    //  url:       $(this).data('url'),
+    //  attribute: $(this).data('attribute'),
+    //});
+
       $(this).data('restInPlaceEditor').update();
     },
   });
