@@ -69,6 +69,7 @@ RestInPlaceEditor.prototype = {
     this.activateForm = RestInPlaceEditor.forms[this.formType].activateForm;
     this.getValue     = RestInPlaceEditor.forms[this.formType].getValue;
     this.saving       = RestInPlaceEditor.forms[this.formType].saving;
+    this.success      = RestInPlaceEditor.forms[this.formType].success;
   },
   
   getValue : function() {
@@ -99,6 +100,7 @@ RestInPlaceEditor.prototype = {
     if (jQuery.fn.jquery < "1.4") data = eval('(' + data + ')' );
     this.element.html(data[this.objectName][this.attributeName]);
     this.element.bind('click', {editor: this}, this.clickHandler);    
+    this.success();
   },
   
   clickHandler : function(event) {
@@ -135,6 +137,9 @@ RestInPlaceEditor.forms = {
     saving : function(event) {
       event.data.editor.element.html("saving...");
     },
+
+    success : function(event) {
+    },
   },
 
   "textarea" : {
@@ -156,6 +161,9 @@ RestInPlaceEditor.forms = {
 
     saving : function(event) {
       event.data.editor.element.html("saving...");
+    },
+
+    success : function(event) {
     },
   }
 }
