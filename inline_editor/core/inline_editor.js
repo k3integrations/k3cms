@@ -19,11 +19,14 @@ $.fn.inlineEditor = function (options) {
   });
 };
 
-// if (! window.console) {
-//   window.console = {
-//     debug: function () {}
-//   }
-// }
+// no-op if console logger doesn't exist, so that errors aren't thrown
+// this can be commented out if all debugging is commented out...
+if (! window.console) {
+  window.console = {
+    log: function () {},
+    debug: function () {}
+  }
+}
 
 window.InlineEditor = function (node, options) {
   this.document = node.ownerDocument;
