@@ -68,7 +68,7 @@ var structured_toolbar_options = [];
 $(toolbar_options).each(function (i) {
   option = {
     label:             this[0],
-    class:             this[1],
+    klass:             this[1],
     editor_cmd:        this[2],
     query_state_cmd:   this[3],
     query_enabled_cmd: this[4],
@@ -114,7 +114,7 @@ function initInlineEditor(options) {
   // show initial toolbar button layout, according to table at top
   $(toolbar_options).each(function (index) {
     var elem = document.createElement('li');
-    $(elem).addClass(this.class);
+    $(elem).addClass(this.klass);
     $(elem).addClass('button');
     elem.innerHTML = this.label;
     $ribbon.append(elem);
@@ -129,7 +129,7 @@ function initInlineEditor(options) {
   // toolbar button command handlers
   $(toolbar_options).each(function (index) {
     var self = this;
-    $ribbon.find('.' + this.class).mousedown(function (event) {
+    $ribbon.find('.' + this.klass).mousedown(function (event) {
       var editor = InlineEditor.focusedEditor();
       // ignore button presses if no editable area is selected (you can also use InlineEditor.isFocusedEditor())
       if (! editor || ! editor.isEnabled()) {
@@ -154,7 +154,7 @@ function initInlineEditor(options) {
 function refreshButtons() {
   var editable_active = InlineEditor.isFocusedEditor();
   $(toolbar_options).each(function (index) {
-    var btn = $('#ribbon .' + this.class);
+    var btn = $('#ribbon .' + this.klass);
     if (! editable_active) {
       btn.addClass('disabled');
     } else {
