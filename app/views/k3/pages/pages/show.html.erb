@@ -5,9 +5,9 @@
 <% end %>
 <h1>
   <% if edit_mode? %>
-    <div class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="title" data-formtype="inline_editor">
+    <span class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="title" data-formtype="inline_editor">
       <%= raw(@page.title) %>
-    </div>
+    </span>
   <% else %>
     <%= raw(@page.title) %>
   <% end %>
