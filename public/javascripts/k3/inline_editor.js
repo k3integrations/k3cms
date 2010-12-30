@@ -137,7 +137,9 @@ function initInlineEditor(options) {
         return false;
       }
       // execute the command
-      editor[self.editor_cmd](self.cmd_args[0], self.cmd_args[1]); // executes command here!
+      if (! $(this).hasClass('disabled')) {
+        editor[self.editor_cmd](self.cmd_args[0], self.cmd_args[1]);
+      }
       // refresh button state
       refreshButtons();
       // returning false doesn't cancel losing editor focus in IE, here's a nasty hacky fix!
