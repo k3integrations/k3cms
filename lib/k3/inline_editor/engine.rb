@@ -1,6 +1,6 @@
 require "k3_inline_editor"
 require "rails"
-require 'facets'
+#require 'facets' # Causes an error in Rails!
 require 'facets/kernel/__dir__'
 require 'facets/pathname'
 
