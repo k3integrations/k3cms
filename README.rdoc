@@ -1,0 +1,12 @@
+= K3 Pages
+
+This gem forms the backbone of the K3 CMS.  It allows for pages to be created and edited and includes custom routing.
+
+== Dependency Requirements of the Framework
+
+* A User class that includes the K3::Authorization::RealUser module 
+  TODO:  It would be nice to generalize this and not lock it to just "User" class!
+* Specialized CanCan
+  TODO:  Check to see if it multiple gems work fine with default CanCan.
+
+

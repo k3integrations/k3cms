@@ -1,6 +1,6 @@
-require "k3_pages"
 require "rails"
-require 'facets'
+require "k3_pages"
+#require 'facets' # Causes an error in Rails!
 require 'facets/kernel/__dir__'
 require 'facets/pathname'
 

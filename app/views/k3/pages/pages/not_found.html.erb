@@ -1,7 +1,7 @@
 <h2>Page not found</h2>
 <p>The page you requested could not be found.</p>
 
-<% if logged_in? %>
+<% if k3_user.k3_permitted?(:create_page) %>
   <p>
     <%= form_for @page=K3::Page.new do |f| %>
       <%= f.hidden_field :title, :value => params[:requested_path] %>
