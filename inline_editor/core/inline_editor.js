@@ -104,6 +104,10 @@ window.InlineEditor.prototype.isFocused = function () {
 window.InlineEditor.prototype.isEnabled = function () {
   return this.node.isContentEditable;
 };
+// shortcut to check if editable area isan inline or block level element
+window.InlineEditor.prototype.isInline = function () {
+  return (this.node.currentStyle || window.getComputedStyle(this.node, null)).display == 'inline';
+}
 
 // exposing standard browser-built-in contentEditable editor commands...
 // note these are NOT consistent cross browser

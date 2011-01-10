@@ -27,52 +27,53 @@ if (typeof(RestInPlaceEditor) != 'undefined' && RestInPlaceEditor.forms) {
 }
 
 //==================================================================================================
-// label text, css class, command to do functionality, command to check state, command to check if enabled, args to pass commands
+// label text, css class, inline/block, command to do functionality, command to check state, command to check if enabled, args to pass commands
 toolbar_options = [
-  ['B',         'toggleBold',             'execCommand', 'queryCommandState', 'queryCommandEnabled', ['bold']],
-  ['I',         'toggleItalic',           'execCommand', 'queryCommandState', 'queryCommandEnabled', ['italic']],
-  ['U',         'toggleUnderline',        'execCommand', 'queryCommandState', 'queryCommandEnabled', ['underline']],
-  ['S',         'toggleStrikethrough',    'execCommand', 'queryCommandState', 'queryCommandEnabled', ['strikeThrough']],
-  ['<sup>sup</sup>', 'toggleSuperscript', 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['superscript']],
-  ['<sub>sub</sub>', 'toggleSubscript',   'execCommand', 'queryCommandState', 'queryCommandEnabled', ['subscript']],
-  ['OL',        'insertOrderedList',      'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertOrderedList']],
-  ['UL',        'insertUnorderedList',    'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertUnorderedList']],
-  ['In',        'indent',                 'execCommand',  false,              'queryCommandEnabled', ['indent']],
-  ['Out',       'outdent',                'execCommand',  false,              'queryCommandEnabled', ['outdent']],
-  ['Left',      'justifyLeft',            'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyLeft']],
-  ['Center',    'justifyCenter',          'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyCenter']],
-  ['Right',     'justifyRight',           'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyRight']],
-  // ['P',      'blockParagraph',         'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertParagraph']],
-  // ['P',      'blockParagraph',         'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'p']],
-  // ['Pre',    'blockPre',               'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'pre']],
-  // ['Address','blockAddress',           'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'address']],
-  // ['H1',     'blockH1',                'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h1']],
-  // ['H2',     'blockH2',                'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h2']],
-  // ['H3',     'blockH3',                'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h3']],
-  // ['H4',     'blockH4',                'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h4']],
-  // ['H5',     'blockH5',                'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h5']],
-  // ['H6',     'blockH6',                'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h6']]
-  ['Plain',     'blockDiv',               'switchToBlock', 'isCurrentBlock',   false,                ['div']],
-  ['Paragraph', 'blockP',                 'switchToBlock', 'isCurrentBlock',   false,                ['p']],
-  ['Preformatted', 'blockPre',            'switchToBlock', 'isCurrentBlock',   false,                ['pre']],
-  ['Address',   'blockAddress',           'switchToBlock', 'isCurrentBlock',   false,                ['address']],
-  ['Heading 1', 'blockH1',                'switchToBlock', 'isCurrentBlock',   false,                ['h1']],
-  ['Heading 2', 'blockH2',                'switchToBlock', 'isCurrentBlock',   false,                ['h2']],
-  ['Heading 3', 'blockH3',                'switchToBlock', 'isCurrentBlock',   false,                ['h3']],
-  ['Heading 4', 'blockH4',                'switchToBlock', 'isCurrentBlock',   false,                ['h4']],
-  ['Heading 5', 'blockH5',                'switchToBlock', 'isCurrentBlock',   false,                ['h5']],
-  ['Heading 6', 'blockH6',                'switchToBlock', 'isCurrentBlock',   false,                ['h6']]
+  ['B',         'toggleBold',             true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['bold']],
+  ['I',         'toggleItalic',           true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['italic']],
+  ['U',         'toggleUnderline',        true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['underline']],
+  ['S',         'toggleStrikethrough',    true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['strikeThrough']],
+  ['<sup>sup</sup>', 'toggleSuperscript', true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['superscript']],
+  ['<sub>sub</sub>', 'toggleSubscript',   true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['subscript']],
+  ['OL',        'insertOrderedList',      false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertOrderedList']],
+  ['UL',        'insertUnorderedList',    false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertUnorderedList']],
+  ['In',        'indent',                 false, 'execCommand',  false,              'queryCommandEnabled', ['indent']],
+  ['Out',       'outdent',                false, 'execCommand',  false,              'queryCommandEnabled', ['outdent']],
+  ['Left',      'justifyLeft',            false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyLeft']],
+  ['Center',    'justifyCenter',          false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyCenter']],
+  ['Right',     'justifyRight',           false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyRight']],
+  // ['P',      'blockParagraph',         false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertParagraph']],
+  // ['P',      'blockParagraph',         false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'p']],
+  // ['Pre',    'blockPre',               false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'pre']],
+  // ['Address','blockAddress',           false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'address']],
+  // ['H1',     'blockH1',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h1']],
+  // ['H2',     'blockH2',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h2']],
+  // ['H3',     'blockH3',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h3']],
+  // ['H4',     'blockH4',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h4']],
+  // ['H5',     'blockH5',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h5']],
+  // ['H6',     'blockH6',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h6']]
+  ['Plain',     'blockDiv',               false, 'switchToBlock', 'isCurrentBlock',   false,                ['div']],
+  ['Paragraph', 'blockP',                 false, 'switchToBlock', 'isCurrentBlock',   false,                ['p']],
+  ['Preformatted', 'blockPre',            false, 'switchToBlock', 'isCurrentBlock',   false,                ['pre']],
+  ['Address',   'blockAddress',           false, 'switchToBlock', 'isCurrentBlock',   false,                ['address']],
+  ['Heading 1', 'blockH1',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h1']],
+  ['Heading 2', 'blockH2',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h2']],
+  ['Heading 3', 'blockH3',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h3']],
+  ['Heading 4', 'blockH4',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h4']],
+  ['Heading 5', 'blockH5',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h5']],
+  ['Heading 6', 'blockH6',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h6']]
 ];
 
 var structured_toolbar_options = [];
 $(toolbar_options).each(function (i) {
   option = {
     label:             this[0],
-    class:             this[1],
-    editor_cmd:        this[2],
-    query_state_cmd:   this[3],
-    query_enabled_cmd: this[4],
-    cmd_args:          this[5],
+    klass:             this[1],
+    is_inline:         this[2],
+    editor_cmd:        this[3],
+    query_state_cmd:   this[4],
+    query_enabled_cmd: this[5],
+    cmd_args:          this[6],
   };
   structured_toolbar_options = $.merge(structured_toolbar_options, [option]);
 });
@@ -114,7 +115,7 @@ function initInlineEditor(options) {
   // show initial toolbar button layout, according to table at top
   $(toolbar_options).each(function (index) {
     var elem = document.createElement('li');
-    $(elem).addClass(this.class);
+    $(elem).addClass(this.klass);
     $(elem).addClass('button');
     elem.innerHTML = this.label;
     $ribbon.append(elem);
@@ -129,14 +130,16 @@ function initInlineEditor(options) {
   // toolbar button command handlers
   $(toolbar_options).each(function (index) {
     var self = this;
-    $ribbon.find('.' + this.class).mousedown(function (event) {
+    $ribbon.find('.' + this.klass).mousedown(function (event) {
       var editor = InlineEditor.focusedEditor();
       // ignore button presses if no editable area is selected (you can also use InlineEditor.isFocusedEditor())
       if (! editor || ! editor.isEnabled()) {
         return false;
       }
       // execute the command
-      editor[self.editor_cmd](self.cmd_args[0], self.cmd_args[1]); // executes command here!
+      if (! $(this).hasClass('disabled')) {
+        editor[self.editor_cmd](self.cmd_args[0], self.cmd_args[1]);
+      }
       // refresh button state
       refreshButtons();
       // returning false doesn't cancel losing editor focus in IE, here's a nasty hacky fix!
@@ -154,18 +157,22 @@ function initInlineEditor(options) {
 function refreshButtons() {
   var editable_active = InlineEditor.isFocusedEditor();
   $(toolbar_options).each(function (index) {
-    var btn = $('#ribbon .' + this.class);
+    var btn = $('#ribbon .' + this.klass);
     if (! editable_active) {
       btn.addClass('disabled');
     } else {
       var ined = InlineEditor.focusedEditor();
-      if (this.query_state_cmd) {
-        ined[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.addClass('toggledOn') : btn.removeClass('toggledOn');
-      }
-      if (this.query_enabled_cmd) {
-        ined[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.removeClass('disabled') : btn.addClass('disabled');
+      if (! ined.isInline() || this.is_inline) {
+        if (this.query_state_cmd) {
+          ined[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.addClass('toggledOn') : btn.removeClass('toggledOn');
+        }
+        if (this.query_enabled_cmd) {
+          ined[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.removeClass('disabled') : btn.addClass('disabled');
+        } else {
+          btn.removeClass('disabled');
+        }
       } else {
-        btn.removeClass('disabled');
+        btn.addClass('disabled');
       }
     }
   });
