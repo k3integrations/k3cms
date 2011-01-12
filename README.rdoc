@@ -2,27 +2,27 @@
 
 == Introduction
 
-This gem adds flexible authorization capabilities to Rails engines by allowing 
-gem developers to add an authorization definition file, and then use any 
-authorization libraries they wish in their gem (CanCan, etc).  
+This gem adds flexible authorization capabilities to Rails engines by allowing
+gem developers to add an authorization definition file, and then use any
+authorization libraries they wish in their gem (CanCan, etc).
 
-For example, there may be several gems that each use different authorization 
-libraries.  One may use CanCan, another may use declarative_authorization, and 
-another may have its own home-grown authorization implementation.  This is 
-fine as long as each gem provides a config/authorization.rb file defining the 
-abilities it recognizes and some default permission sets suggesting how these 
-could be used.  This gem (k3_authorization) reads in those files and extends 
-Rails engines to expose those settings.  
+For example, there may be several gems that each use different authorization
+libraries.  One may use CanCan, another may use declarative_authorization, and
+another may have its own home-grown authorization implementation.  This is
+fine as long as each gem provides a config/authorization.rb file defining the
+abilities it recognizes and some default permission sets suggesting how these
+could be used.  This gem (k3_authorization) reads in those files and extends
+Rails engines to expose those settings.
 
-For example, SomeClass::Engine.authorization will return an AuthorizationSet 
+For example, SomeClass::Engine.authorization will return an AuthorizationSet
 object, containing the details from the authorization.rb file.
 
-This gem provides an API or middle ground so that gem developers can include 
-authorization features in their code.  And application developers may use 
+This gem provides an API or middle ground so that gem developers can include
+authorization features in their code.  And application developers may use
 multiple, separately developed gems and have them all work together.
 
-In a full Rails app, an authorization glue gem can then pull authorization 
-definitions from multiple gems together and present a complete, cohesive user 
+In a full Rails app, an authorization glue gem can then pull authorization
+definitions from multiple gems together and present a complete, cohesive user
 experience to the admin user.
 
 
@@ -56,13 +56,13 @@ Here is a sample authorization.rb file that demonstrates the basics of the DSL:
         ability :delete, ‘Can delete a page’
         ability :delete_own, ‘Can delete only pages created by me’
         
-        # This defines the abilities for the default suggested permission set 
+        # This defines the abilities for the default suggested permission set
         # in terms of the four default roles (guest, user, manager, admin)
         extend_suggested_permission_set :default do
           guest :has => :view
           # NOTE: :includes_role without first defining the role to be included
-          # will cause an error.  The included abilities are limited to the 
-          # context of this excend_suggested_permission_set block.
+          # will cause an error.  The included abilities are limited to the
+          # context of this extend_suggested_permission_set block.
           user :includes_role => :guest
           manager :has => [:create, :edit_own, :delete_own], :includes_role => :user
           # :all only applies to the abilities in this context (:pages)
