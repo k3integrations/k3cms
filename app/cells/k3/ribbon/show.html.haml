@@ -11,12 +11,12 @@
       Edit mode: #{{true => 'on', false => 'off'}[edit_mode?]}
       = link_to "Turn #{{false => 'on', true => 'off'}[edit_mode?]}", p=params.merge({:edit => (!edit_mode?).to_s})
 
-    %li.logged_in_as
-      Logged in as: An editor
-
     - if @page
       %li#last_saved_status
         = render_cell 'k3/pages', :last_saved_status, :page => @page
+
+    - @k3_ribbon_items and @k3_ribbon_items.each do |item|
+      = item
 
   %ul.row_2
 
