@@ -40,6 +40,7 @@ module K3
 
       def create
         @page.attributes = params[:k3_page]
+        @page.set_default_title_or_url
         @page.author = current_user
 
         respond_to do |format|
