@@ -8,6 +8,7 @@ module K3
   module Pages
 
     class Engine < Rails::Engine
+      config.action_view.javascript_expansions[:k3] ||= []
       config.action_view.javascript_expansions[:k3].concat [
         'k3/pages.js',
       ]

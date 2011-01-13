@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'k3/authorization/drivers/devise'
 require 'app/controllers/k3/pages/pages_controller'
 
 describe K3::Pages::PagesController do

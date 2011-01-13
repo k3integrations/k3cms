@@ -1,7 +1,15 @@
+Bundler.require(:default)
+require 'rails'
+require 'action_pack'
+require 'action_view/railtie' # so that config.action_view is available in engine.rb
+require 'k3_authorization'
+require 'k3/authorization/drivers/devise'
+
+
 require File.expand_path('../../lib/k3_pages', __FILE__)
+
 require 'connection_and_schema'
 
-require 'rails'
 module TestApp
   class Application < Rails::Application
   end
@@ -12,6 +20,8 @@ require 'action_controller'
 class ApplicationController < ActionController::Base
   include Rails.application.routes.url_helpers
 end
+ApplicationController.send :include, K3::Authorization::Drivers::Devise
+ApplicationController.send :include, K3::Authorization::GeneralControllerMethods
 
 require 'rspec/rails'
 

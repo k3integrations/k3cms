@@ -2,7 +2,10 @@ PATH
   remote: .
   specs:
     k3_pages (0.1.0)
+      actionpack (~> 3.0.0)
       activerecord (~> 3.0.0)
+      cells
+      facets
       k3_authorization
       k3_cancan
       k3_core
@@ -41,10 +44,12 @@ GEM
     archive-tar-minitar (0.5.2)
     arel (2.0.6)
     builder (2.1.2)
+    cells (3.4.4)
     columnize (0.3.2)
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    facets (2.9.0)
     i18n (0.5.0)
     k3_authorization (0.1.0)
       activesupport (>= 2)
@@ -112,7 +117,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  actionpack (~> 3.0.0)
   activerecord (~> 3.0.0)
+  cells
+  facets
   k3_authorization
   k3_cancan
   k3_core
