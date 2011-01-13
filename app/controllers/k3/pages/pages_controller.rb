@@ -45,7 +45,10 @@ module K3
 
         respond_to do |format|
           if @page.save
-            format.html { redirect_to(k3_page_url(@page), :notice => 'Page was successfully created.') }
+            format.html do
+              session[:edit_mode] = true
+              redirect_to(k3_page_url(@page), :notice => 'Page was successfully created.')
+            end
             format.xml  { render :xml => @page, :status => :created, :location => @page }
             format.json { render :nothing =>  true }
           else
