@@ -1,21 +1,72 @@
-Bundler.require(:default)
+Bundler.require(:default, :development)
 require 'rails'
 require 'action_pack'
 require 'action_view/railtie' # so that config.action_view is available in engine.rb
 require 'k3_authorization'
 require 'k3/authorization/drivers/devise'
 
-
 require File.expand_path('../../lib/k3_pages', __FILE__)
 
 require 'connection_and_schema'
 
+require 'k3/authorization/drivers/devise'
+
+## Devise must initialize first, so use the following hook.
+#module ActionDispatch::Routing
+#  class RouteSet #:nodoc:
+#    def finalize_with_my_app!
+#      finalize_without_my_app!
+#      Cell::Base.send :include, Devise::Controllers::Helpers
+#      Cell::Base.send :include, K3::Authorization::Drivers::Devise
+#      Cell::Base.send :include, K3::Authorization::GeneralControllerMethods
+#      ApplicationController.send :include, K3::Authorization::Drivers::Devise
+#      ApplicationController.send :include, K3::Authorization::GeneralControllerMethods
+#    end
+#    alias_method_chain :finalize!, :my_app
+#  end
+#end
+
 module TestApp
   class Application < Rails::Application
+    config.active_support.deprecation = :stderr
   end
 end
 TestApp::Application.initialize!
 
+require 'devise'
+require 'devise/orm/active_record'
+class User < ActiveRecord::Base
+  # Include default devise modules. Others available are:
+  # :token_authenticatable, :confirmable, :lockable and :timeoutable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable
+
+  attr_accessible :email, :password, :password_confirmation, :remember_me
+
+  include K3::Authorization::RealUser
+end
+
+#---------------------------------------------------------------------------------------------------
+#puts Rails.application.routes.routes
+
+# See http://openhood.com/rails/rails%203/2010/07/20/add-routes-at-runtime-rails-3/
+begin
+  _routes = Rails::Application.routes
+  _routes.disable_clear_and_finalize = true
+  _routes.clear!
+  Rails::Application.routes_reloader.paths.each{ |path| load(path) }
+  _routes.draw do
+    devise_for :users
+  end
+  ActiveSupport.on_load(:action_controller) { _routes.finalize! }
+ensure
+  _routes.disable_clear_and_finalize = false
+end
+
+#puts ... after:'
+#puts Rails.application.routes.routes
+
+#---------------------------------------------------------------------------------------------------
 require 'action_controller'
 class ApplicationController < ActionController::Base
   include Rails.application.routes.url_helpers
