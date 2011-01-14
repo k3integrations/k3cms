@@ -8,7 +8,7 @@ module K3
   module InlineEditor
 
     class Engine < Rails::Engine
-      puts "#{self}"
+      #puts "#{self}"
 
       #puts "config.action_view.javascript_expansions=#{config.action_view.javascript_expansions.inspect}"
       config.action_view.javascript_expansions[:k3].concat [
