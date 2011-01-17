@@ -18,16 +18,3 @@
 <% else %>
   <%= raw(@page.body) %>
 <% end %>
-
-<% if edit_mode? %>
-  <script type="text/javascript">
-    // for other non-inline-editor fields:
-    jQuery(".rest_in_place").rest_in_place();
-
-    initInlineEditor();
-
-    <% if params[:focus_editable] %>
-      $('.editable[data-attribute=<%= params[:focus_editable] %>]').eq(0).focus()
-    <% end %>
-  </script>
-<% end %>
