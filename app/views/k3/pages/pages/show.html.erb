@@ -1,20 +1,25 @@
-<% content_for :title do %>
-  <%= strip_tags @page.title %>
-<% end %>
-<h1>
-  <% if edit_mode? %>
-    <span class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="title" data-formtype="inline_editor">
-      <%= raw(@page.title) %>
-    </span>
-  <% else %>
-    <%= raw(@page.title) %>
+<div class="k3_pages_pages_show">
+  <% content_for :title do %>
+    <%= strip_tags @page.title %>
   <% end %>
-</h1>
 
-<% if edit_mode? %>
-  <div class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="body" data-formtype="inline_editor">
-    <%= raw(@page.body) %>
+  <div class="<%=dom_class(@page)%>" id="<%=dom_id(@page)%>">
+    <h1>
+      <% if edit_mode? %>
+        <span class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="title" data-formtype="inline_editor">
+          <%= raw(@page.title) %>
+        </span>
+      <% else %>
+        <%= raw(@page.title) %>
+      <% end %>
+    </h1>
+
+    <% if edit_mode? %>
+      <div class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="body" data-formtype="inline_editor">
+        <%= raw(@page.body) %>
+      </div>
+    <% else %>
+      <%= raw(@page.body) %>
+    <% end %>
   </div>
-<% else %>
-  <%= raw(@page.body) %>
-<% end %>
+</div>

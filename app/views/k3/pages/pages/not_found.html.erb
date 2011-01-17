@@ -4,7 +4,7 @@
 <% if edit_mode? and k3_user.k3_permitted?(:create_page) %>
   <p>
     <%= form_for @page=K3::Page.new do |f| %>
-      <%= f.hidden_field :title, :value => params[:requested_path] %>
+      <%= f.hidden_field :title, :value => params[:requested_path].gsub(%r(^/), '') %>
       <%= f.hidden_field :url,   :value => params[:requested_path] %>
       Would you like to
       <%= f.submit 'create it now' %>?
