@@ -12,12 +12,13 @@ Gem::Specification.new do |s|
   s.email       = ['jash@k3integrations.com', 'tyler@k3integrations.com']
   s.homepage    = 'http://www.k3integrations.com'
 
-  s.add_dependency 'k3_core'
   s.add_dependency 'facets'
   s.add_dependency 'rails',        '~> 3.0.0'
   s.add_dependency 'activerecord', '~> 3.0.0'
   s.add_dependency 'actionpack',   '~> 3.0.0'
   s.add_dependency 'cells'
+  s.add_dependency 'attribute_normalizer'
+  s.add_dependency 'k3_core'
   s.add_dependency 'k3_cancan'
   s.add_dependency 'k3_authorization'
   s.add_development_dependency 'rspec', '~> 2.2.0'

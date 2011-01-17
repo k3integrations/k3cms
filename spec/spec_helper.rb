@@ -1,7 +1,9 @@
-Bundler.require(:default, :development)
+require 'facets'
 require 'rails'
 require 'action_pack'
 require 'action_view/railtie' # so that config.action_view is available in engine.rb
+require 'active_record'       # Make sure this gets required before attribute_normalizer
+Bundler.require(:default, :development)
 require 'k3_authorization'
 require 'k3/authorization/drivers/devise'
 
@@ -51,10 +53,10 @@ end
 
 # See http://openhood.com/rails/rails%203/2010/07/20/add-routes-at-runtime-rails-3/
 begin
-  _routes = Rails::Application.routes
+  _routes = TestApp::Application.routes
   _routes.disable_clear_and_finalize = true
   _routes.clear!
-  Rails::Application.routes_reloader.paths.each{ |path| load(path) }
+  TestApp::Application.routes_reloader.paths.each{ |path| load(path) }
   _routes.draw do
     devise_for :users
   end
@@ -97,4 +99,6 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+
+  config.include AttributeNormalizer::RSpecMatcher
 end

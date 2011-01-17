@@ -33,6 +33,13 @@ module K3
       end
     end
 
+    describe "normalization" do
+      [:title, :body, :url].each do |attr_name|
+        it { should normalize_attribute(attr_name).from('  Something  ').to('Something') }
+        it { should normalize_attribute(attr_name).from('').to(nil) }
+      end
+    end
+
     describe "validation" do
       describe "when it has the same url as a Rails route" do
         before do
@@ -67,7 +74,5 @@ module K3
         page.to_s.should match(/Home/)
       end
     end
-
-
   end
 end

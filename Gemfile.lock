@@ -4,6 +4,7 @@ PATH
     k3_pages (0.1.0)
       actionpack (~> 3.0.0)
       activerecord (~> 3.0.0)
+      attribute_normalizer
       cells
       facets
       k3_authorization
@@ -43,6 +44,7 @@ GEM
     activesupport (3.0.3)
     archive-tar-minitar (0.5.2)
     arel (2.0.6)
+    attribute_normalizer (0.3.1)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
     cells (3.4.4)
@@ -127,6 +129,7 @@ PLATFORMS
 DEPENDENCIES
   actionpack (~> 3.0.0)
   activerecord (~> 3.0.0)
+  attribute_normalizer
   cells
   devise
   facets
