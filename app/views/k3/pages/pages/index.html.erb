@@ -15,7 +15,15 @@
   <%# TODO: Make this inline-editable %>
   <% @pages.each do |page| %>
     <tr>
-      <td><%= strip_tags page.title %></td>
+      <td>
+        <% if edit_mode? %>
+          <% inline_editable('span', page, :title) do %>
+            <%= raw(page.title) %>
+          <% end %>
+        <% else %>
+          <%= raw(page.title) %>
+        <% end %>
+      </td>
       <td><%= link_to page.url, page.url %></td>
       <td><%= truncate(strip_tags(page.body), :length => 30) %></td>
       <td><%= page.author %></td>

@@ -13,6 +13,8 @@ module K3
       rescue_from CanCan::AccessDenied do |exception|
         k3_authorization_required
       end
+
+      helper K3::InlineEditor::InlineEditorHelper
     end
   end
 end

@@ -1,4 +1,5 @@
 class K3::PagesCell < Cell::Rails
+  helper K3::InlineEditor::InlineEditorHelper
 
   def last_saved_status
     @page = @opts[:page]

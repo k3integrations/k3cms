@@ -9,18 +9,18 @@
   <div class="<%=dom_class(@page)%>" id="<%=dom_id(@page)%>">
     <h1>
       <% if edit_mode? %>
-        <span class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="title" data-formtype="inline_editor">
+        <% inline_editable('span', @page, :title) do %>
           <%= raw(@page.title) %>
-        </span>
+        <% end %>
       <% else %>
         <%= raw(@page.title) %>
       <% end %>
     </h1>
 
     <% if edit_mode? %>
-      <div class="editable" data-url="<%= k3_page_path(@page) %>" data-object="k3_page" data-attribute="body" data-formtype="inline_editor">
+      <% inline_editable('div', @page, :body) do %>
         <%= raw(@page.body) %>
-      </div>
+      <% end %>
     <% else %>
       <%= raw(@page.body) %>
     <% end %>
