@@ -25,6 +25,12 @@ module K3
       end
     end
 
+    def self.copy_from_gem(gem_class, relative_dir, verbose=true)
+      src_dir = File.join(gem_class::Engine.root, relative_dir)
+      dest_dir = File.join(Rails.root, relative_dir)
+      copy_recursively(src_dir, dest_dir, verbose)
+    end
+
     def self.symlink_from_gem(gem_class, gem_file, app_file)
       gem_file = gem_class::Engine.root + gem_file
       app_file = Rails.root             + app_file
@@ -33,10 +39,28 @@ module K3
       app_file.make_symlink(gem_file.relative_path_from(app_file)) unless app_file.exist?
     end
 
-    def self.copy_from_gem(gem_class, relative_dir, verbose=true)
-      src_dir = File.join(gem_class::Engine.root, relative_dir)
-      dest_dir = File.join(Rails.root, relative_dir)
-      copy_recursively(src_dir, dest_dir, verbose)
+    # Given a glob pattern, this will create a symlink in the target app for
+    # each file matching the glob in the gem's directory.  Only files will be
+    # symlinked, not directories.  Example:
+    # K3::FileUtils.symlink_files_from_gem K3::Blog, 'public/**/*'
+    #
+    def self.symlink_files_from_gem(gem_class, gem_glob)
+      Dir.chdir gem_class::Engine.root do
+        Dir[gem_glob].each do |file|
+          gem_file = gem_class::Engine.root + file
+          next unless gem_file.file?
+          app_file = Rails.root             + file
+          app_file.dirname.mkpath
+          app_file.unlink if app_file.symlink?
+          if app_file.exist?
+            puts "  Skipping #{file} (#{app_file} already exists)"
+          else
+            puts "  Linking  #{file}"
+            app_file.make_symlink(gem_file.relative_path_from(app_file.dirname))
+          end
+        end
+      end
     end
+
   end
 end
