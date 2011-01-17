@@ -2,6 +2,9 @@
   <% content_for :title do %>
     <%= strip_tags @page.title %>
   <% end %>
+  <% content_for :last_saved_status do %>
+    <%= render_cell 'k3/pages', :last_saved_status, :page => @page %>
+  <% end %>
 
   <div class="<%=dom_class(@page)%>" id="<%=dom_id(@page)%>">
     <h1>
