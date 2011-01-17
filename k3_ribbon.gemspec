@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'activerecord', '~> 3.0.0'
   s.add_dependency 'haml'
   s.add_dependency 'facets'
+  #s.add_dependency 'cells' #, :git => 'git://github.com/TylerRick/cells.git'
   s.add_development_dependency 'rspec', '~> 2.2.0'
   s.add_development_dependency 'rspec-rails', '~> 2.2.0'
   s.add_development_dependency 'sqlite3-ruby'

@@ -1,5 +1,8 @@
 class K3::RibbonCell < Cell::Base
 
+  require 'cells/helpers'
+  helper Cells::Helpers::CaptureHelper
+
   helper K3::Ribbon::RibbonHelper
 
   def show

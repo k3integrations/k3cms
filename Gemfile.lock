@@ -1,9 +1,16 @@
+GIT
+  remote: git://github.com/TylerRick/cells.git
+  revision: b06def3f6d37011d7ababd527e57e65aadbe08a1
+  specs:
+    cells (3.4.4)
+
 PATH
   remote: .
   specs:
     k3_ribbon (0.0.1)
       activerecord (~> 3.0.0)
       facets
+      haml
       k3_core
       rails (~> 3.0.0)
 
@@ -45,6 +52,7 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     facets (2.9.0)
+    haml (3.0.25)
     i18n (0.4.2)
     k3_core (0.1.0)
     linecache19 (0.5.11)
@@ -107,7 +115,9 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 3.0.0)
+  cells!
   facets
+  haml
   k3_core
   k3_ribbon!
   rails (~> 3.0.0)
