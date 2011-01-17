@@ -20,6 +20,11 @@ module K3
       initializer 'k3.pages.add_middleware' do |app|
         app.middleware.use K3::Pages::CustomRouting
       end
+
+      config.to_prepare do |app|
+        require Pathname[__DIR__] + '../../../app/models/user.rb'
+      end
+
     end
 
   end
