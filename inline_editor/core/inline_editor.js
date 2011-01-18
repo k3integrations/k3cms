@@ -8,7 +8,7 @@ $.fn.inlineEditor = function (options) {
     var editor;
 
     editor = $(this).data('inlineEditor');
-    console.log("editor=", editor);
+    //console.log("editor=", editor);
     if (editor) {
       // Update options on existing editor
       editor.mergeOptions($.extend(editor.options, options))
@@ -66,8 +66,8 @@ window.InlineEditor = function (node, options) {
 };
 
 window.InlineEditor.prototype.mergeOptions = function (options) {
-  console.log('mergeOptions')
-  console.log("options=", options);
+  //console.log('mergeOptions')
+  //console.log("options=", options);
   var $node = $(this.node);
   var options = $.extend($node.data(), options);
   $node.data(options);
@@ -286,7 +286,7 @@ window.InlineEditor.defaultBlurHandler = function (evt) {
 };
 
 window.InlineEditor.defaultSaveHandler = function (evt) {
-  console.log('in defaultSaveHandler')
+  //console.log('in defaultSaveHandler')
   var $this = $(this), editor = InlineEditor.getEditor(this), post_url = $this.data('save-url');
   if (post_url) {
     $.ajax($.extend({
