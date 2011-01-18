@@ -1,0 +1,15 @@
+- k3_ribbon_add_item do
+  %li
+    = link_to_function 'New Page', "jQuery('.new_page.drawer').slideToggle()"
+
+- k3_ribbon_add_item do
+  %li
+    = link_to 'List pages', k3_pages_path
+
+- k3_ribbon_add_drawer :new_page do
+  %h2 New Page
+  = form_for K3::Page.new do |f|
+    .field
+      Title:
+      = f.text_field :title
+    = f.submit 'Create'
