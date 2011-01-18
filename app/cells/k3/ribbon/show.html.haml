@@ -1,40 +1,20 @@
 %ul#ribbon
   %ul.row_1
-    %li.new_page.link
-      = link_to_function 'New Page', 'javascript: void()'
-
-    - if respond_to?(:k3_pages_path)
-      %li
-        = link_to 'List pages', k3_pages_path
 
     %li.toggle_edit_mode
       Edit mode: #{{true => 'on', false => 'off'}[edit_mode?]}
       = link_to "Turn #{{false => 'on', true => 'off'}[edit_mode?]}", p=params.merge({:edit => (!edit_mode?).to_s})
 
+    - @opts[:k3_ribbon_items] and @opts[:k3_ribbon_items].each do |item|
+      = item
+
     - if outer_content_for?(:last_saved_status)
       %li#last_saved_status
         = outer_content_for :last_saved_status
-
-    - @k3_ribbon_items and @k3_ribbon_items.each do |item|
-      = item
 
   %ul.row_2
 
 .clear
 
-
-= form_for K3::Page.new, :html => {:id => 'ribbon_new_page_form', :class => 'new_page form hidden'} do |f|
-  Title:
-  = f.text_field :title
-  = f.submit 'Create'
-
-:javascript
-  // TODO: Move out to k3_pages
-  jQuery(function() {
-    jQuery('.new_page.link').click(function() {
-      console.log('clicked')
-      jQuery('.new_page.form').slideDown()
-      jQuery('#k3_page_title').focus()
-    })
-
-  })
+- @opts[:k3_ribbon_drawers] and @opts[:k3_ribbon_drawers].each do |name, drawer|
+  = drawer
