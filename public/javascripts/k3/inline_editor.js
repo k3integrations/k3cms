@@ -1,26 +1,3 @@
-//==================================================================================================
-if (typeof(RestInPlaceEditor) != 'undefined' && RestInPlaceEditor.forms) {
-  RestInPlaceEditor.forms = $.extend(RestInPlaceEditor.forms, {
-    inline_editor : {
-      activateForm : function() {
-      },
-      
-      getValue : function() {
-        var value = InlineEditor.getEditor(this.element).lastSource
-        //console.log('getValue:', value)
-        return value;
-      },
-
-      saving : function(event) {
-        $('#last_saved_status').html('Saving...');
-      },
-
-      success : function(event) {
-        $('#last_saved_status').html('Saved seconds ago');
-      },
-    }
-  })
-}
 
 //==================================================================================================
 // label text, css class, inline/block, command to do functionality, command to check state, command to check if enabled, args to pass commands
@@ -75,34 +52,78 @@ $(toolbar_options).each(function (i) {
 });
 toolbar_options = structured_toolbar_options;
 
+//==================================================================================================
+// See http://stackoverflow.com/questions/208016/how-to-list-the-properties-of-a-javascript-object/3937321#3937321
+
+Object.keys = Object.keys || (function () {
+    var hasOwnProperty = Object.prototype.hasOwnProperty,
+        hasDontEnumBug = !{toString:null}.propertyIsEnumerable("toString"),
+        DontEnums = [ 
+            'toString', 'toLocaleString', 'valueOf', 'hasOwnProperty',
+            'isPrototypeOf', 'propertyIsEnumerable', 'constructor'
+        ],
+        DontEnumsLength = DontEnums.length;
+
+    return function (o) {
+        if (typeof o != "object" && typeof o != "function" || o === null)
+            throw new TypeError("Object.keys called on a non-object");
+
+        var result = [];
+        for (var name in o) {
+            if (hasOwnProperty.call(o, name))
+                result.push(name);
+        }
+
+        if (hasDontEnumBug) {
+            for (var i = 0; i < DontEnumsLength; i++) {
+                if (hasOwnProperty.call(o, DontEnums[i]))
+                    result.push(DontEnums[i]);
+            }   
+        }
+
+        return result;
+    };
+})();
+
+//==================================================================================================
+K3_InlineEditor = {
+  updatePageFromObject: function(object_name, object_id, object) {
+    $.each(object, function(attr_name, value) { 
+      var element = $('[data-object=' + object_name + '][data-object-id=' + object_id + '][data-attribute=' + attr_name + ']')
+      if (element.length > 0) {
+        //console.log("Updating", element, "to: " + value);
+        element.html(value)
+      }
+    })
+  },
+}
+
   
 //==================================================================================================
 function initInlineEditor(options) {
   $('.editable').inlineEditor(options);
-
-  // inline_editor handles enabling contentEditable, etc.
-  // We just tell inline_editor to come back and call our saveHandler whenever a save is triggered (blur or livechange)
-  // Now that it's initialized, configure the inline_editor with rest_in_place callbacks to handle saving
-  jQuery(".editable").rest_in_place();
   $('.editable').inlineEditor({
-    saveHandler:     function(event) {
-      //console.log('saveHandler')
-      //console.log("$(this).data()=", $(this).data());
+    saving : function(event) {
+      $('#last_saved_status').html('Saving...');
+    },
 
-    //var klass;
-    //if ($(this).data('object') == 'k3_page') {
-    //  klass = Pages;
-    //}
-    //// Or should this be Ribbon.update_last_saved_status(klass.get_last_saved_status(...))?
-    //klass.update_last_saved_status({
-    //  url:       $(this).data('url'),
-    //  attribute: $(this).data('attribute'),
-    //});
+    saveSuccess : function(event, data, msg, xhr) {
+      var editor = InlineEditor.getEditor(this);
+      var $this = $(this);
+      editor.getObject(function(object) {
+        var object_name = Object.keys(object)[0]
+        //console.log(object_name, object[object_name])
+        if (window[object_name] && window[object_name].updatePage) {
+          method = window[object_name].updatePage;
+        } else {
+          method = K3_InlineEditor.updatePageFromObject;
+        }
+        method(object_name, $this.data('object-id'), object[object_name])
+      })
 
-      $(this).data('restInPlaceEditor').update();
+      $('#last_saved_status').html('Saved seconds ago');
     },
   });
-
 
   $ribbon = $('#ribbon .row_2')
   if ($ribbon.length == 0)
