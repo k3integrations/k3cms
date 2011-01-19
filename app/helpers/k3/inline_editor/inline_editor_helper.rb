@@ -7,7 +7,7 @@ module K3
 
       def inline_editable(tag_name, object, attr_name)
         content_tag(tag_name, :class => 'editable', 'data-url' => url_for(object), 'data-object' => dom_class(object), 'data-attribute' => attr_name,  'data-formtype' => "inline_editor") do
-          capture { yield }
+          capture { yield }.try(:strip)
         end
       end
     end

@@ -46,15 +46,17 @@ window.InlineEditor = function (node, options) {
   }
 
   // initialize source/position for change/move detection
-  this.lastSource = node.innerHTML;
+  this.lastSource      = node.innerHTML;
+  this.lastSourceSaved = node.innerHTML;
   this.lastFocusNode = null;
   this.lastFocusOffset = 0;
 
   // bind event handlers
-  $node.bind('focus.inline_editor'                           , {}                      , InlineEditor.defaultFocusHandler);
-  $node.bind('blur.inline_editor'                            , {}                      , InlineEditor.defaultBlurHandler);
-  $node.bind('livechange.inline_editor'                      , {}                      , InlineEditor.defaultLiveChangeHandler);
-  $node.bind('save.inline_editor'                            , options.saveHandlerData , options.saveHandler || InlineEditor.defaultSaveHandler);
+  $node.bind('focus.inline_editor'          , {}                      , InlineEditor.defaultFocusHandler);
+  $node.bind('blur.inline_editor'           , {}                      , InlineEditor.defaultBlurHandler);
+  $node.bind('livechange.inline_editor'     , {}                      , InlineEditor.defaultLiveChangeHandler);
+  $node.bind('save.inline_editor'           , options.saveHandlerData , options.saveHandler || InlineEditor.defaultSaveHandler);
+  $node.bind('save_if_changed.inline_editor', options.saveHandlerData , InlineEditor.defaultSaveIfChangedHandler);
 
   $node.bind('blur mousedown mouseup keydown keyup keypress' , {}                      , InlineEditor.checkMoveOrChangeHandler);
 
@@ -263,7 +265,7 @@ window.InlineEditor.defaultLiveChangeHandler = function (evt) {
     clearTimeout(editor.idleSaveTimeout);
   }
   editor.idleSaveTimeout = setTimeout(function () {
-    $this.trigger('save');
+    $this.trigger('save_if_changed');
   }, $this.data('idle-save-time'));
 };
 window.InlineEditor.defaultFocusHandler = function (evt) {
@@ -282,8 +284,19 @@ window.InlineEditor.defaultBlurHandler = function (evt) {
     clearTimeout(editor.idleSaveTimeout);
     editor.idleSaveTimeout = null;
   }
-  $this.trigger('save');
+  $this.trigger('save_if_changed');
 };
+
+window.InlineEditor.defaultSaveIfChangedHandler = function (evt) {
+  var $this = $(this), editor = InlineEditor.getEditor(this);
+  if (editor.node.innerHTML != editor.lastSourceSaved) {
+    //console.log('need to save:', editor.node.innerHTML)
+    $this.trigger('save');
+    editor.lastSourceSaved = editor.node.innerHTML
+  } else {
+    //console.log("don't need to save (content is the same as last time we saved)")
+  };
+}
 
 window.InlineEditor.defaultSaveHandler = function (evt) {
   //console.log('in defaultSaveHandler')

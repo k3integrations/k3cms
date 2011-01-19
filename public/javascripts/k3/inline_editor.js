@@ -90,7 +90,7 @@ function initInlineEditor(options) {
   jQuery(".editable").rest_in_place();
   $('.editable').inlineEditor({
     saveHandler:     function(event) {
-      console.log('saveHandler')
+      //console.log('saveHandler')
       //console.log("$(this).data()=", $(this).data());
 
     //var klass;
