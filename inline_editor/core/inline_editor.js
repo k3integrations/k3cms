@@ -36,7 +36,7 @@ window.InlineEditor = function (node, options) {
   // set args
   this.node = node;
   //this.mergeOptions($.extend(InlineEditor.DEFAULT_OPTIONS, options, $node.data()));
-  options = $.extend(InlineEditor.DEFAULT_OPTIONS, options, $node.data());
+  options = $.extend({}, InlineEditor.DEFAULT_OPTIONS, options, $node.data());
   $node.data(options);
 
   // set to editable, and hack for browsers that don't support isContentEditable (like FF3.6)
