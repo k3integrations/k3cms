@@ -16,11 +16,7 @@ if (typeof(RestInPlaceEditor) != 'undefined' && RestInPlaceEditor.forms) {
       },
 
       success : function(event) {
-        var $this = $(this.element);
-        Pages.update_last_saved_status({
-          url:       $this.data('url'),
-          attribute: $this.data('attribute'),
-        });
+        $('#last_saved_status').html('Saved seconds ago');
       },
     }
   })
