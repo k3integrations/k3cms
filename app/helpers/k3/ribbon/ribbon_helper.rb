@@ -15,9 +15,13 @@ module K3::Ribbon::RibbonHelper
     nil
   end
 
+  def k3_ribbon_render_drawer(name)
+    render_cell('k3/ribbon', :drawer, :name => name, :content => capture { yield })
+  end
+
   def k3_ribbon_add_drawer(name)
     @k3_ribbon_drawers ||= Hash.new('')
-    @k3_ribbon_drawers[name] = render_cell('k3/ribbon', :drawer, :name => name, :content => capture { yield })
+    @k3_ribbon_drawers[name] = k3_ribbon_render_drawer(name) { yield }
     nil
   end
 
