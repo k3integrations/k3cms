@@ -47,7 +47,7 @@ module K3
           if @page.save
             format.html do
               session[:edit_mode] = true
-              redirect_to(k3_page_url(@page, :focus => "##{dom_id(@page)} .editable[data-attribute=body]"),
+              redirect_to(pretty_edit_k3_page_path(@page, :focus => "##{dom_id(@page)} .editable[data-attribute=body]"),
                           :notice => 'Page was successfully created.')
             end
             format.xml  { render :xml => @page, :status => :created, :location => @page }

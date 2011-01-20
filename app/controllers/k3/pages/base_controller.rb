@@ -15,6 +15,7 @@ module K3
       end
 
       helper K3::InlineEditor::InlineEditorHelper
+      include K3::Pages::PagesHelper
     end
   end
 end
