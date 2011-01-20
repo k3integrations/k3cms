@@ -29,7 +29,8 @@ module K3
           else
             # Render the page object
 
-            # TODO: Instantiate PagesController and render view more directly, bypassing the Rails router
+            # TODO: Instantiate PagesController and render view more directly, bypassing the Rails router?
+            # Or perhaps it's not possible/wise to bypass ActionDispatch and before_filters, etc.
             #PagesController.new.process_action('show') #render_to_string
 
             env['PATH_INFO'] = "/k3_pages/#{page.id}"

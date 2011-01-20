@@ -1,6 +1,12 @@
 <div class="k3_pages_pages_show">
   <% content_for :title do %>
-    <%= strip_tags @page.title %>
+<%= strip_tags @page.title -%>
+  <% end %>
+  <% content_for :meta_description do %>
+<%= @page.meta_description -%>
+  <% end %>
+  <% content_for :meta_keywords do %>
+<%= @page.meta_keywords -%>
   <% end %>
   <% content_for :last_saved_status do %>
     <%= render_cell 'k3/pages', :last_saved_status, :page => @page %>
@@ -8,7 +14,7 @@
 
   <div class="<%=dom_class(@page)%>" id="<%=dom_id(@page)%>">
     <h1>
-      <% if edit_mode? %>
+      <% if edit_mode? and can?(:edit, K3::Page) %>
         <% inline_editable('span', @page, :title) do %>
           <%= raw(@page.title) %>
         <% end %>
@@ -17,7 +23,18 @@
       <% end %>
     </h1>
 
-    <% if edit_mode? %>
+    <% if edit_mode? and can?(:edit, K3::Page) %>
+      <% k3_ribbon_add_item do %>
+        <li>
+          <%= link_to_function 'Page Information', "jQuery('.k3_page_metadata.drawer').slideToggle()" %>
+        </li>
+      <% end %>
+      <% k3_ribbon_add_drawer :k3_page_metadata do %>
+        <%= render_cell('k3/pages', :metadata_drawer, :page => @page) %>
+      <% end %>
+    <% end %>
+
+    <% if edit_mode? and can?(:edit, K3::Page) %>
       <% inline_editable('div', @page, :body) do %>
         <%= raw(@page.body) %>
       <% end %>
