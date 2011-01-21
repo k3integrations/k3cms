@@ -90,9 +90,12 @@ K3_InlineEditor = {
   updatePageFromObject: function(object_name, object_id, object) {
     $.each(object, function(attr_name, value) { 
       var element = $('[data-object=' + object_name + '][data-object-id=' + object_id + '][data-attribute=' + attr_name + ']')
+      if (value === null) value = '';
       if (element.length > 0) {
-        //console.log("Updating", element, "to: " + value);
-        element.html(value)
+        if (element.html() != value) {
+          //console.log("Updating", element, "to: " + value, "differs from old value: " + element.html());
+          element.html(value)
+        }
       }
     })
   },
