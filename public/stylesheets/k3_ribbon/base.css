@@ -6,14 +6,14 @@ body {
   display: none;
 }
 
-#ribbon,
-#ribbon ul
+#k3_ribbon,
+#k3_ribbon ul
 {
   margin: 0;
   padding: 0;
   /*border: 1px solid gray;*/
 }
-#ribbon li {
+#k3_ribbon li {
   display: block;
   float: left;
   padding: 2px 5px;
@@ -27,7 +27,7 @@ body {
   border-left-color: #ddd;
 }
 
-#ribbon ul.row_2 {
+#k3_ribbon ul.row_2 {
   clear: both;
 }
 
