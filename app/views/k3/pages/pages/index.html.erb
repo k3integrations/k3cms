@@ -15,7 +15,7 @@
   <% @pages.each do |page| %>
     <tr>
       <td>
-        <% if edit_mode? %>
+        <% if edit_mode? and can?(:edit, K3::Page) %>
           <% inline_editable('span', page, :title) do %>
             <%= raw(page.title) %>
           <% end %>
