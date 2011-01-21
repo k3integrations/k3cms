@@ -128,9 +128,9 @@ function initInlineEditor(options) {
     },
   });
 
-  $ribbon = $('#ribbon .row_2')
+  $ribbon = $('#k3_ribbon .row_2')
   if ($ribbon.length == 0)
-    $ribbon = $('#ribbon')
+    $ribbon = $('#k3_ribbon')
   
   // show initial toolbar button layout, according to table at top
   $(toolbar_options).each(function (index) {
@@ -177,7 +177,7 @@ function initInlineEditor(options) {
 function refreshButtons() {
   var editable_active = InlineEditor.isFocusedEditor();
   $(toolbar_options).each(function (index) {
-    var btn = $('#ribbon .' + this.klass);
+    var btn = $('#k3_ribbon .' + this.klass);
     if (! editable_active) {
       btn.addClass('disabled');
     } else {

@@ -17,7 +17,7 @@
   outline-color: #999;
 }
 
-#ribbon li.button {
+#k3_ribbon li.button {
   cursor: pointer;
   /*cursor: hand; /* use for old ie, but breaks ie9 */
   display: block;
@@ -31,20 +31,20 @@
   border-bottom-color: #666;
   border-left-color: #ddd;
 }
-#ribbon li.button.toggledOn {
+#k3_ribbon li.button.toggledOn {
   border-top-color: #666;
   border-right-color: #ddd;
   border-bottom-color: #ddd;
   border-left-color: #666;
 }
-#ribbon li.button.disabled {
+#k3_ribbon li.button.disabled {
   color: #ccc;
   border-color: #eee;
 }
-#ribbon li.button.toggleBold { font-weight: bold; }
-#ribbon li.button.toggleItalic { font-style: italic; }
-#ribbon li.button.toggleUnderline { text-decoration: underline; }
-#ribbon li.button.toggleStrikethrough { text-decoration: line-through; }
+#k3_ribbon li.button.toggleBold { font-weight: bold; }
+#k3_ribbon li.button.toggleItalic { font-style: italic; }
+#k3_ribbon li.button.toggleUnderline { text-decoration: underline; }
+#k3_ribbon li.button.toggleStrikethrough { text-decoration: line-through; }
 
 /* superscreipt/subscript look (browsers are horrible-looking by default!) */
 sup, sub {
