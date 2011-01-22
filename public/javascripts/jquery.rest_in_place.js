@@ -42,6 +42,7 @@ RestInPlaceEditor.prototype = {
   
   // Helper Functions ////////////////////////////////////////////////////////
   
+  //
   initOptions : function() {
     // Try parent supplied info
     var self = this;
