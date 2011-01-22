@@ -43,7 +43,7 @@
 #ribbon li.button.toggleBold { font-weight: bold; }
 #ribbon li.button.toggleItalic { font-style: italic; }
 #ribbon li.button.toggleUnderline { text-decoration: underline; }
-#ribbon li.button.toggleStrikethrough { text-decoration: line-through; }
+#ribbon li.button.toggleStrikethrough, #ribbon li.button.unlink { text-decoration: line-through; }
 
 /* superscreipt/subscript look (browsers are horrible-looking by default!) */
 sup, sub {
