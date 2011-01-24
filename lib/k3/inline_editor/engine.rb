@@ -12,7 +12,6 @@ module K3
 
       #puts "config.action_view.javascript_expansions=#{config.action_view.javascript_expansions.inspect}"
       config.action_view.javascript_expansions[:k3].concat [
-        'jquery.rest_in_place.js',
         'inline_editor.js',
         'k3/inline_editor.js',
       ]
