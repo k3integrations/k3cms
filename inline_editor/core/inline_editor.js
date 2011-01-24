@@ -87,7 +87,7 @@ window.InlineEditor.prototype.bindEventHandlers = function () {
 
 // checks if focus is currently on any active InlineEditor-editable object...
 window.InlineEditor.isFocusedEditor = function () {
-  return window.document.activeElement.isContentEditable && !! InlineEditor.focusedEditor();
+  return window.document.activeElement && window.document.activeElement.isContentEditable && !! InlineEditor.focusedEditor();
 };
 // returns currently focused InlineEditor object instance...
 window.InlineEditor.focusedEditor = function () {

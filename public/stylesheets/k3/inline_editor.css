@@ -44,7 +44,7 @@
 #k3_ribbon li.button.toggleBold { font-weight: bold; }
 #k3_ribbon li.button.toggleItalic { font-style: italic; }
 #k3_ribbon li.button.toggleUnderline { text-decoration: underline; }
-#k3_ribbon li.button.toggleStrikethrough { text-decoration: line-through; }
+#k3_ribbon li.button.toggleStrikethrough, #k3_ribbon li.button.unlink { text-decoration: line-through; }
 
 /* superscreipt/subscript look (browsers are horrible-looking by default!) */
 sup, sub {

@@ -15,6 +15,9 @@ toolbar_options = [
   ['Left',      'justifyLeft',            false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyLeft']],
   ['Center',    'justifyCenter',          false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyCenter']],
   ['Right',     'justifyRight',           false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyRight']],
+  ['A',         'link',                   true,  'execCommand',  false,              'queryCommandEnabled', ['createLink', function(){return prompt('Enter URL:')}]],
+  ['A',         'unlink',                 true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['unlink']],
+  ['Image',     'image',                  false, 'execCommand',  false,              'queryCommandEnabled', ['insertImage', function(){return prompt('Enter URL:')}]],
   // ['P',      'blockParagraph',         false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertParagraph']],
   // ['P',      'blockParagraph',         false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'p']],
   // ['Pre',    'blockPre',               false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'pre']],
@@ -158,7 +161,8 @@ function initInlineEditor(options) {
       }
       // execute the command
       if (! $(this).hasClass('disabled')) {
-        editor[self.editor_cmd](self.cmd_args[0], self.cmd_args[1]);
+        var arg = typeof self.cmd_args[1] == 'function' ? self.cmd_args[1]() : self.cmd_args[1];
+        editor[self.editor_cmd](self.cmd_args[0], arg);
       }
       // refresh button state
       refreshButtons();
@@ -197,5 +201,3 @@ function refreshButtons() {
     }
   });
 }
-
-
