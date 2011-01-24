@@ -6,6 +6,18 @@ body {
   display: none;
 }
 
+#k3_ribbon {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* This should be the same height as the ribbon in order to push the actual page contents down so that the top is aligned with the bottom of the ribbon. */
+#k3_ribbon_beneath {
+  height: 48px;
+}
+
 #k3_ribbon,
 #k3_ribbon ul
 {
