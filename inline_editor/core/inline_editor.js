@@ -316,7 +316,7 @@ window.InlineEditor.defaultSaveHandler = function (evt) {
     $.ajax($.extend({
       type: $this.data('save-type'),
       url:  $this.data('url'),
-      dataType: 'text', // Interpret as text because an empty JSON response would give a parse error
+      dataType: 'json',
       data: data,
       success: function(data, msg, xhr) {
         $this.trigger('save_success', [data, msg, xhr]);

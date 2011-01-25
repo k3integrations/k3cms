@@ -61,7 +61,7 @@ toolbar_options = structured_toolbar_options;
 Object.keys = Object.keys || (function () {
     var hasOwnProperty = Object.prototype.hasOwnProperty,
         hasDontEnumBug = !{toString:null}.propertyIsEnumerable("toString"),
-        DontEnums = [ 
+        DontEnums = [
             'toString', 'toLocaleString', 'valueOf', 'hasOwnProperty',
             'isPrototypeOf', 'propertyIsEnumerable', 'constructor'
         ],
@@ -81,7 +81,7 @@ Object.keys = Object.keys || (function () {
             for (var i = 0; i < DontEnumsLength; i++) {
                 if (hasOwnProperty.call(o, DontEnums[i]))
                     result.push(DontEnums[i]);
-            }   
+            }
         }
 
         return result;
@@ -91,7 +91,7 @@ Object.keys = Object.keys || (function () {
 //==================================================================================================
 K3_InlineEditor = {
   updatePageFromObject: function(object_name, object_id, object) {
-    $.each(object, function(attr_name, value) { 
+    $.each(object, function(attr_name, value) {
       var element = $('[data-object=' + object_name + '][data-object-id=' + object_id + '][data-attribute=' + attr_name + ']')
       if (value === null) value = '';
       if (element.length > 0) {
@@ -114,20 +114,43 @@ function initInlineEditor(options) {
     },
 
     saveSuccess : function(event, data, msg, xhr) {
-      var editor = InlineEditor.getEditor(this);
-      var $this = $(this);
-      editor.getObject(function(object) {
-        var object_name = Object.keys(object)[0]
-        //console.log(object_name, object[object_name])
-        if (window[object_name] && window[object_name].updatePage) {
-          method = window[object_name].updatePage;
-        } else {
-          method = K3_InlineEditor.updatePageFromObject;
-        }
-        method(object_name, $this.data('object-id'), object[object_name])
-      })
+      // Once they submit their correction, remove the error message from the page.
+      var element_data = $(this).data();
+      var object_and_attr_identifier = {
+        object:      element_data.object,
+        'object-id': element_data['object-id'],
+        attribute:   element_data.attribute,
+      }
+      object_and_attr_selector = '[data-object=' + element_data.object + '][data-object-id=' + element_data['object-id'] + '][data-attribute=' + element_data.attribute + ']'
+      $('.alert' + object_and_attr_selector).remove();
 
-      $('#last_saved_status').html('Saved seconds ago');
+      if (data['error']) {
+        // There were no HTTP errors, but there was an application-layer error, so show it to the user
+        var $alert = $('<p class="alert">' + data['error'] + '</p>').prependTo('#content');
+        // Identify it so we can remove this error notice later if they submit again
+        $.each(object_and_attr_identifier, function(key, value) {
+          $alert.attr('data-' + key, value);
+        })
+        // Focus the editable element again so they can correct their mistake (in case they just tabbed out of it)
+        $('.editable' + object_and_attr_selector).eq(0).focus();
+      } else {
+        var editor = InlineEditor.getEditor(this);
+        var $this = $(this);
+        editor.getObject(function(object) {
+          var object_name = Object.keys(object)[0]
+          //console.log(object_name, object[object_name])
+          if (window[object_name] && window[object_name].updatePage) {
+            // Special handler for this object class
+            method = window[object_name].updatePage;
+          } else {
+            // Default handler
+            method = K3_InlineEditor.updatePageFromObject;
+          }
+          method(object_name, $this.data('object-id'), object[object_name])
+        })
+
+        $('#last_saved_status').html('Saved seconds ago');
+      }
     },
   });
 
