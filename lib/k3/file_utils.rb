@@ -2,26 +2,31 @@ require 'fileutils'
 
 module K3
   class FileUtils
+    def self.copy_file(src_file, dest_file, verbose=true)
+      file = src_file
+      copy = true
+      if File.exists?(dest_file)
+        print "  WARNING!!! File #{file} already exists. Overwrite? [y/n] "
+        if (copy = $stdin.gets.downcase[0] == 'y')
+          Pathname.new(dest_file).unlink
+        end
+      end
+      if copy
+        puts "  Copying file #{file}" if verbose
+        ::FileUtils.mkdir_p(File.dirname(dest_file))
+        ::FileUtils.copy(src_file, dest_file)
+      elsif ! ::FileUtils.compare_file(src_file, dest_file)
+        puts "  WARNING!!! File #{file} has been modified, not copying" if verbose
+      end
+    end
+
     def self.copy_recursively(src_dir, dest_dir, verbose=true)
       src_files = Dir[File.join(src_dir, '**', '*')]
-      src_files.each do |src|
-        next if ! File.file?(src)
-        file = src.sub(/^#{src_dir}#{File::SEPARATOR}/, '')
-        dest = File.join(dest_dir, file)
-        copy = true
-        if File.exists?(dest)
-          print "  WARNING!!! File #{file} already exists. Overwrite? [y/n] "
-          if (copy = $stdin.gets.downcase[0] == 'y')
-            Pathname.new(dest).unlink
-          end
-        end
-        if copy
-          puts "  Copying file #{file}" if verbose
-          ::FileUtils.mkdir_p(File.dirname(dest))
-          ::FileUtils.copy(src, dest)
-        elsif ! ::FileUtils.compare_file(src,dest)
-          puts "  WARNING!!! File #{file} has been modified, not copying" if verbose
-        end
+      src_files.each do |src_file|
+        next if ! File.file?(src_file)
+        file_rel = src_file.sub(/^#{src_dir}#{File::SEPARATOR}/, '')
+        dest_file = File.join(dest_dir, file_rel)
+        copy_file src_file, dest_file, verbose
       end
     end
 
@@ -29,6 +34,13 @@ module K3
       src_dir = File.join(gem_class::Engine.root, relative_dir)
       dest_dir = File.join(Rails.root, relative_dir)
       copy_recursively(src_dir, dest_dir, verbose)
+    end
+
+    def self.copy_file_from_gem(gem_class, gem_file, app_file, verbose=true)
+      gem_file = gem_class::Engine.root + gem_file
+      app_file = Rails.root             + app_file
+      app_file.dirname.mkpath
+      copy_file(gem_file, app_file, verbose)
     end
 
     def self.symlink_from_gem(gem_class, gem_file, app_file)
