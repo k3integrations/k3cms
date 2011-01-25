@@ -70,11 +70,11 @@ module K3
           if @page.update_attributes(params[:k3_page])
             format.html { redirect_to(k3_page_url(@page), :notice => 'Page was successfully updated.') }
             format.xml  { head :ok }
-            format.json { render :nothing =>  true }
+            format.json { render :json => {} }
           else
             format.html { render :action => "edit" }
             format.xml  { render :xml => @page.errors, :status => :unprocessable_entity }
-            format.json { render :nothing =>  true }
+            format.json { render :json => {:error => @page.errors.full_messages.join('<br/>')} }
           end
         end
       end
