@@ -67,3 +67,7 @@ Or you can use the default behavior, which simply looks for and updates all elem
 
 There aren't currently any specs. We should probably add some for the InlineEditorCell, etc.
 
+
+= Credits
+
+WYMEditor (http://www.wymeditor.org/) for some of their icons.
