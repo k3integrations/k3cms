@@ -132,7 +132,9 @@ function initInlineEditor(options) {
           $alert.attr('data-' + key, value);
         })
         // Focus the editable element again so they can correct their mistake (in case they just tabbed out of it)
-        $('.editable' + object_and_attr_selector).eq(0).focus();
+        $('.editable' + object_and_attr_selector + ':visible').eq(0).focus();
+        $('#last_saved_status').html('<span style="color: #8A1F11">Not saved</span>');
+
       } else {
         var editor = InlineEditor.getEditor(this);
         var $this = $(this);
