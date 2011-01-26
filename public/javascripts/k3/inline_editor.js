@@ -1,43 +1,44 @@
 
 //==================================================================================================
-// label text, css class, inline/block, command to do functionality, command to check state, command to check if enabled, args to pass commands
+// label text         | css class             | command to do functionality       | command to check if enabled
+//                              | inline/block |             | command to check state                    | args to pass commands
 toolbar_options = [
-  ['B',         'toggleBold',             true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['bold']],
-  ['I',         'toggleItalic',           true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['italic']],
-  ['U',         'toggleUnderline',        true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['underline']],
-  ['S',         'toggleStrikethrough',    true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['strikeThrough']],
-  ['<sup>sup</sup>', 'toggleSuperscript', true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['superscript']],
-  ['<sub>sub</sub>', 'toggleSubscript',   true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['subscript']],
-  ['OL',        'insertOrderedList',      false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertOrderedList']],
-  ['UL',        'insertUnorderedList',    false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertUnorderedList']],
-  ['In',        'indent',                 false, 'execCommand',  false,              'queryCommandEnabled', ['indent']],
-  ['Out',       'outdent',                false, 'execCommand',  false,              'queryCommandEnabled', ['outdent']],
-  ['Left',      'justifyLeft',            false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyLeft']],
-  ['Center',    'justifyCenter',          false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyCenter']],
-  ['Right',     'justifyRight',           false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyRight']],
-  ['A',         'link',                   true,  'execCommand',  false,              'queryCommandEnabled', ['createLink', function(){return prompt('Enter URL:')}]],
-  ['A',         'unlink',                 true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['unlink']],
-  ['Image',     'image',                  false, 'execCommand',  false,              'queryCommandEnabled', ['insertImage', function(){return prompt('Enter URL:')}]],
-  // ['P',      'blockParagraph',         false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertParagraph']],
-  // ['P',      'blockParagraph',         false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'p']],
-  // ['Pre',    'blockPre',               false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'pre']],
-  // ['Address','blockAddress',           false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'address']],
-  // ['H1',     'blockH1',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h1']],
-  // ['H2',     'blockH2',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h2']],
-  // ['H3',     'blockH3',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h3']],
-  // ['H4',     'blockH4',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h4']],
-  // ['H5',     'blockH5',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h5']],
-  // ['H6',     'blockH6',                false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h6']]
-  ['Plain',     'blockDiv',               false, 'switchToBlock', 'isCurrentBlock',   false,                ['div']],
-  ['Paragraph', 'blockP',                 false, 'switchToBlock', 'isCurrentBlock',   false,                ['p']],
-  ['Preformatted', 'blockPre',            false, 'switchToBlock', 'isCurrentBlock',   false,                ['pre']],
-  ['Address',   'blockAddress',           false, 'switchToBlock', 'isCurrentBlock',   false,                ['address']],
-  ['Heading 1', 'blockH1',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h1']],
-  ['Heading 2', 'blockH2',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h2']],
-  ['Heading 3', 'blockH3',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h3']],
-  ['Heading 4', 'blockH4',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h4']],
-  ['Heading 5', 'blockH5',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h5']],
-  ['Heading 6', 'blockH6',                false, 'switchToBlock', 'isCurrentBlock',   false,                ['h6']]
+  ['Bold',             'strong',         true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['bold']],
+  ['Italic',           'emphasis',       true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['italic']],
+  ['Underline',        'underline',      true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['underline']],
+  ['Strikethrough',    'strikethrough',  true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['strikeThrough']],
+  ['Superscript',      'superscript',    true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['superscript']],
+  ['Subscript',        'subscript',      true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['subscript']],
+  ['Ordered list',     'ordered_list',   false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertOrderedList']],
+  ['Unordered list',   'unordered_list', false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertUnorderedList']],
+  ['Outdent',          'outdent',        false, 'execCommand',  false,              'queryCommandEnabled', ['outdent']],
+  ['Indent',           'indent',         false, 'execCommand',  false,              'queryCommandEnabled', ['indent']],
+  ['Align Left',       'align_left',     false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyLeft']],
+  ['Align Center',     'align_center',   false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyCenter']],
+  ['Align Right',      'align_right',    false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyRight']],
+  ['Insert/edit link', 'link',           true,  'execCommand',  false,              'queryCommandEnabled', ['createLink', function(){return prompt('Enter URL:')}]],
+  ['Remove link',      'unlink',         true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['unlink']],
+  ['Insert Image',     'image',          false, 'execCommand',  false,              'queryCommandEnabled', ['insertImage', function(){return prompt('Enter URL:')}]],
+  // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertParagraph']],
+  // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'p']],
+  // ['Pre',           'blockPre',       false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'pre']],
+  // ['Address',       'blockAddress',   false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'address']],
+  // ['H1',            'blockH1',        false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h1']],
+  // ['H2',            'blockH2',        false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h2']],
+  // ['H3',            'blockH3',        false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h3']],
+  // ['H4',            'blockH4',        false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h4']],
+  // ['H5',            'blockH5',        false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h5']],
+  // ['H6',            'blockH6',        false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h6']]
+  ['Plain',            'blockDiv',       false, 'switchToBlock', 'isCurrentBlock',   false,                ['div']],
+  ['Paragraph',        'blockP',         false, 'switchToBlock', 'isCurrentBlock',   false,                ['p']],
+  //['Preformatted',   'blockPre',       false, 'switchToBlock', 'isCurrentBlock',   false,                ['pre']],
+  //['Address',        'blockAddress',   false, 'switchToBlock', 'isCurrentBlock',   false,                ['address']],
+  ['Heading 1',        'blockH1',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h1']],
+  ['Heading 2',        'blockH2',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h2']],
+  ['Heading 3',        'blockH3',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h3']],
+  ['Heading 4',        'blockH4',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h4']],
+  ['Heading 5',        'blockH5',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h5']],
+  ['Heading 6',        'blockH6',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h6']]
 ];
 
 var structured_toolbar_options = [];
@@ -159,14 +160,18 @@ function initInlineEditor(options) {
   $ribbon = $('#k3_ribbon .row_2')
   if ($ribbon.length == 0)
     $ribbon = $('#k3_ribbon')
+  $div = $('<div class="k3_inline_editor k3_section k3_inline_editor_icons"><ul></ul></div>').
+    appendTo($ribbon)
+  $ul = $div.find('ul')
   
   // show initial toolbar button layout, according to table at top
   $(toolbar_options).each(function (index) {
-    var elem = document.createElement('li');
-    $(elem).addClass(this.klass);
-    $(elem).addClass('button');
-    elem.innerHTML = this.label;
-    $ribbon.append(elem);
+    var $elem = $('<li><a href="javascript:;" title="' + this.label + '">' + 
+      '&nbsp;' +
+      '</a></li>');
+    $elem.addClass('button');
+    $elem.addClass(this.klass);
+    $ul.append($elem);
   });
   
   // set initial toolbar button state, and set handler to keep up to date
@@ -213,7 +218,7 @@ function refreshButtons() {
       var ined = InlineEditor.focusedEditor();
       if (! ined.isInline() || this.is_inline) {
         if (this.query_state_cmd) {
-          ined[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.addClass('toggledOn') : btn.removeClass('toggledOn');
+          ined[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.addClass('toggled_on') : btn.removeClass('toggled_on');
         }
         if (this.query_enabled_cmd) {
           ined[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.removeClass('disabled') : btn.addClass('disabled');
