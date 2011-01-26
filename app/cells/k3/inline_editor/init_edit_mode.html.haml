@@ -3,4 +3,4 @@
 
 - if params[:focus]
   :javascript
-    $('#{params[:focus]}').eq(0).focus()
+    var el = $('#{params[:focus]}').eq(0).focus()

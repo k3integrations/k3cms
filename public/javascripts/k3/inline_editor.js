@@ -30,7 +30,6 @@ toolbar_options = [
   // ['H4',            'blockH4',        false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h4']],
   // ['H5',            'blockH5',        false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h5']],
   // ['H6',            'blockH6',        false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'h6']]
-  ['Plain',            'blockDiv',       false, 'switchToBlock', 'isCurrentBlock',   false,                ['div']],
   ['Paragraph',        'blockP',         false, 'switchToBlock', 'isCurrentBlock',   false,                ['p']],
   //['Preformatted',   'blockPre',       false, 'switchToBlock', 'isCurrentBlock',   false,                ['pre']],
   //['Address',        'blockAddress',   false, 'switchToBlock', 'isCurrentBlock',   false,                ['address']],
@@ -39,7 +38,8 @@ toolbar_options = [
   ['Heading 3',        'blockH3',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h3']],
   ['Heading 4',        'blockH4',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h4']],
   ['Heading 5',        'blockH5',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h5']],
-  ['Heading 6',        'blockH6',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h6']]
+  ['Heading 6',        'blockH6',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h6']],
+  ['Plain',            'blockDiv',       false, 'switchToBlock', 'isCurrentBlock',   false,                ['div']],
 ];
 
 var structured_toolbar_options = [];
@@ -161,72 +161,141 @@ function initInlineEditor(options) {
   $ribbon = $('#k3_ribbon .row_2')
   if ($ribbon.length == 0)
     $ribbon = $('#k3_ribbon')
-  $div = $('<div class="k3_inline_editor k3_section k3_inline_editor_icons"><ul></ul></div>').
-    appendTo($ribbon)
-  $ul = $div.find('ul')
+  $toolbar = $('<div class="k3_inline_editor k3_section k3_inline_editor_icons"></div>').
+    append('<ul></ul>').
+    appendTo($ribbon);
+  $ul = $toolbar.find('ul');
   
-  // show initial toolbar button layout, according to table at top
+  // Add all the buttons to the toolbar, according to the configuration stored in toolbar_options
   $(toolbar_options).each(function (index) {
-    var $elem = $('<li><a href="javascript:;" title="' + this.label + '">' + 
-      '&nbsp;' +
-      '</a></li>');
-    $elem.addClass('button');
-    $elem.addClass(this.klass);
-    $ul.append($elem);
+    if (!this.klass.match(/^block/)) {
+      var $elem = $('<li><a href="javascript:;" title="' + this.label + '">' + 
+        '&nbsp;' +
+        '</a></li>');
+      $elem.addClass('button');
+      $elem.addClass(this.klass);
+      $ul.append($elem);
+      $elem.mousedown(function (event) {
+        $(this).trigger('invoke');
+
+        // returning false doesn't cancel losing editor focus in IE, here's a nasty hacky fix!
+        if (navigator.userAgent.match(/MSIE/)) {
+          $(editor.node).one('blur', function () {
+            this.focus();
+          });
+        }
+
+        return false;
+      })
+    }
+  });
+
+  // Add list of block styles as a drop-down select menu
+  var $select = $('<li class=""></li>').
+    append('<select></select>').
+    appendTo($ul).
+    find('select');
+  $select.addClass('select_block_style')
+  $(toolbar_options).each(function (index) {
+    if (this.klass.match(/^block/)) {
+      var $option = $('<option>' + this.label + '</option>');
+      $option.attr('class', this.klass);
+      $option.attr('value', this.klass);
+      //$option.innerHTML = this.label;
+      $select.append($option);
+    }
+  });
+
+  // Translate the event on the select into an 'invoke' event for the relevant option
+  $select.change(function (event) {
+    //console.log($(this).get(0).selectedIndex)
+    var $option = $(this).find("option:selected").eq(0)
+    $option.trigger('invoke')
+  })
+  $toolbar.mousedown(function (event) {
+    InlineEditor.clicking_in_toolbar = true;
+    //console.log("mousedown: InlineEditor.clicking_in_toolbar=", InlineEditor.clicking_in_toolbar);
+  });
+  $toolbar.bind('focusout mouseup', function (event) {
+    InlineEditor.clicking_in_toolbar = false;
+    //console.log(event.type + ": InlineEditor.clicking_in_toolbar=", InlineEditor.clicking_in_toolbar);
   });
   
-  // set initial toolbar button state, and set handler to keep up to date
-  refreshButtons();
-  $('.editable').bind('cursormove', function (event) {
-    refreshButtons();
-  });
-  
-  // toolbar button command handlers
+  // Bind command handlers for each toolbar command
   $(toolbar_options).each(function (index) {
     var self = this;
-    $ribbon.find('.' + this.klass).mousedown(function (event) {
+    $toolbar.find('.' + this.klass).bind('invoke', function (event) {
+      // When the user clicks on the select element in the toolbar, it causes the editable element to lose focus, so we need to restore focus to the editable.
+      // (When the user clicks on a normal button, this isn't a problem, because we bound 'mousedown' instead of 'click'.)
+      InlineEditor.last_focused_element && InlineEditor.last_focused_element.focus();
+      //InlineEditor.last_selection       && InlineEditor.last_selection.restore();
+
       var editor = InlineEditor.focusedEditor();
       // ignore button presses if no editable area is selected (you can also use InlineEditor.isFocusedEditor())
       if (! editor || ! editor.isEnabled()) {
         return false;
       }
+
       // execute the command
-      if (! $(this).hasClass('disabled')) {
+      //if (! $(this).hasClass('disabled')) {
         if (typeof self.editor_cmd == 'function') {
           self.editor_cmd();
         } else {
           var arg = typeof self.cmd_args[1] == 'function' ? self.cmd_args[1]() : self.cmd_args[1];
           editor[self.editor_cmd](self.cmd_args[0], arg);
         }
-      }
+      //}
+
       // refresh button state
       refreshButtons();
-      // returning false doesn't cancel losing editor focus in IE, here's a nasty hacky fix!
-      if (navigator.userAgent.match(/MSIE/)) {
-        $(editor.node).one('blur', function () {
-          this.focus();
-        });
-      }
-      return false;
     });
   });
+
+  // set initial toolbar button state, and set handlers to keep up to date
+  refreshButtons();
+  $('.editable').bind('cursor_move custom_focus', function (event) {
+    refreshButtons();
+  });
+  
 }
 
 // refreshing toolbar button classes to show toggled/disabled states, depending on where the cursor currently is
 function refreshButtons() {
+  // refreshButtons gets triggered by checkCursorMove by checkMoveOrChangeHandler by the blur event when you click the select.
+  // By that point, the select has the focus and not the editable, so if we let this function run as normal, it would disable everything in the toolbar.
+  // So as a workaround, we set clicking_in_toolbar to true whenever the focus is in the toolbar but will be returned to the editable shortly so we don't want the toolbar being updated while the user interacts with tho toolbar.
+  if (InlineEditor.clicking_in_toolbar) {
+    //console.log("InlineEditor.clicking_in_toolbar=", InlineEditor.clicking_in_toolbar);
+    return;
+  }
+
   var editable_active = InlineEditor.isFocusedEditor();
+  //console.log("refreshButtons: editable_active=", editable_active);
+  var editor = InlineEditor.focusedEditor();
+
   $(toolbar_options).each(function (index) {
     var btn = $('#k3_ribbon .' + this.klass);
     if (! editable_active) {
       btn.addClass('disabled');
     } else {
-      var ined = InlineEditor.focusedEditor();
-      if (! ined.isInline() || this.is_inline) {
+      // Block level editor buttons are disabled for inline-level editable fields.
+      // If we're editing a block element, then show all buttons
+      // If we're editing an inline element, then only show is_inline buttons
+      if (! editor.isInline() || this.is_inline) {
         if (this.query_state_cmd) {
-          ined[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.addClass('toggled_on') : btn.removeClass('toggled_on');
+          if (editor[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1])) {
+            //console.log(this.klass, 'is toggled on');
+            btn.addClass('toggled_on')
+          } else {
+            btn.removeClass('toggled_on');
+          }
         }
         if (this.query_enabled_cmd) {
-          ined[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1]) ? btn.removeClass('disabled') : btn.addClass('disabled');
+          if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
+            btn.removeClass('disabled')
+          } else {
+            btn.addClass('disabled');
+          }
         } else {
           btn.removeClass('disabled');
         }
@@ -235,6 +304,46 @@ function refreshButtons() {
       }
     }
   });
+
+  var select = $('#k3_ribbon select.select_block_style');
+  select.get(0).selectedIndex = -1;
+  if (! editable_active) {
+    select.attr('disabled', true);
+  } else {
+    select.removeAttr('disabled');
+    var current_block_style = null;
+
+    $(toolbar_options).each(function (index) {
+      var option = $('#k3_ribbon .' + this.klass);
+      if (this.klass.match(/^block/) && 
+        (! editor.isInline() || this.is_inline)
+      ) {
+        if (this.query_state_cmd) {
+          if (editor[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1])) {
+            //console.log(this.klass, 'is toggled on');
+            current_block_style = this.klass;
+            option.addClass('toggled_on')
+          } else {
+            option.removeClass('toggled_on');
+          }
+        }
+
+        if (this.query_enabled_cmd) {
+          if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
+            option.removeAttr('disabled');
+          } else {
+            option.attr('disabled', true);
+          }
+        } else {
+          option.removeAttr('disabled');
+        }
+      } else {
+        option.attr('disabled', true);
+      }
+
+    });
+    select.val(current_block_style);
+  }
 }
 
 function handleVideo() {

@@ -1,4 +1,14 @@
 /*------------------------------------------------------------------------------------------------*/
+/* superscript/subscript look (browsers are horrible-looking by default!) */
+sup, sub {
+  vertical-align: baseline;
+  position: relative;
+  font-size: 0.83em;
+}
+sup { top: -0.33em; }
+sub { bottom: -0.19em; }
+
+/*------------------------------------------------------------------------------------------------*/
 /* editor outlines, to indicate editableness and focus */
 
 .editable {
@@ -27,11 +37,11 @@
   display: block;
   float: left;
   cursor: pointer;
-  /*cursor: hand; /* use for old ie, but breaks ie9 */
-  /*
   border-width: 1px;
   border-style: solid;
   border-color: transparent;
+  /*cursor: hand; /* use for old ie, but breaks ie9 */
+  /*
   padding: 2px 5px;
   background-color: white;
   border-top-color: #ddd;
@@ -58,15 +68,17 @@
   right: 0px;
   top: 0px;
 }
-
-/* superscript/subscript look (browsers are horrible-looking by default!) */
-sup, sub {
-  vertical-align: baseline;
-  position: relative;
-  font-size: 0.83em;
+.k3_section li.button a:hover {
+  background-color: yellow;
 }
-sup { top: -0.33em; }
-sub { bottom: -0.19em; }
+.k3_section li.button.disabled a:hover {
+  background-color: transparent;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+#k3_ribbon li select {
+  margin: 3px 0 0 0;
+}
 
 
 
@@ -120,7 +132,6 @@ ul, li {
   text-decoration: none;
   color: black;
 }
-.k3_section a:hover    { background-color: yellow; }
 
 /*hide section titles by default*/
 /*

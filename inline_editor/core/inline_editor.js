@@ -61,6 +61,10 @@ window.InlineEditor = function (node, options) {
   }
 };
 
+InlineEditor.last_focused_element = null;
+InlineEditor.last_selection = null;
+//InlineEditor.in_focusHandler = false;
+
 window.InlineEditor.prototype.updateOptions = function (options) {
   //console.log('updateOptions')
   //console.log("options=", options);
@@ -75,7 +79,8 @@ window.InlineEditor.prototype.bindEventHandlers = function () {
   var options = $node.data();
 
   $node.unbind('.inline_editor')
-  $node.bind('focus.inline_editor'          , {}, options.focus);
+  $node.bind('focus.inline_editor'          , {}, InlineEditor.focusHandler);
+  $node.bind('custom_focus.inline_editor'   , {}, options.focus);
   $node.bind('blur.inline_editor'           , {}, options.blur);
   $node.bind('live_change.inline_editor'    , {}, options.liveChange);
   $node.bind('saving.inline_editor'         , {}, options.saving);
@@ -83,6 +88,7 @@ window.InlineEditor.prototype.bindEventHandlers = function () {
   $node.bind('save_success.inline_editor'   , {}, options.saveSuccess);
   $node.bind('save_error.inline_editor'     , {}, options.saveError);
   $node.bind('save_if_changed.inline_editor', {}, InlineEditor.saveIfChanged);
+  $node.bind('focusout.inline_editor'       , {}, InlineEditor.focusout);
 }
 
 // checks if focus is currently on any active InlineEditor-editable object...
@@ -241,11 +247,11 @@ window.InlineEditor.prototype.checkCursorMove = function () {
   var sel = new InlineEditor.Selection(this.document), node = this.node;
   if (sel.anchorNode && sel.intersectsNode(this.node)) {
     if (! sel.equals(this.lastSelection) || node.innerHTML !== this.lastSource) {
-      $(node).trigger('cursormove');
+      $(node).trigger('cursor_move');
       this.lastSelection = sel;
     }
   } else if (this.lastSelection !== null) {
-    $(node).trigger('cursormove');
+    $(node).trigger('cursor_move');
     this.lastSelection = null;
   }
 };
@@ -271,12 +277,20 @@ window.InlineEditor.defaultLiveChangeHandler = function (evt) {
   }, $this.data('idle-save-time'));
 };
 
-window.InlineEditor.defaultFocusHandler = function (evt) {
+window.InlineEditor.focusHandler = function (evt) {
+  if (InlineEditor.in_focusHandler) return; // recursion control (the putInNode call below causes this to be called again)
+  InlineEditor.in_focusHandler = true;
   var $this = $(this);
+
   // add class that indicates it's currently being edited
   $this.addClass($this.data('editing-class'));
+
   // hack to fix Safari/Chrome, when moving focus from a form element!
+  // The problem with this is that it causes another focus event, which causes this handler to get called again (see the check at top of function).
   InlineEditor.Selection.putInNode(this);
+
+  $this.trigger('custom_focus');
+  InlineEditor.in_focusHandler = false;
 };
 
 window.InlineEditor.defaultBlurHandler = function (evt) {
@@ -300,6 +314,12 @@ window.InlineEditor.saveIfChanged = function (evt) {
   } else {
     //console.log("don't need to save (content is the same as last time we saved)")
   };
+}
+
+window.InlineEditor.focusout = function (evt) {
+  //console.log('focusout for', this);
+  InlineEditor.last_focused_element = this;
+  InlineEditor.last_selection = new InlineEditor.Selection(this.document);
 }
 
 window.InlineEditor.defaultSaveHandler = function (evt) {
@@ -358,7 +378,7 @@ window.InlineEditor.DEFAULT_OPTIONS = {
   'editing-class': 'editing',
   'idle-save-time': 3000, // milliseconds
   'save-type': 'POST',
-  focus:      InlineEditor.defaultFocusHandler,
+  focus:      null,
   blur:       InlineEditor.defaultBlurHandler,
   liveChange: InlineEditor.defaultLiveChangeHandler,
   save:       InlineEditor.defaultSaveHandler,
