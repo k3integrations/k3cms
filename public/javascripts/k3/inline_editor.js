@@ -241,7 +241,7 @@ function handleVideo() {
   // var url = prompt('Enter URL:');
   // if (url) InlineEditor.focusedEditor().execCommand('insertHTML', '<video controls="controls" preload="meta"><source src="' + url + '" /></video>');
   InlineEditor.focusedEditor().execCommand('insertHTML',
-    '<video id="1234v" controls="controls" style="width: 720px; height: 400px;" width="720" height="400">' +
+    '<video id="1234v" controls="controls" style="width: 720px; height: 400px; display: block;">' +
       '<source src="http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb_trailer_iphone.m4v" type="video/h264" />' +
       '<source src="http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb400p.ogv" type="video/ogg" />' +
     '</video>'
