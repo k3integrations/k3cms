@@ -19,6 +19,7 @@ toolbar_options = [
   ['Insert/edit link', 'link',           true,  'execCommand',  false,              'queryCommandEnabled', ['createLink', function(){return prompt('Enter URL:')}]],
   ['Remove link',      'unlink',         true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['unlink']],
   ['Insert Image',     'image',          false, 'execCommand',  false,              'queryCommandEnabled', ['insertImage', function(){return prompt('Enter URL:')}]],
+  ['Insert Video',     'video',          false,  handleVideo,   false,              false],
   // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertParagraph']],
   // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'p']],
   // ['Pre',           'blockPre',       false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'pre']],
@@ -191,8 +192,12 @@ function initInlineEditor(options) {
       }
       // execute the command
       if (! $(this).hasClass('disabled')) {
-        var arg = typeof self.cmd_args[1] == 'function' ? self.cmd_args[1]() : self.cmd_args[1];
-        editor[self.editor_cmd](self.cmd_args[0], arg);
+        if (typeof self.editor_cmd == 'function') {
+          self.editor_cmd();
+        } else {
+          var arg = typeof self.cmd_args[1] == 'function' ? self.cmd_args[1]() : self.cmd_args[1];
+          editor[self.editor_cmd](self.cmd_args[0], arg);
+        }
       }
       // refresh button state
       refreshButtons();
@@ -230,4 +235,15 @@ function refreshButtons() {
       }
     }
   });
+}
+
+function handleVideo() {
+  // var url = prompt('Enter URL:');
+  // if (url) InlineEditor.focusedEditor().execCommand('insertHTML', '<video controls="controls" preload="meta"><source src="' + url + '" /></video>');
+  InlineEditor.focusedEditor().execCommand('insertHTML',
+    '<video id="1234v" controls="controls" style="width: 720px; height: 400px;" width="720" height="400">' +
+      '<source src="http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb_trailer_iphone.m4v" type="video/h264" />' +
+      '<source src="http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb400p.ogv" type="video/ogg" />' +
+    '</video>'
+  )
 }
