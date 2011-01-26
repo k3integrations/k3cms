@@ -13,9 +13,13 @@ body {
   width: 100%;
 }
 
+#k3_ribbon {
+  background: white;
+}
+
 /* This should be the same height as the ribbon in order to push the actual page contents down so that the top is aligned with the bottom of the ribbon. */
 #k3_ribbon_beneath {
-  height: 48px;
+  height: 41px;
 }
 
 #k3_ribbon,
@@ -23,20 +27,24 @@ body {
 {
   margin: 0;
   padding: 0;
-  /*border: 1px solid gray;*/
 }
 #k3_ribbon li {
   display: block;
   float: left;
+
+  /*
   padding: 2px 5px;
   background-color: white;
+  */
 
+  /*
   border-width: 1px;
   border-style: solid;
   border-top-color: #ddd;
   border-right-color: #666;
   border-bottom-color: #666;
   border-left-color: #ddd;
+  */
 }
 
 #k3_ribbon ul.row_2 {
