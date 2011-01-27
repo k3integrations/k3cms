@@ -62,7 +62,6 @@ sub { bottom: -0.19em; }
 }
 #k3_ribbon li.button.disabled a:before {
   content: url(/images/k3/inline_editor/disabled_overlay.png);
-  z-index: 10;
   display: block;
   position: absolute;
   right: 0px;
