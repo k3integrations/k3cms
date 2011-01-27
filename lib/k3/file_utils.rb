@@ -2,21 +2,27 @@ require 'fileutils'
 
 module K3
   class FileUtils
+    # TODO: reuse some code from Rails generators so that we can get for free: check for identical, offer to give a diff or overwrite, etc.
     def self.copy_file(src_file, dest_file, verbose=true)
       file = src_file
       copy = true
+      differs = false
       if File.exists?(dest_file)
-        print "  WARNING!!! File #{file} already exists. Overwrite? [y/n] "
-        if (copy = $stdin.gets.downcase[0] == 'y')
-          Pathname.new(dest_file).unlink
+        if ::FileUtils.compare_file(src_file, dest_file)
+          copy = false
+        else
+          print "  WARNING!!! File #{file} already exists and has been modified. Overwrite? [y/n] "
+          if (copy = $stdin.gets.downcase[0] == 'y')
+            Pathname.new(dest_file).unlink
+          end
         end
       end
       if copy
         puts "  Copying file #{file}" if verbose
         ::FileUtils.mkdir_p(File.dirname(dest_file))
         ::FileUtils.copy(src_file, dest_file)
-      elsif ! ::FileUtils.compare_file(src_file, dest_file)
-        puts "  WARNING!!! File #{file} has been modified, not copying" if verbose
+      elsif ::FileUtils.compare_file(src_file, dest_file)
+        puts "  Identical: #{file}" if verbose
       end
     end
 
