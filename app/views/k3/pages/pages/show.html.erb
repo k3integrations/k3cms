@@ -16,7 +16,7 @@
     <h1>
       <% if edit_mode? and can?(:edit, K3::Page) %>
         <% inline_editable('span', @page, :title) do %>
-          <%= raw(@page.title) %>
+          <%= raw(@page.title) -%>
         <% end %>
       <% else %>
         <%= raw(@page.title) %>
