@@ -20,6 +20,7 @@ body {
 /* This should be the same height as the ribbon in order to push the actual page contents down so that the top is aligned with the bottom of the ribbon. */
 #k3_ribbon_beneath {
   height: 41px;
+  background-color: white;
 }
 
 #k3_ribbon,
