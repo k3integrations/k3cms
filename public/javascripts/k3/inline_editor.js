@@ -407,6 +407,7 @@ function refreshButtons() {
 
   $(toolbar_options).each(function (index) {
     var btn = $('#k3_ribbon .' + this.klass);
+    btn.removeClass('toggled_on');
     if (! editable_active) {
       btn.addClass('disabled');
     } else {
@@ -418,8 +419,6 @@ function refreshButtons() {
           if (editor[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1])) {
             //console.log(this.klass, 'is toggled on');
             btn.addClass('toggled_on')
-          } else {
-            btn.removeClass('toggled_on');
           }
         }
         if (this.query_enabled_cmd) {
