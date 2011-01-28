@@ -137,7 +137,9 @@ ul, li {
 /*SECTIONS SYSTEM*/
 
 /*common defaults for all sections*/
-.k3_section            { margin-bottom: 5px; }
+.k3_section {
+  /*margin-bottom: 5px;*/
+}
 .k3_section h2,
 .k3_section h3         { padding: 1px 3px; margin: 0; }
 .k3_section a          {

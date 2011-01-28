@@ -258,12 +258,10 @@ function initInlineEditor(options) {
     },
   });
 
-  $ribbon = $('#k3_ribbon .row_2')
-  if ($ribbon.length == 0)
-    $ribbon = $('#k3_ribbon')
+  $pane = $('#k3_ribbon .panes .edit')
   $toolbar = $('<div class="k3_inline_editor k3_section k3_inline_editor_icons"></div>').
     append('<ul></ul>').
-    appendTo($ribbon);
+    appendTo($pane);
   $ul = $toolbar.find('ul');
   
   // Add all the buttons to the toolbar, according to the configuration stored in toolbar_options
@@ -310,6 +308,12 @@ function initInlineEditor(options) {
   $select.change(function (event) {
     //console.log($(this).get(0).selectedIndex)
     var $option = $(this).find("option:selected").eq(0)
+
+    // When the user clicks on the select element in the toolbar, it causes the editable element to lose focus, so we need to restore focus to the editable.
+    // (When the user clicks on a normal button, this isn't a problem, because we bound 'mousedown' instead of 'click'.)
+    InlineEditor.last_focused_element && InlineEditor.last_focused_element.focus();
+    //InlineEditor.last_selection       && InlineEditor.last_selection.restore();
+
     $option.trigger('invoke')
   })
   $toolbar.mousedown(function (event) {
@@ -325,11 +329,6 @@ function initInlineEditor(options) {
   $(toolbar_options).each(function (index) {
     var self = this;
     $toolbar.find('.' + this.klass).bind('invoke', function (event) {
-      // When the user clicks on the select element in the toolbar, it causes the editable element to lose focus, so we need to restore focus to the editable.
-      // (When the user clicks on a normal button, this isn't a problem, because we bound 'mousedown' instead of 'click'.)
-      InlineEditor.last_focused_element && InlineEditor.last_focused_element.focus();
-      //InlineEditor.last_selection       && InlineEditor.last_selection.restore();
-
       var editor = InlineEditor.focusedEditor();
       // ignore button presses if no editable area is selected (you can also use InlineEditor.isFocusedEditor())
       if (! editor || ! editor.isEnabled()) {
@@ -337,14 +336,14 @@ function initInlineEditor(options) {
       }
 
       // execute the command
-      //if (! $(this).hasClass('disabled')) {
+      if (! $(this).hasClass('disabled')) {
         if (typeof self.editor_cmd == 'function') {
           self.editor_cmd();
         } else {
           var arg = typeof self.cmd_args[1] == 'function' ? self.cmd_args[1]() : self.cmd_args[1];
           editor[self.editor_cmd](self.cmd_args[0], arg);
         }
-      //}
+      }
 
       // refresh button state
       refreshButtons();
@@ -361,7 +360,7 @@ function initInlineEditor(options) {
   var dwr_def = drawer_defaults;
   for (var dwr_id in drawer_options) {
     var dwr = drawer_options[dwr_id];
-    $('#k3_ribbon_beneath').before(drawerContents(dwr_id, '', dwr.fields));
+    $('#k3_drawers').before(drawerContents(dwr_id, '', dwr.fields));
     $('.' + dwr_id + '.drawer').bind('open', {dwr_id: dwr_id, dwr: dwr}, function(event) {
       var editable = event.data.dwr.get_editable();
       if (editable == null) {
@@ -406,6 +405,7 @@ function refreshButtons() {
 
   $(toolbar_options).each(function (index) {
     var btn = $('#k3_ribbon .' + this.klass);
+    btn.removeClass('toggled_on');
     if (! editable_active) {
       btn.addClass('disabled');
     } else {
@@ -417,8 +417,6 @@ function refreshButtons() {
           if (editor[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1])) {
             //console.log(this.klass, 'is toggled on');
             btn.addClass('toggled_on')
-          } else {
-            btn.removeClass('toggled_on');
           }
         }
         if (this.query_enabled_cmd) {
