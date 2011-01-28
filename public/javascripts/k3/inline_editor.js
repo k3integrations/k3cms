@@ -259,7 +259,7 @@ function initInlineEditor(options) {
   });
 
   $pane = $('#k3_ribbon .panes .edit')
-  $toolbar = $('<div class="k3_inline_editor k3_section k3_inline_editor_icons"></div>').
+  $toolbar = $('<div class="k3_inline_editor_toolbar k3_section k3_inline_editor_icons"></div>').
     append('<ul></ul>').
     appendTo($pane);
   $ul = $toolbar.find('ul');
@@ -360,7 +360,7 @@ function initInlineEditor(options) {
   var dwr_def = drawer_defaults;
   for (var dwr_id in drawer_options) {
     var dwr = drawer_options[dwr_id];
-    $('#k3_drawers').before(drawerContents(dwr_id, '', dwr.fields));
+    $('#k3_drawers').append(drawerContents(dwr_id, '', dwr.fields));
     $('.' + dwr_id + '.drawer').bind('open', {dwr_id: dwr_id, dwr: dwr}, function(event) {
       var editable = event.data.dwr.get_editable();
       if (editable == null) {

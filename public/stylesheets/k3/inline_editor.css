@@ -130,7 +130,7 @@ ul, li {
 */
 
 /* auto-clear */
-.auto_clear:after 	        { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+.auto_clear:after 	        { content: "."; display: block; line-height: 0; height: 0; clear: both; visibility: hidden; }
 
 
 
@@ -179,6 +179,11 @@ ul, li {
 .k3_dropdown.hover ul  { display: block; }
 */
 
+.k3_inline_editor_toolbar {
+}
+.k3_inline_editor_toolbar:after {
+  content: "."; display: block; line-height: 0; height: 0; clear: both; visibility: hidden;
+}
 
 /*option: add this class to a section to make its elements render buttons (icons are only available for the k3_inline_editor section for now)*/
 .k3_inline_editor_icons li         { float:left;}
