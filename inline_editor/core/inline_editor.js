@@ -360,15 +360,13 @@ InlineEditor.prototype.getObject = function(callback) {
       success: function(data, msg, xhr) {
         callback.call($this, data, msg, xhr);
       },
-      error:   function(xhr,  msg, err) {
-        alert(msg + "\n" + err);
-      },
+      error: InlineEditor.defaultErrorHandler,
     })
   }
 }
 
 InlineEditor.defaultErrorHandler = function(event, xhr, msg, err) {
-  if (!(msg == "error" && typeof err == "undefined")) {
+  if (typeof msg != "undefined" && !(msg == "error" && typeof err == "undefined")) {
     alert("defaultErrorHandler:\n'" + msg + "'\n'" + err + "'");
   }
 };
