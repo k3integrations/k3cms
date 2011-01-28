@@ -367,8 +367,10 @@ window.InlineEditor.prototype.getObject = function(callback) {
   }
 }
 
-window.InlineEditor.defaultSaveErrorHandler = function(event, xhr, msg, err) {
-  alert(msg + "\n" + err);
+window.InlineEditor.defaultErrorHandler = function(event, xhr, msg, err) {
+  if (!(msg == "error" && typeof err == "undefined")) {
+    alert("defaultErrorHandler:\n'" + msg + "'\n'" + err + "'");
+  }
 };
 
 
@@ -382,7 +384,7 @@ window.InlineEditor.DEFAULT_OPTIONS = {
   blur:       InlineEditor.defaultBlurHandler,
   liveChange: InlineEditor.defaultLiveChangeHandler,
   save:       InlineEditor.defaultSaveHandler,
-  saveError:  InlineEditor.defaultSaveErrorHandler,
+  saveError:  InlineEditor.defaultErrorHandler,
 };
 
 
