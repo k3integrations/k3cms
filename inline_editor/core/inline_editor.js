@@ -614,6 +614,13 @@ window.InlineEditor.Range.prototype.intersectsRange = function (range) {
          this.range.compareBoundaryPoints(Range.START_TO_END, range.range) ===  1;
 };
 
+// tests if two range instances point to an identical area
+window.InlineEditor.Range.prototype.equals = function (range) {
+  return !! range && // this.range == range.range;
+    this.range.startContainer === range.range.startContainer && this.range.startOffset === range.range.startOffset &&
+    this.range.endContainer   === range.range.endContainer   && this.range.endOffset   === range.range.endOffset;
+};
+
 
 // --------------------
 // InlineEditor.Selection

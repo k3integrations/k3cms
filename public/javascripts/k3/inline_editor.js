@@ -16,10 +16,10 @@ toolbar_options = [
   ['Align Left',       'align_left',     false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyLeft']],
   ['Align Center',     'align_center',   false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyCenter']],
   ['Align Right',      'align_right',    false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyRight']],
-  ['Insert/edit link', 'link',           true,  'execCommand',  false,              'queryCommandEnabled', ['createLink', function(){return prompt('Enter URL:')}]],
+  ['Insert/edit link', 'link',           true,  function(){toggleDrawer('link_drawer')},  false, false],
   ['Remove link',      'unlink',         true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['unlink']],
-  ['Insert Image',     'image',          false, 'execCommand',  false,              'queryCommandEnabled', ['insertImage', function(){return prompt('Enter URL:')}]],
-  ['Insert Video',     'video',          false,  handleVideo,   false,              false],
+  ['Insert Image',     'image',          false, function(){toggleDrawer('image_drawer')}, false, false],
+  ['Insert Video',     'video',          false, function(){toggleDrawer('video_drawer')}, false, false],
   // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertParagraph']],
   // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'p']],
   // ['Pre',           'blockPre',       false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'pre']],
@@ -41,6 +41,103 @@ toolbar_options = [
   ['Heading 6',        'blockH6',        false, 'switchToBlock', 'isCurrentBlock',   false,                ['h6']],
   ['Plain',            'blockDiv',       false, 'switchToBlock', 'isCurrentBlock',   false,                ['div']],
 ];
+
+var drawer_defaults = {
+  new_title_prefix: 'New ',
+  edit_title_prefix: 'Edit ',
+  new_submit: 'Insert',
+  edit_submit: 'Update'
+};
+var drawer_options = {
+  link_drawer: {
+    title: 'Link',
+    fields: [
+      {'id': 'url', label: 'URL'}
+    ],
+    get_editable: function() {
+      // TODO: push this into core as InlineEditor.Selection.getFirstIntersecting('a') or some such?
+      var editor = InlineEditor.focusedEditor();
+      if (! editor) return null;
+      var anchors = $(editor.node).find('a').filter(function () {
+        return InlineEditor.Selection.intersectsNode(this);
+      });
+      return anchors.length > 0 ? anchors.get(0) : null;
+    },
+    populate_editable_fields: function(a_node) {
+      $('#link_drawer_url').val(a_node.href);
+    },
+    oncreate: function() {
+      InlineEditor.focusedEditor().execCommand('createLink', $('#link_drawer_url').val());
+    },
+    onupdate: function(a_node) {
+      a_node.href = $('#link_drawer_url').val();
+    }
+  },
+  image_drawer: {
+    title: 'Image',
+    fields: [
+      {'id': 'url',      label: 'URL'}//,
+      // {'id': 'position', label: 'Positioning', type: 'select', options: [
+      //   {'id': 'inline',   label: 'Inline'},
+      //   {'id': 'left',     label: 'Float Left'},
+      //   {'id': 'right',    label: 'Float Right'}
+      // ]}
+    ],
+    get_editable: function() {
+      // TODO: push this into core as InlineEditor.Selection.getOnlyContained('img') or some such?
+      var editor = InlineEditor.focusedEditor();
+      if (! editor) return null;
+      var rng = new InlineEditor.Range(new InlineEditor.Selection(window.document));
+      var images = $(editor.node).find('img').filter(function () {
+        // alert(new InlineEditor.Range(sel) + ' ' + new InlineEditor.Range(this))
+        return rng.equals(new InlineEditor.Range(this));
+      });
+      return images.length > 0 ? images.get(0) : null;
+    },
+    populate_editable_fields: function(img_node) {
+      $('#image_drawer_url').val(img_node.src);
+      // $('#image_drawer_position').val(img_node.style.float); // TODO float/inline positioning
+    },
+    oncreate: function() {
+      // for testing try @86x62:
+      // http://localhost:3000/images/logo.png
+      var editor = InlineEditor.focusedEditor().execCommand('insertImage', $('#image_drawer_url').val());
+    },
+    onupdate: function(img_node) {
+      img_node.src = $('#image_drawer_url').val();
+      // TODO: float/inline positioning
+    }
+  },
+  video_drawer: {
+    title: 'Video',
+    fields: [
+      // see: http://diveintohtml5.org/video.html#what-works
+      {'id': 'h264_url', label: 'MP4 H.264/AAC Format URL'},
+      {'id': 'ogg_url',  label: 'Ogg Theora/Vorbis Format URL'},
+      {'id': 'width',    label: 'Width',  size: 10},
+      {'id': 'height',   label: 'Height', size: 10}
+    ],
+    get_editable: function() {
+      return null; // TODO
+    },
+    populate_editable_fields: function(video_node) {
+      // TODO
+    },
+    oncreate: function() {
+      // for testing try @720x400:
+      // http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb_trailer_iphone.m4v
+      // http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb400p.ogv
+      var width    = $('#video_drawer_width').val()    == '' ? '' : ' width="'  + $('#video_drawer_width').val()  + '"';
+      var height   = $('#video_drawer_height').val()   == '' ? '' : ' height="' + $('#video_drawer_height').val() + '"';
+      var h264_tag = $('#video_drawer_h264_url').val() == '' ? '' : '<source src="' + $('#video_drawer_h264_url').val() + '" type="video/h264" />';
+      var ogg_tag  = $('#video_drawer_ogg_url').val()  == '' ? '' : '<source src="' + $('#video_drawer_ogg_url').val()  + '" type="video/ogg" />';
+      InlineEditor.focusedEditor().execCommand('insertHTML', '<video controls="controls" style="display: block;"' + width + height + '>' + h264_tag + ogg_tag + '</video>');
+    },
+    onupdate: function(video_node) {
+      // TODO
+    }
+  }
+};
 
 var structured_toolbar_options = [];
 $(toolbar_options).each(function (i) {
@@ -257,7 +354,38 @@ function initInlineEditor(options) {
     refreshButtons();
   });
   
+  // draw javascript-only drawers
+  var dwr_def = drawer_defaults;
+  for (var dwr_id in drawer_options) {
+    var dwr = drawer_options[dwr_id];
+    $('#k3_ribbon_beneath').before(drawerContents(dwr_id, '', dwr.fields));
+    $('.' + dwr_id + '.drawer').bind('open', {dwr_id: dwr_id, dwr: dwr}, function(event) {
+      var editable = event.data.dwr.get_editable();
+      if (editable == null) {
+        $('#' + event.data.dwr_id + '_title').text(dwr_def.new_title_prefix + event.data.dwr.title);
+        $('#' + event.data.dwr_id + '_submit').val(dwr_def.new_submit);
+        $(event.data.dwr.fields).each(function(idx, field) {
+          $('#' + event.data.dwr_id + '_' + field.id).val('');
+        });
+      } else {
+        $('#' + event.data.dwr_id + '_title').text(dwr_def.edit_title_prefix + event.data.dwr.title);
+        $('#' + event.data.dwr_id + '_submit').val(dwr_def.edit_submit);
+        event.data.dwr.populate_editable_fields(editable);
+      }
+    });
+    $('#' + dwr_id + '_form').bind('submit', {dwr_id: dwr_id, dwr: dwr}, function(event) {
+      toggleDrawer(event.data.dwr_id);
+      var editable = event.data.dwr.get_editable();
+      if (editable == null) {
+        event.data.dwr.oncreate();
+      } else {
+        event.data.dwr.onupdate(editable);
+      }
+      return false;
+    });
+  }
 }
+
 
 // refreshing toolbar button classes to show toggled/disabled states, depending on where the cursor currently is
 function refreshButtons() {
@@ -346,13 +474,35 @@ function refreshButtons() {
   }
 }
 
-function handleVideo() {
-  // var url = prompt('Enter URL:');
-  // if (url) InlineEditor.focusedEditor().execCommand('insertHTML', '<video controls="controls" preload="meta"><source src="' + url + '" /></video>');
-  InlineEditor.focusedEditor().execCommand('insertHTML',
-    '<video id="1234v" controls="controls" style="width: 720px; height: 400px; display: block;">' +
-      '<source src="http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb_trailer_iphone.m4v" type="video/h264" />' +
-      '<source src="http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb400p.ogv" type="video/ogg" />' +
-    '</video>'
-  )
+function toggleDrawer(id) {
+  var drawer = $('.' + id + '.drawer');
+  if (drawer.is(':visible')) {
+    InlineEditor.last_focused_element && InlineEditor.last_focused_element.focus();
+    InlineEditor.last_selection       && InlineEditor.last_selection.restore();
+    drawer.trigger('close');
+  } else {
+    drawer.trigger('open');
+  }
+  drawer.slideToggle();
+}
+
+function drawerContents(id, title, fieldsinfo, submittext) {
+  var fields = '';
+  for (var idx in fieldsinfo) {
+    fields += '<div class="field">' +
+      fieldsinfo[idx].label + ':' +
+      '<input type="text" size="' + (fieldsinfo[idx].size || 30) + '" id="' + id + '_' + fieldsinfo[idx].id + '" name="' + id + '[' + fieldsinfo[idx].id + ']">' +
+    '</div>'
+  }
+  return '<div class="drawer hidden ' + id + '">' +
+    '<h2 id="' + id + '_title">' + entityEscape(title) + '</h2>' +
+    '<form id="' + id + '_form" class="form ' + id + '" accept-charset="UTF-8">' +
+      fields +
+      '<input type="submit" id="' + id + '_submit" value="' + (submittext || 'Submit') + '">&nbsp; ' +
+      '<a onclick="toggleDrawer(\'' + id + '\'); return false;" href="#">Cancel</a>' +
+    '</form>' +
+  '</div>';
+}
+function entityEscape(text) {
+  return $('<div/>').text(text).html();
 }
