@@ -89,7 +89,7 @@ body {
 
 /* This should be the same height as the ribbon in order to push the actual page contents down so that the top is aligned with the bottom of the ribbon. */
 #k3_ribbon_underneath {
-  height: 89px;
+  height: 65px;
   background-color: white;
 }
 
@@ -162,12 +162,14 @@ body {
   display: none;
   border: 1px solid #666;
   border-width: 0 1px 1px 1px;
-  min-height: 50px;
+  min-height: 26px;
   background-color: #fff;
 }
 
 #k3_ribbon .panes>div li {
+  float: left;
   list-style-type: none;
+  margin: 0 2px 0 2px;
 }
 
 

@@ -14,8 +14,6 @@
   .row.row_2
     %ul.tabs
       %li       <a href="#page">Page</a>
-      %li       <a href="#blog_post">Blog Post</a>
-
       %li       <a href="#edit">Edit</a>
 
       - if outer_content_for?(:last_saved_status)
@@ -29,10 +27,6 @@
     .panes
       .page
         - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:page] || []).each do |item|
-          = item
-
-      .blog_post
-        - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:blog_post] || []).each do |item|
           = item
 
       .edit
