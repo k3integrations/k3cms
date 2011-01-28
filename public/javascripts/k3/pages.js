@@ -2,8 +2,8 @@ K3_Pages = {
 }
 
 k3_page = {
-  updatePage: function(object_name, object_id, object) {
-    K3_InlineEditor.updatePageFromObject(object_name, object_id, object)
+  updatePage: function(object_name, object_id, object, element_data) {
+    K3_InlineEditor.updatePageFromObject(object_name, object_id, object, element_data)
 
     // TODO: only if page title was originally set to @page.title. Perhaps we should set some JS variable to indicate which object/attribute the page title was taken form?
     $('title').html(object.title)
