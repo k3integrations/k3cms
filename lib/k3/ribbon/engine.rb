@@ -8,6 +8,11 @@ module K3
   module Ribbon
 
     class Engine < Rails::Engine
+      config.action_view.javascript_expansions[:k3].concat [
+        'http://cdn.jquerytools.org/1.2.5/all/jquery.tools.min.js',
+        'k3/ribbon.js',
+      ]
+
       initializer 'k3.ribbon.add_cells_paths' do |app|
         Cell::Base.view_paths += [Pathname[__DIR__] + '../../../app/cells']
       end

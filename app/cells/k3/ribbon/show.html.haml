@@ -1,21 +1,57 @@
-%ul#k3_ribbon
-  %ul.row_1
+#k3_ribbon
+  .row.row_1
+    .split_left
+      %ul
+        %li.toggle_edit_mode
+          Edit mode: #{{true => 'on', false => 'off'}[edit_mode?]}
+          = link_to "Turn #{{false => 'on', true => 'off'}[edit_mode?]}", p=params.merge({:edit => (!edit_mode?).to_s})
 
-    %li.toggle_edit_mode
-      Edit mode: #{{true => 'on', false => 'off'}[edit_mode?]}
-      = link_to "Turn #{{false => 'on', true => 'off'}[edit_mode?]}", p=params.merge({:edit => (!edit_mode?).to_s})
+    .split_right
+      %ul
+        - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:top] || []).each do |item|
+          = item
 
-    - @opts[:k3_ribbon_items] and @opts[:k3_ribbon_items].each do |item|
-      = item
+  .row.row_2
+    %ul.tabs
+      %li       <a href="#page">Page</a>
+      %li       <a href="#blog_post">Blog Post</a>
 
-    - if outer_content_for?(:last_saved_status)
-      %li#last_saved_status
-        = outer_content_for :last_saved_status
+      %li       <a href="#edit">Edit</a>
 
-  %ul.row_2
+      - if outer_content_for?(:last_saved_status)
+        %li#last_saved_status
+          = outer_content_for :last_saved_status
 
-.clear
+      %li.admin <a href="#admin">Admin</a>
 
-- @opts[:k3_ribbon_drawers] and @opts[:k3_ribbon_drawers].each do |name, drawer|
-  = drawer
-#k3_ribbon_beneath
+
+  .row.row_3
+    .panes
+      .page
+        - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:page] || []).each do |item|
+          = item
+
+      .blog_post
+        - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:blog_post] || []).each do |item|
+          = item
+
+      .edit
+        - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:edit] || []).each do |item|
+          = item
+
+      .admin
+        - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:admin] || []).each do |item|
+          = item
+
+
+#k3_ribbon_underneath
+#k3_drawers
+  - @opts[:k3_ribbon_drawers] and @opts[:k3_ribbon_drawers].each do |name, drawer|
+    = drawer
+
+
+:javascript
+  $(function() {
+    // setup ul.tabs to work as tabs for each div directly under div.panes
+    $("ul.tabs").tabs("div.panes > div");
+  });

@@ -9,9 +9,10 @@ module K3::Ribbon::RibbonHelper
       :k3_ribbon_drawers => @k3_ribbon_drawers
   end
 
-  def k3_ribbon_add_item
-    @k3_ribbon_items ||= []
-    @k3_ribbon_items << capture { yield }
+  def k3_ribbon_add_item(to_what = :top)
+    @k3_ribbon_items ||= {}
+    @k3_ribbon_items[to_what] ||= []
+    @k3_ribbon_items[to_what] << capture { yield }
     nil
   end
 
@@ -20,7 +21,7 @@ module K3::Ribbon::RibbonHelper
   end
 
   def k3_ribbon_add_drawer(name)
-    @k3_ribbon_drawers ||= Hash.new('')
+    @k3_ribbon_drawers ||= {}
     @k3_ribbon_drawers[name] = k3_ribbon_render_drawer(name) { yield }
     nil
   end

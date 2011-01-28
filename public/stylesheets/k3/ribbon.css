@@ -1,3 +1,8 @@
+/*------------------------------------------------------------------------------------------------*/
+/* General, not necessarily ribbon-specific */
+
+.auto_clear:after { content: "."; display: block; line-height: 0; height: 0; clear: both; visibility: hidden; }
+
 body {
   margin-top: 0;
 }
@@ -6,21 +11,41 @@ body {
   display: none;
 }
 
+/*
+.clear {
+  clear: both;
+}
+*/
+
+.split_left {
+  float: left;
+  width: 49%;
+  text-align: left;
+}
+
+.split_right {
+  float: right;
+  width: 49%;
+  text-align: right;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+/* Ribbon */
+
 #k3_ribbon {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
 }
+#k3_ribbon:after { content: "."; display: block; line-height: 0; height: 0; clear: both; visibility: hidden; }
 
 #k3_ribbon {
   background: white;
 }
 
-/* This should be the same height as the ribbon in order to push the actual page contents down so that the top is aligned with the bottom of the ribbon. */
-#k3_ribbon_beneath {
-  height: 41px;
-  background-color: white;
+#k3_ribbon .row + .row {
+  clear: both;
 }
 
 #k3_ribbon,
@@ -29,32 +54,125 @@ body {
   margin: 0;
   padding: 0;
 }
-#k3_ribbon li {
+
+/*------------------------------------------------------------------------------------------------*/
+/* row_1 */
+
+#k3_ribbon .row_1 {
+  margin: 0 5px 0 5px;
+}
+
+#k3_ribbon .row_1 ul li {
+  list-style-type: none;
+}
+#k3_ribbon .row_1 .split_left ul li {
+  float: left;
+  padding: 0 5px 0 0;
+}
+#k3_ribbon .row_1 .split_right ul li {
+  float: right;
+  padding: 0 0 0 5px;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+
+#k3_ribbon .row_2 {
+  margin: 0 0 0 0;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+#k3_ribbon .row_3 {
+  margin: 0 0 0 0;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+
+/* This should be the same height as the ribbon in order to push the actual page contents down so that the top is aligned with the bottom of the ribbon. */
+#k3_ribbon_underneath {
+  height: 89px;
+  background-color: white;
+}
+
+#k3_drawers {
+  clear: both;
+  width: 100%;
+  position: relative;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+/* Tabs */
+
+/* root element for tabs */
+#k3_ribbon ul.tabs {
+  margin: 0 !important;
+  padding: 0;
+  height: 20px;
+  border-bottom: 1px solid #666;
+}
+
+/* single tab */
+#k3_ribbon ul.tabs li {
+  float: left;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+#k3_ribbon ul.tabs li.admin {
+  float: right;
+}
+
+/* link inside the tab */
+#k3_ribbon ul.tabs a {
   display: block;
   float: left;
 
-  /*
-  padding: 2px 5px;
-  background-color: white;
-  */
+  position: relative;
+  top: 1px;
 
-  /*
-  border-width: 1px;
-  border-style: solid;
-  border-top-color: #ddd;
-  border-right-color: #666;
-  border-bottom-color: #666;
-  border-left-color: #ddd;
-  */
+  height: 18px;
+  margin: 0 2px 0 2px;
+  padding: 0px 10px 0px;
+  border: 1px solid #666;
+  border-bottom: 0px;
+
+  outline: 0;
+  background-color: #efefef;
+  -moz-border-radius: 4px 4px 0 0;
+
+  font-size: 13px;
+  text-decoration: none;
+  color: #777;
 }
 
-#k3_ribbon ul.row_2 {
-  clear: both;
+#k3_ribbon ul.tabs a:hover {
+  background-color: #F7F7F7;
+  color: #333;
+}
+  
+/* selected tab */
+#k3_ribbon ul.tabs a.current {
+  background-color:        #fff; /* must match .panes>div.background-color */
+  border-bottom: 1px solid #fff; /* must match .panes>div.background-color */
+  color: #000;
+  cursor: default;
 }
 
-.clear {
-  clear: both;
+/* tab pane */
+#k3_ribbon .panes>div {
+  display: none;
+  border: 1px solid #666;
+  border-width: 0 1px 1px 1px;
+  min-height: 50px;
+  background-color: #fff;
 }
+
+#k3_ribbon .panes>div li {
+  list-style-type: none;
+}
+
+
+/*------------------------------------------------------------------------------------------------*/
+/* Drawers */
 
 .drawer {
   position: absolute;
@@ -63,3 +181,5 @@ body {
   background: white;
   border: 1px solid black;
 }
+
+/*------------------------------------------------------------------------------------------------*/
