@@ -480,10 +480,12 @@ function refreshButtons() {
 function toggleDrawer(id) {
   var drawer = $('.' + id + '.drawer');
   if (drawer.is(':visible')) {
-    InlineEditor.last_focused_element && InlineEditor.last_focused_element.focus();
-    InlineEditor.last_selection       && InlineEditor.last_selection.restore();
+    if (drawer.data('focused'))  drawer.data('focused').node.focus();
+    if (drawer.data('selected')) drawer.data('selected').restore();
     drawer.trigger('close');
   } else {
+    drawer.data('focused', InlineEditor.focusedEditor());
+    drawer.data('selected', new InlineEditor.Selection(this.document));
     drawer.trigger('open');
   }
   drawer.slideToggle();
