@@ -19,14 +19,20 @@ sub { bottom: -0.19em; }
   margin: 0 -2px;
   padding: 0 2px;
   outline-style: solid;
-  outline-width: 2px;
+  outline-width: 1px;
   cursor: text;
 }
 .editable:hover {
-  outline-color: #DDD;
+  outline-color: #CA5F51; /* red */
+  -moz-box-shadow:    0 0 10px #CA5F51;
+  -webkit-box-shadow: 0 0 10px #CA5F51;
 }
 .editing, .editing:hover {
-  outline-color: #999;
+  outline-width: 2px;
+  /*outline-color: #8A1F11; */
+  outline-color: #CA5F51; /* red */
+  -moz-box-shadow:    0 0 15px red;
+  -webkit-box-shadow: 0 0 15px red;
 }
 
 /*------------------------------------------------------------------------------------------------*/
