@@ -28,7 +28,7 @@ if (! window.console) {
   }
 }
 
-window.InlineEditor = function (node, options) {
+InlineEditor = function (node, options) {
   this.document = node.ownerDocument;
   this.window = this.document.defaultView;
   this.node = node;
@@ -65,7 +65,7 @@ InlineEditor.last_focused_element = null;
 InlineEditor.last_selection = null;
 //InlineEditor.in_focusHandler = false;
 
-window.InlineEditor.prototype.updateOptions = function (options) {
+InlineEditor.prototype.updateOptions = function (options) {
   //console.log('updateOptions')
   //console.log("options=", options);
   var $node = $(this.node);
@@ -74,7 +74,7 @@ window.InlineEditor.prototype.updateOptions = function (options) {
   this.bindEventHandlers();
 };
 
-window.InlineEditor.prototype.bindEventHandlers = function () {
+InlineEditor.prototype.bindEventHandlers = function () {
   var $node = $(this.node);
   var options = $node.data();
 
@@ -92,58 +92,58 @@ window.InlineEditor.prototype.bindEventHandlers = function () {
 }
 
 // checks if focus is currently on any active InlineEditor-editable object...
-window.InlineEditor.isFocusedEditor = function () {
+InlineEditor.isFocusedEditor = function () {
   return window.document.activeElement && window.document.activeElement.isContentEditable && !! InlineEditor.focusedEditor();
 };
 // returns currently focused InlineEditor object instance...
-window.InlineEditor.focusedEditor = function () {
+InlineEditor.focusedEditor = function () {
   return InlineEditor.getEditor(window.document.activeElement);
 };
 // returns any editor instance that is attached directly to a given DOM node
-window.InlineEditor.getEditor = function (node) {
+InlineEditor.getEditor = function (node) {
   return $(node).data('inlineEditor');
 };
 // checks if focus is currently on this editable area instance...
-window.InlineEditor.prototype.isFocused = function () {
+InlineEditor.prototype.isFocused = function () {
   return this.document.activeElement === this.node && this.node.isContentEditable;
 };
 // shortcut to check if editable area hasn't been disabled
-window.InlineEditor.prototype.isEnabled = function () {
+InlineEditor.prototype.isEnabled = function () {
   return this.node.isContentEditable;
 };
 // shortcut to check if editable area isan inline or block level element
-window.InlineEditor.prototype.isInline = function () {
+InlineEditor.prototype.isInline = function () {
   return (this.node.currentStyle || window.getComputedStyle(this.node, null)).display == 'inline';
 }
 
 // exposing standard browser-built-in contentEditable editor commands...
 // note these are NOT consistent cross browser
 // so someday I expect I'll have eventually re-implemented all the useful ones...
-window.InlineEditor.prototype.execCommand = function (cmd, arg) {
+InlineEditor.prototype.execCommand = function (cmd, arg) {
   if (this.isFocused()) {
     this.document.execCommand(cmd, false, arg);
     this.checkCursorMove();
     this.checkLiveChange();
   }
 };
-window.InlineEditor.prototype.queryCommandState = function (cmd, arg) {
+InlineEditor.prototype.queryCommandState = function (cmd, arg) {
   if (this.isFocused()) {
     return this.document.queryCommandState(cmd, false, arg);
   }
 };
-window.InlineEditor.prototype.queryCommandValue = function (cmd, arg) {
+InlineEditor.prototype.queryCommandValue = function (cmd, arg) {
   if (this.isFocused()) {
     return this.document.queryCommandValue(cmd, false, arg);
   }
 };
-window.InlineEditor.prototype.queryCommandEnabled = function (cmd, arg) {
+InlineEditor.prototype.queryCommandEnabled = function (cmd, arg) {
   if (this.isFocused()) {
     return this.document.queryCommandEnabled(cmd, false, arg);
   }
 };
 
 // reimplementation of document.execCommand('formatBlock', false, 'x') that behaves more consistently cross browser
-window.InlineEditor.prototype.switchToBlock = function (type) {
+InlineEditor.prototype.switchToBlock = function (type) {
   if (! this.isFocused()) {
     return;
   }
@@ -160,7 +160,7 @@ window.InlineEditor.prototype.switchToBlock = function (type) {
   this.checkLiveChange();
 };
 // reimplementation of document.queryCommandValue('formatBlock', false, 'x') that behaves more consistently cross browser
-window.InlineEditor.prototype.isCurrentBlock = function (type) {
+InlineEditor.prototype.isCurrentBlock = function (type) {
   var blocks, containers, ranges, type_blocks;
   if (! this.isFocused()) {
     return;
@@ -175,12 +175,12 @@ window.InlineEditor.prototype.isCurrentBlock = function (type) {
 };
 // innards of the above two functions, need to find a proper home for it, it feels like cruft laying here...
 // as we reimplement more of the built-in execCommand things for cross browser consistency, proper structure should become clear...
-window.InlineEditor.TOGGLEABLE_BLOCK_TYPES = ['address', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre'];
-window.InlineEditor.TOGGLEABLE_BLOCK_CONTAINER_TYPES = ['blockquote', 'dd', 'dt', 'li', 'td', 'th'];
-window.InlineEditor.ALL_BLOCK_TYPES = ['address', 'blockquote', 'dd', 'div', 'dl', 'dt', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'pre', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul'];
-window.InlineEditor.TOGGLEABLE_BLOCKS_SELECTOR = InlineEditor.TOGGLEABLE_BLOCK_TYPES.join(', ');
-window.InlineEditor.TOGGLEABLE_BLOCK_CONTAINERS_SELECTOR = InlineEditor.TOGGLEABLE_BLOCK_CONTAINER_TYPES.join(', ');
-window.InlineEditor.prototype.getCurrentBlocks = function () {
+InlineEditor.TOGGLEABLE_BLOCK_TYPES = ['address', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre'];
+InlineEditor.TOGGLEABLE_BLOCK_CONTAINER_TYPES = ['blockquote', 'dd', 'dt', 'li', 'td', 'th'];
+InlineEditor.ALL_BLOCK_TYPES = ['address', 'blockquote', 'dd', 'div', 'dl', 'dt', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'pre', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul'];
+InlineEditor.TOGGLEABLE_BLOCKS_SELECTOR = InlineEditor.TOGGLEABLE_BLOCK_TYPES.join(', ');
+InlineEditor.TOGGLEABLE_BLOCK_CONTAINERS_SELECTOR = InlineEditor.TOGGLEABLE_BLOCK_CONTAINER_TYPES.join(', ');
+InlineEditor.prototype.getCurrentBlocks = function () {
   var blocks;
   if (! this.isFocused()) {
     return [];
@@ -190,7 +190,7 @@ window.InlineEditor.prototype.getCurrentBlocks = function () {
   });
   return blocks;
 };
-window.InlineEditor.prototype.getCurrentBlocklessContainers = function () {
+InlineEditor.prototype.getCurrentBlocklessContainers = function () {
   var blocks;
   if (! this.isFocused()) {
     return [];
@@ -200,7 +200,7 @@ window.InlineEditor.prototype.getCurrentBlocklessContainers = function () {
   });
   return blocks;
 };
-window.InlineEditor.prototype.getCurrentBlocklessRanges = function () {
+InlineEditor.prototype.getCurrentBlocklessRanges = function () {
   var blocks, range_border_nodes, ranges, selected_ranges;
   if (! this.isFocused()) {
     return [];
@@ -235,7 +235,7 @@ window.InlineEditor.prototype.getCurrentBlocklessRanges = function () {
 };
 
 // event handlers to check if custom events should fire
-window.InlineEditor.checkMoveOrChangeHandler = function (evt) {
+InlineEditor.checkMoveOrChangeHandler = function (evt) {
   var editor = InlineEditor.getEditor(this);
   editor.checkCursorMove();
   editor.checkLiveChange();
@@ -243,7 +243,7 @@ window.InlineEditor.checkMoveOrChangeHandler = function (evt) {
 
 // if a move or change has occurred, trigger the custom 'live_change' and 'cursormove' events
 // (normal dom 'change' events happen when focus is lost, not live as the change happens)
-window.InlineEditor.prototype.checkCursorMove = function () {
+InlineEditor.prototype.checkCursorMove = function () {
   var sel = new InlineEditor.Selection(this.document), node = this.node;
   if (sel.anchorNode && sel.intersectsNode(this.node)) {
     if (! sel.equals(this.lastSelection) || node.innerHTML !== this.lastSource) {
@@ -256,7 +256,7 @@ window.InlineEditor.prototype.checkCursorMove = function () {
   }
 };
 
-window.InlineEditor.prototype.checkLiveChange = function () {
+InlineEditor.prototype.checkLiveChange = function () {
   var node = this.node;
   if (node.innerHTML !== this.lastSource) {
     $(node).trigger('live_change');
@@ -266,7 +266,7 @@ window.InlineEditor.prototype.checkLiveChange = function () {
 
 //--------------------------------------------------------------------------------------------------
 // default event handlers
-window.InlineEditor.defaultLiveChangeHandler = function (evt) {
+InlineEditor.defaultLiveChangeHandler = function (evt) {
   var $this = $(this), editor = InlineEditor.getEditor(this);
   // trigger the save handler after so many milliseconds of idle time
   if (editor.idleSaveTimeout) {
@@ -277,7 +277,7 @@ window.InlineEditor.defaultLiveChangeHandler = function (evt) {
   }, $this.data('idle-save-time'));
 };
 
-window.InlineEditor.focusHandler = function (evt) {
+InlineEditor.focusHandler = function (evt) {
   if (InlineEditor.in_focusHandler) return; // recursion control (the putInNode call below causes this to be called again)
   InlineEditor.in_focusHandler = true;
   var $this = $(this);
@@ -293,7 +293,7 @@ window.InlineEditor.focusHandler = function (evt) {
   InlineEditor.in_focusHandler = false;
 };
 
-window.InlineEditor.defaultBlurHandler = function (evt) {
+InlineEditor.defaultBlurHandler = function (evt) {
   var $this = $(this), editor = InlineEditor.getEditor(this);
   // remove class that indicates it's currently being edited
   $this.removeClass($this.data('editing-class'));
@@ -305,7 +305,7 @@ window.InlineEditor.defaultBlurHandler = function (evt) {
   $this.trigger('save_if_changed');
 };
 
-window.InlineEditor.saveIfChanged = function (evt) {
+InlineEditor.saveIfChanged = function (evt) {
   var $this = $(this), editor = InlineEditor.getEditor(this);
   if (editor.node.innerHTML != editor.lastSourceSaved) {
     //console.log('need to save:', editor.node.innerHTML)
@@ -316,13 +316,13 @@ window.InlineEditor.saveIfChanged = function (evt) {
   };
 }
 
-window.InlineEditor.focusout = function (evt) {
+InlineEditor.focusout = function (evt) {
   //console.log('focusout for', this);
   InlineEditor.last_focused_element = this;
   InlineEditor.last_selection = new InlineEditor.Selection(this.document);
 }
 
-window.InlineEditor.defaultSaveHandler = function (evt) {
+InlineEditor.defaultSaveHandler = function (evt) {
   //console.log('in defaultSaveHandler')
   var $this = $(this)
   var editor = InlineEditor.getEditor(this);
@@ -350,7 +350,7 @@ window.InlineEditor.defaultSaveHandler = function (evt) {
   }
 };
 
-window.InlineEditor.prototype.getObject = function(callback) {
+InlineEditor.prototype.getObject = function(callback) {
   var $this = $(this.node);
   if ($this.data('url')) {
     $.ajax({
@@ -360,21 +360,21 @@ window.InlineEditor.prototype.getObject = function(callback) {
       success: function(data, msg, xhr) {
         callback.call($this, data, msg, xhr);
       },
-      error:   function(xhr,  msg, err) {
-        alert(msg + "\n" + err);
-      },
+      error: InlineEditor.defaultErrorHandler,
     })
   }
 }
 
-window.InlineEditor.defaultSaveErrorHandler = function(event, xhr, msg, err) {
-  alert(msg + "\n" + err);
+InlineEditor.defaultErrorHandler = function(event, xhr, msg, err) {
+  if (typeof msg != "undefined" && !(msg == "error" && typeof err == "undefined")) {
+    alert("defaultErrorHandler:\n'" + msg + "'\n'" + err + "'");
+  }
 };
 
 
 //--------------------------------------------------------------------------------------------------
 // default options
-window.InlineEditor.DEFAULT_OPTIONS = {
+InlineEditor.DEFAULT_OPTIONS = {
   'editing-class': 'editing',
   'idle-save-time': 3000, // milliseconds
   'save-type': 'POST',
@@ -382,7 +382,7 @@ window.InlineEditor.DEFAULT_OPTIONS = {
   blur:       InlineEditor.defaultBlurHandler,
   liveChange: InlineEditor.defaultLiveChangeHandler,
   save:       InlineEditor.defaultSaveHandler,
-  saveError:  InlineEditor.defaultSaveErrorHandler,
+  saveError:  InlineEditor.defaultErrorHandler,
 };
 
 
@@ -397,7 +397,7 @@ window.InlineEditor.DEFAULT_OPTIONS = {
 
 // constructor using a DOM Node, or a tag name string and optional Document
 // one of either DOM Node or tag name string is required.
-window.InlineEditor.Element = function (node, doc) {
+InlineEditor.Element = function (node, doc) {
   if (typeof(node) === 'string') {
     this.document = doc ? doc : window.document;
     this.window = this.document.defaultView;
@@ -413,7 +413,7 @@ window.InlineEditor.Element = function (node, doc) {
 };
 
 // changes element to indicated element type, preserving selection, attributes, and contents
-window.InlineEditor.Element.prototype.changeTypeSafe = function (type) {
+InlineEditor.Element.prototype.changeTypeSafe = function (type) {
   var elem = new InlineEditor.Element(type);
   $(this.node.attributes).each(function () {
     $(elem.node).attr(this.name, this.value);
@@ -421,18 +421,18 @@ window.InlineEditor.Element.prototype.changeTypeSafe = function (type) {
   this.replaceWithSafe(elem);
 };
 // wraps element contents with indicated element type, preserving selection and contents
-window.InlineEditor.Element.prototype.wrapContentsWithTypeSafe = function (type) {
+InlineEditor.Element.prototype.wrapContentsWithTypeSafe = function (type) {
   this.wrapContentsSafe(new InlineEditor.Element(type));
 };
 
 // changes element to indicated InlineEditor.Element, preserving selection and contents
-window.InlineEditor.Element.prototype.replaceWithSafe = function (elem) {
+InlineEditor.Element.prototype.replaceWithSafe = function (elem) {
   var sel = InlineEditor.Selection.newForReplacingElement(this, elem);
   new InlineEditor.Range(this.document).replaceElementWithElement(this, elem);
   sel.restore();
 };
 // wraps element contents with indicated InlineEditor.Element, preserving selection and contents
-window.InlineEditor.Element.prototype.wrapContentsSafe = function (elem) {
+InlineEditor.Element.prototype.wrapContentsSafe = function (elem) {
   var sel = InlineEditor.Selection.newForReplacingElement(this, elem);
   new InlineEditor.Range(this.document).wrapElementContentsWithElement(this, elem);
   sel.restore();
@@ -447,7 +447,7 @@ window.InlineEditor.Element.prototype.wrapContentsSafe = function (elem) {
 // 
 
 // constructor using optional indicated native Range, or a new one with indicated Document, or window.document
-window.InlineEditor.Range = function (with_what, to_what) {
+InlineEditor.Range = function (with_what, to_what) {
   // console.debug('new Range called with: ' + with_what + ', ' + to_what);
   this.document = InlineEditor.getDocumentFrom(with_what);
   if (this.document === null) {
@@ -464,7 +464,7 @@ window.InlineEditor.Range = function (with_what, to_what) {
 };
 
 // utility for getting a document object from a variety of objects...
-window.InlineEditor.getDocumentFrom = function (with_what) {
+InlineEditor.getDocumentFrom = function (with_what) {
   // console.debug('getDocumentFrom called with: ' + with_what);
   if (! with_what) {
     // console.debug('getDocumentFrom returning window.document: ' + window.document);
@@ -488,44 +488,44 @@ window.InlineEditor.getDocumentFrom = function (with_what) {
 };
 
 // wraps current InlineEditor.Range with indicated element type, preserving selection and contents
-window.InlineEditor.Range.prototype.wrapWithTypeSafe = function (type) {
+InlineEditor.Range.prototype.wrapWithTypeSafe = function (type) {
   this.wrapWithElementSafe(new InlineEditor.Element(type));
 };
 // wraps current InlineEditor.Range with indicated InlineEditor.Element, preserving selection and contents
-window.InlineEditor.Range.prototype.wrapWithElementSafe = function (elem) {
+InlineEditor.Range.prototype.wrapWithElementSafe = function (elem) {
   var sel = new InlineEditor.Selection(this.document);
   this.wrapWithElement(elem);
   sel.restore();
 };
 
 // replaces an InlineEditor.Element with another, using ranges
-window.InlineEditor.Range.prototype.replaceElementWithElement = function (old_elem, new_elem) {
+InlineEditor.Range.prototype.replaceElementWithElement = function (old_elem, new_elem) {
   var contents = this.extractElementContentNodes(old_elem);
   this.deleteElementAndContents(old_elem);
   this.insertElement(new_elem, contents);
 };
 // wraps contents of an InlineEditor.Element with indicated InlineEditor.Element, using ranges
-window.InlineEditor.Range.prototype.wrapElementContentsWithElement = function (old_elem, new_elem) {
+InlineEditor.Range.prototype.wrapElementContentsWithElement = function (old_elem, new_elem) {
   this.insertElement(new_elem, this.extractElementContentNodes(old_elem));
 };
 // wraps current InlineEditor.Range with indicated InlineEditor.Element
-window.InlineEditor.Range.prototype.wrapWithElement = function (elem) {
+InlineEditor.Range.prototype.wrapWithElement = function (elem) {
   this.insertElement(elem, this.range.extractContents());
 };
 
 // selects, extracts (removes), and returns contents of indicated InlineEditor.Element
-window.InlineEditor.Range.prototype.extractElementContentNodes = function (elem) {
+InlineEditor.Range.prototype.extractElementContentNodes = function (elem) {
   this.selectElementContents(elem);
   return this.range.extractContents();
 };
 // selects and deletes indicated InlineEditor.Element, and any contents it may contain
-window.InlineEditor.Range.prototype.deleteElementAndContents = function (elem) {
+InlineEditor.Range.prototype.deleteElementAndContents = function (elem) {
   this.select(elem);
   this.range.deleteContents();
 };
 
 // insert InlineEditor.Element at beginning of current InlineEditor.Range, optionally populating it with given content node(s)
-window.InlineEditor.Range.prototype.insertElement = function (elem, contents) {
+InlineEditor.Range.prototype.insertElement = function (elem, contents) {
   this.range.insertNode(elem.node);
   if (contents) {
     this.selectElementContents(elem);
@@ -534,7 +534,7 @@ window.InlineEditor.Range.prototype.insertElement = function (elem, contents) {
 };
 
 // checks if given argument can be selected with new InlineEditor.Range().select()
-window.InlineEditor.Range.isSelectable = function (with_what) {
+InlineEditor.Range.isSelectable = function (with_what) {
   // console.debug('Range isSelectable called with: ' + with_what);
   // console.debug('Range isSelectable return type: ' + (
   //   (with_what && with_what.anchorNode && with_what.focusNode && '1') ||
@@ -547,7 +547,7 @@ window.InlineEditor.Range.isSelectable = function (with_what) {
 };
 // when given one arg: selects a given InlineEditor.Element, Selection, or DOM Node with current range
 // when given two args: selects area inclusively between two InlineEditor.Element objects, Nodes, or Selections
-window.InlineEditor.Range.prototype.select = function (with_what, to_what) {
+InlineEditor.Range.prototype.select = function (with_what, to_what) {
   // console.debug('range select called with: ' + with_what + ', ' + to_what);
   if (with_what.anchorNode) {
     // alert(with_what.anchorNode + ' ' + with_what.anchorOffset);
@@ -578,7 +578,7 @@ window.InlineEditor.Range.prototype.select = function (with_what, to_what) {
   // console.debug('range select returning');
 };
 // selects a given DOM Node with current range
-window.InlineEditor.Range.prototype.selectNode = function (node) {
+InlineEditor.Range.prototype.selectNode = function (node) {
   try {
     this.range.selectNode(node);
   } catch (e) {
@@ -586,20 +586,20 @@ window.InlineEditor.Range.prototype.selectNode = function (node) {
   }
 };
 // selects the contents of an InlineEditor.Element with current range
-window.InlineEditor.Range.prototype.selectElementContents = function (elem) {
+InlineEditor.Range.prototype.selectElementContents = function (elem) {
   this.selectNodeContents(elem.node);
 };
 // selects the contents of a DOM Node with current range
-window.InlineEditor.Range.prototype.selectNodeContents = function (node) {
+InlineEditor.Range.prototype.selectNodeContents = function (node) {
   this.range.selectNodeContents(node);
 };
 
 // tests if current range intersects an InlineEditor.Element
-window.InlineEditor.Range.prototype.intersectsElement = function (elem) {
+InlineEditor.Range.prototype.intersectsElement = function (elem) {
   return this.intersectsNode(elem.node);
 };
 // tests if current range intersects a DOM Node
-window.InlineEditor.Range.prototype.intersectsNode = function (node) {
+InlineEditor.Range.prototype.intersectsNode = function (node) {
   // some browsers have this built in (FF<=2)
   if (this.range.intersectsNode) {
     return this.range.intersectsNode(node);
@@ -609,7 +609,7 @@ window.InlineEditor.Range.prototype.intersectsNode = function (node) {
   }
 };
 // tests if current range intersects another InlineEditor.Range
-window.InlineEditor.Range.prototype.intersectsRange = function (range) {
+InlineEditor.Range.prototype.intersectsRange = function (range) {
   return this.range.compareBoundaryPoints(Range.END_TO_START, range.range) === -1 &&
          this.range.compareBoundaryPoints(Range.START_TO_END, range.range) ===  1;
 };
@@ -637,19 +637,19 @@ window.InlineEditor.Range.prototype.equals = function (range) {
 // (although those that manipulate the real position in relation to a snapshot are instance ones of course)
 // 
 
-window.InlineEditor.isDocument = function (doc) {
+InlineEditor.isDocument = function (doc) {
   return doc.documentElement && doc.defaultView;
 };
-window.InlineEditor.isSelection = function (sel) {
+InlineEditor.isSelection = function (sel) {
   alert(sel.anchorNode);
   return sel.anchorNode && sel.focusNode;
 };
-window.InlineEditor.isNode = function (node) {
+InlineEditor.isNode = function (node) {
   return node.ownerDocument;
 }
 
 // constructor takes an optional window object to base the selection on
-window.InlineEditor.Selection = function (with_what) {
+InlineEditor.Selection = function (with_what) {
   var sel;
   if (! with_what) {
     this.window = window;
@@ -674,30 +674,30 @@ window.InlineEditor.Selection = function (with_what) {
 };
 
 // tests if selection intersects indicated InlineEditor.Element
-window.InlineEditor.Selection.prototype.intersectsElement = function (elem) {
+InlineEditor.Selection.prototype.intersectsElement = function (elem) {
   return this.intersectsNode(elem.node);
 };
 // tests if selection intersects indicated DOM Node
 // some browsers like FF have an optimization for the current-selection version (Opera claims to have it, but it doesn't function!!)
-window.InlineEditor.Selection.prototype.intersectsNode = function (node) {
+InlineEditor.Selection.prototype.intersectsNode = function (node) {
   return new InlineEditor.Range(this).intersectsNode(node);
 };
-window.InlineEditor.Selection.intersectsNode = function (node) {
+InlineEditor.Selection.intersectsNode = function (node) {
   var sel = node.ownerDocument.defaultView.getSelection();
   return sel.containsNode && ! navigator.userAgent.match(/Opera/) ? sel.containsNode(node, true) : new InlineEditor.Range(sel).intersectsNode(node);
 };
 // tests if selection intersects indicated InlineEditor.Range
-window.InlineEditor.Selection.prototype.intersectsRange = function (range) {
+InlineEditor.Selection.prototype.intersectsRange = function (range) {
   return new InlineEditor.Range(this).intersectsRange(range);
 };
-window.InlineEditor.Selection.intersectsRange = function (range) {
+InlineEditor.Selection.intersectsRange = function (range) {
   return new InlineEditor.Range(range.window.getSelection()).intersectsRange(range);
 };
 
 // Saf/Chr will not properly put the cursor inside a contentEditable element, if you are moving focus from a form element!
 // this fixes that (and does nothing if it wasn't broken), call it from the onfocus event to fix it
 // algorithm: if cursor seems to be nowhere, put it at the beginning of the indicated node
-window.InlineEditor.Selection.putInNode = function (node) {
+InlineEditor.Selection.putInNode = function (node) {
   var sel = window.getSelection();
   if (! sel.anchorNode) {
     sel.collapse(node, 0);
@@ -707,10 +707,10 @@ window.InlineEditor.Selection.putInNode = function (node) {
 // change this selection to be in relation to a new node about to be inserted where an old node exists
 // use when replacing the node, or putting a new node inside the old node spanning its entire contents
 // this way the selection will still be valid after the change is made
-window.InlineEditor.Selection.prototype.updateForReplacingElement = function (old_elem, new_elem) {
+InlineEditor.Selection.prototype.updateForReplacingElement = function (old_elem, new_elem) {
   this.updateForReplacingNode(old_elem.node, new_elem.node);
 };
-window.InlineEditor.Selection.prototype.updateForReplacingNode = function (old_node, new_node) {
+InlineEditor.Selection.prototype.updateForReplacingNode = function (old_node, new_node) {
   if (this.anchorNode === old_node) {
     this.anchorNode = new_node;
   }
@@ -718,17 +718,17 @@ window.InlineEditor.Selection.prototype.updateForReplacingNode = function (old_n
     this.focusNode  = new_node;
   }
 };
-window.InlineEditor.Selection.newForReplacingElement = function (old_elem, new_elem) {
+InlineEditor.Selection.newForReplacingElement = function (old_elem, new_elem) {
   return InlineEditor.Selection.newForReplacingNode(old_elem.node, new_elem.node);
 };
-window.InlineEditor.Selection.newForReplacingNode = function (old_node, new_node) {
+InlineEditor.Selection.newForReplacingNode = function (old_node, new_node) {
   var sel = new InlineEditor.Selection(old_node.ownerDocument);
   sel.updateForReplacingNode(old_node, new_node);
   return sel;
 };
 
 // reposition caret or reselect saved selection
-window.InlineEditor.Selection.prototype.restore = function () {
+InlineEditor.Selection.prototype.restore = function () {
   // preserving directionality of selection on browsers that support it (FF/Saf/Chr)
   var sel = this.window.getSelection();
   if (sel.collapse && sel.extend) {
@@ -742,7 +742,7 @@ window.InlineEditor.Selection.prototype.restore = function () {
 };
 
 // tests if two selection area instances point to an identical area
-window.InlineEditor.Selection.prototype.equals = function (sel) {
+InlineEditor.Selection.prototype.equals = function (sel) {
   return !! sel &&
     this.anchorNode === sel.anchorNode && this.anchorOffset === sel.anchorOffset &&
     this.focusNode  === sel.focusNode  && this.focusOffset  === sel.focusOffset;
