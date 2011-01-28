@@ -12,6 +12,7 @@ module K3
 
       #puts "config.action_view.javascript_expansions=#{config.action_view.javascript_expansions.inspect}"
       config.action_view.javascript_expansions[:k3].concat [
+        'css_browser_selector.js',
         'inline_editor.js',
         'k3/inline_editor.js',
       ]
