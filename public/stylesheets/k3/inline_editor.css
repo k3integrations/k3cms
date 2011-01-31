@@ -44,6 +44,10 @@ sub { bottom: -0.19em; }
   outline-width: 0;
 }
 
+.editing video:focus, .editing audio:focus, .editing iframe:focus, .editing object:focus {
+  outline: 1px solid #000;
+}
+
 /*------------------------------------------------------------------------------------------------*/
 /* buttons */
 
