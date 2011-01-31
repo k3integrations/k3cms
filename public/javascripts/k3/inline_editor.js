@@ -262,7 +262,7 @@ function initInlineEditor(options) {
   });
 
   $pane = $('#k3_ribbon .panes .edit')
-  $toolbar = $('<div class="k3_inline_editor_toolbar k3_section k3_inline_editor_icons"></div>').
+  $toolbar = $('<div class="k3_inline_editor k3_section"></div>').
     append('<ul></ul>').
     appendTo($pane);
   $ul = $toolbar.find('ul');
@@ -273,6 +273,7 @@ function initInlineEditor(options) {
       var $elem = $('<li><a href="javascript:;" title="' + this.label + '">' + 
         '&nbsp;' +
         '</a></li>');
+      $elem.addClass('icon');
       $elem.addClass('button');
       $elem.addClass(this.klass);
       $ul.append($elem);
