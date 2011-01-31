@@ -1,11 +1,3 @@
-- k3_ribbon_add_item :page do
-  %li
-    = link_to_function 'New Page', "jQuery('.new_page.drawer').slideToggle()"
-
-- k3_ribbon_add_item :page do
-  %li
-    = link_to 'List pages', k3_pages_path
-
 - k3_ribbon_add_drawer :new_page do
   %h2 New Page
   = form_for K3::Page.new do |f|
@@ -13,3 +5,73 @@
       Title:
       = f.text_field :title
     = f.submit 'Create'
+
+:javascript
+  $(function() {
+    $('#k3_ribbon').k3_ribbon({tabs: [
+      new K3_Ribbon.Tab('k3_pages', 'Page', [
+        new K3_Ribbon.Section('main', [
+          new K3_Ribbon.Button({
+            element: $('\
+              <li class="icon button new_page"> \
+                <a title="New Page" href="javascript:;">&nbsp;</a> \
+              </li> \
+            '),
+            onClick:  function() { $(this).k3_ribbon('isEnabled') && $(this).trigger('invoke'); },
+            onInvoke: function() { $('.new_page.drawer').slideToggle(); $('.new_page.drawer :input:visible:eq(0)').focus() }
+          }),
+          new K3_Ribbon.Button({
+            element: $('\
+              <li class="icon button page_metadata"> \
+                <a title="Page Information" href="javascript:;">&nbsp;</a> \
+              </li> \
+            '),
+            onClick:  function() { $(this).k3_ribbon('isEnabled') && $(this).trigger('invoke'); },
+            onInvoke: function() { $('.k3_page_metadata.drawer').slideToggle(); $('.k3_page_metadata.drawer .editable:visible:eq(0)').focus() }
+          }),
+          new K3_Ribbon.Button({
+            element: $('\
+              <li class="icon button page_delete"> \
+                <a title="Delete Page" data-method="delete" rel="nofollow" href="javascript:;">&nbsp;</a> \
+              </li> \
+            '),
+            // This gets called before Rails' click handler, so we can (and have to, unless you know another way) use it to disable/enable Rails' default behavior
+            onMousedown: function(event) {
+              var a = $(this).find('a').eq(0);
+              if ($(this).k3_ribbon('isEnabled') && K3.current_object) {
+                a.attr('data-confirm', "Are you sure you want to delete this page?");
+                a.attr('href', K3.current_object.url);
+              } else {
+                a.removeAttr('data-confirm');
+                // Disable the hidden form by setting its action to a no-op
+                a.attr('href', 'javascript:;');
+              }
+            },
+          }),
+          new K3_Ribbon.Button({
+            element: $('\
+              <li class="icon button page_list"> \
+                <a title="List Pages" href="#{k3_pages_path}">&nbsp;</a> \
+              </li> \
+            '),
+            onMousedown: function(event) {
+              var a = $(this).find('a').eq(0);
+              if ($(this).k3_ribbon('isEnabled')) {
+                a.attr('href', a.data('href'));
+              } else {
+                a.data('href', a.attr('href'));
+                a.attr('href', 'javascript:;');
+              }
+            },
+          }),
+        ])
+      ])
+    ]})
+    $('#k3_ribbon').k3_ribbon({
+      always_enabled: [
+        '.k3_pages .new_page.button',
+        '.k3_pages .page_list.button',
+      ]
+    });
+  })
+
