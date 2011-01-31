@@ -4,7 +4,7 @@
       %ul
         %li.toggle_edit_mode
           Edit mode: #{{true => 'on', false => 'off'}[edit_mode?]}
-          = link_to "Turn #{{false => 'on', true => 'off'}[edit_mode?]}", p=params.merge({:edit => (!edit_mode?).to_s})
+          = link_to "Turn #{{false => 'on', true => 'off'}[edit_mode?]}", params.merge({:edit => (!edit_mode?).to_s})
 
     .split_right
       %ul
@@ -13,7 +13,6 @@
 
   .row.row_2
     %ul.tabs
-      %li       <a href="#page">Page</a>
       %li       <a href="#edit">Edit</a>
 
       - if outer_content_for?(:last_saved_status)
@@ -22,13 +21,8 @@
 
       %li.admin <a href="#admin">Admin</a>
 
-
   .row.row_3
     .panes
-      .page
-        - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:page] || []).each do |item|
-          = item
-
       .edit
         - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:edit] || []).each do |item|
           = item
@@ -46,6 +40,8 @@
 
 :javascript
   $(function() {
-    // setup ul.tabs to work as tabs for each div directly under div.panes
+    $('#k3_ribbon').k3_ribbon();
+    $('#k3_ribbon').k3_ribbon('render');
+
     $("ul.tabs").tabs("div.panes > div");
   });
