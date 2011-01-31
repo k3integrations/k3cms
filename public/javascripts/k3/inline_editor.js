@@ -189,20 +189,23 @@ Object.keys = Object.keys || (function () {
 
 //==================================================================================================
 K3_InlineEditor = {
-  updatePageFromObject: function(object_name, object_id, object, element_data) {
+  updatePageFromObject: function(object_name, object_id, object, source_element) {
     $.each(object, function(attr_name, value) {
-      if (attr_name == element_data.attribute) {
-        // Don't update the element they just saved with the data loaded from the database because they may have continued editing immediately after saving and we don't want to blow those changes away
-      } else {
-        var element = $('[data-object=' + object_name + '][data-object-id=' + object_id + '][data-attribute=' + attr_name + ']')
-        if (value === null) value = '';
-        if (element.length > 0) {
+      if (value === null) value = '';
+      $('[data-object=' + object_name + '][data-object-id=' + object_id + '][data-attribute=' + attr_name + ']').each(function (index) {
+        var element = $(this);
+        if (element.get(0) == source_element.get(0)) {
+          // Don't update the element they just saved with the data loaded from the database because they may have continued editing immediately after saving and we don't want to blow those changes away
+          //console.log('Skipping', element)
+        } else {
           if (element.html() != value) {
             //console.log("Updating", element, "to: " + value, "differs from old value: " + element.html());
             element.html(value)
+          } else {
+            //console.log("Not updating", element, "to: '" + value, "'; doesn't differ from old value: '" + element.html() + "'");
           }
         }
-      }
+      })
     })
   },
 }
@@ -250,7 +253,7 @@ function initInlineEditor(options) {
             // Default handler
             method = K3_InlineEditor.updatePageFromObject;
           }
-          method(object_name, element_data['object-id'], object[object_name], element_data)
+          method(object_name, element_data['object-id'], object[object_name], this)
         })
 
         $('#last_saved_status').html('Saved seconds ago');
