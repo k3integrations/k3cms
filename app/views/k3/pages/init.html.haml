@@ -12,29 +12,20 @@
       new K3_Ribbon.Tab('k3_pages', 'Page', [
         new K3_Ribbon.Section('main', [
           new K3_Ribbon.Button({
-            element: $('\
-              <li class="icon button new_page"> \
-                <a title="New Page" href="javascript:;">&nbsp;</a> \
-              </li> \
-            '),
+            element: $('<li/>', { class: "icon button new_page" }).
+              append($('<a/>', {title: "New Page", href: "javascript:;", html: '&nbsp;'})),
             onClick:  function() { $(this).k3_ribbon('isEnabled') && $(this).trigger('invoke'); },
             onInvoke: function() { $('.new_page.drawer').slideToggle(); $('.new_page.drawer :input:visible:eq(0)').focus() }
           }),
           new K3_Ribbon.Button({
-            element: $('\
-              <li class="icon button page_metadata"> \
-                <a title="Page Information" href="javascript:;">&nbsp;</a> \
-              </li> \
-            '),
+            element: $('<li/>', { class: "icon button page_metadata" }).
+              append($('<a/>', {title: "Page Information", href: "javascript:;", html: '&nbsp;'})),
             onClick:  function() { $(this).k3_ribbon('isEnabled') && $(this).trigger('invoke'); },
             onInvoke: function() { $('.k3_page_metadata.drawer').slideToggle(); $('.k3_page_metadata.drawer .editable:visible:eq(0)').focus() }
           }),
           new K3_Ribbon.Button({
-            element: $('\
-              <li class="icon button page_delete"> \
-                <a title="Delete Page" data-method="delete" rel="nofollow" href="javascript:;">&nbsp;</a> \
-              </li> \
-            '),
+            element: $('<li/>', { class: "icon button page_delete" }).
+              append($('<a/>', {title: "Delete Page", href: "javascript:;", html: '&nbsp;', 'data-method': "delete" })),
             // This gets called before Rails' click handler, so we can (and have to, unless you know another way) use it to disable/enable Rails' default behavior
             onMousedown: function(event) {
               var a = $(this).find('a').eq(0);
@@ -49,11 +40,8 @@
             },
           }),
           new K3_Ribbon.Button({
-            element: $('\
-              <li class="icon button page_list"> \
-                <a title="List Pages" href="#{k3_pages_path}">&nbsp;</a> \
-              </li> \
-            '),
+            element: $('<li/>', { class: "icon button page_list" }).
+              append($('<a/>', {title: "List Pages", href: "#{k3_pages_path}", html: '&nbsp;'})),
             onMousedown: function(event) {
               var a = $(this).find('a').eq(0);
               if ($(this).k3_ribbon('isEnabled')) {
