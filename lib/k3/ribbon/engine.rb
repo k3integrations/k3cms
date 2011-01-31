@@ -9,7 +9,7 @@ module K3
 
     class Engine < Rails::Engine
       config.action_view.javascript_expansions[:k3].concat [
-        'http://cdn.jquerytools.org/1.2.5/all/jquery.tools.min.js',
+        'jquery.tools.min.js',
         'k3/ribbon.js',
       ]
 
