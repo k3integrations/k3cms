@@ -74,6 +74,8 @@ InlineEditor.prototype.updateOptions = function (options) {
   this.bindEventHandlers();
 };
 
+InlineEditor.SUB_FOCUSABLE_TYPES = ['video', 'audio', 'iframe', 'object'];
+InlineEditor.SUB_FOCUSABLE_SELECTOR = InlineEditor.SUB_FOCUSABLE_TYPES.join(', ');
 InlineEditor.prototype.bindEventHandlers = function () {
   var $node = $(this.node);
   var options = $node.data();
@@ -89,23 +91,47 @@ InlineEditor.prototype.bindEventHandlers = function () {
   $node.bind('save_error.inline_editor'     , {}, options.saveError);
   $node.bind('save_if_changed.inline_editor', {}, InlineEditor.saveIfChanged);
   $node.bind('focusout.inline_editor'       , {}, InlineEditor.focusout);
+  var self = this;
+  $node.find(InlineEditor.SUB_FOCUSABLE_SELECTOR).each(function() {
+    self.bindSubEventHandlersToNode(this);
+  });
+}
+InlineEditor.prototype.bindSubEventHandlersToNode = function (node) {
+  var $node = $(node);
+  $node.unbind('.inline_editor');
+  $node.bind('focus.inline_editor', {}, InlineEditor.subFocusHandler);
+  $node.bind('blur.inline_editor' , {}, InlineEditor.subBlurHandler);
 }
 
 // checks if focus is currently on any active InlineEditor-editable object...
 InlineEditor.isFocusedEditor = function () {
-  return window.document.activeElement && window.document.activeElement.isContentEditable && !! InlineEditor.focusedEditor();
+  var editor = InlineEditor.focusedEditor();
+  return !! editor && editor.isEnabled();
 };
 // returns currently focused InlineEditor object instance...
 InlineEditor.focusedEditor = function () {
-  return InlineEditor.getEditor(window.document.activeElement);
+  var focused_elem = window.document.activeElement;
+  if (! focused_elem) return null;
+  return InlineEditor.getEditorOrParentEditor(focused_elem);
 };
 // returns any editor instance that is attached directly to a given DOM node
 InlineEditor.getEditor = function (node) {
   return $(node).data('inlineEditor');
 };
+InlineEditor.getEditorOrParentEditor = function (node) {
+  var nodes = $(node).parents().andSelf();
+  for (var idx = 0; idx < nodes.length; idx++) {
+    var editor = InlineEditor.getEditor(nodes.get(idx));
+    if (!! editor) return editor;
+  }
+  return null;
+}
 // checks if focus is currently on this editable area instance...
 InlineEditor.prototype.isFocused = function () {
-  return this.document.activeElement === this.node && this.node.isContentEditable;
+  var focused_elem = window.document.activeElement;
+  if (! focused_elem) return false;
+  var editor = InlineEditor.getEditorOrParentEditor(focused_elem);
+  return !! editor && editor === this && editor.isEnabled();
 };
 // shortcut to check if editable area hasn't been disabled
 InlineEditor.prototype.isEnabled = function () {
@@ -278,9 +304,13 @@ InlineEditor.defaultLiveChangeHandler = function (evt) {
 };
 
 InlineEditor.focusHandler = function (evt) {
-  if (InlineEditor.in_focusHandler) return; // recursion control (the putInNode call below causes this to be called again)
-  InlineEditor.in_focusHandler = true;
+  // console.debug('focused:', evt.currentTarget, evt.currentTarget.ownerDocument.activeElement);
+  // if (InlineEditor.in_focusHandler) return; // recursion control (the putInNode call below causes this to be called again)
+  // InlineEditor.in_focusHandler = true;
   var $this = $(this);
+  
+  // skip if already focused (the putInNode call below can cause this to be called again)
+  if ($this.hasClass($this.data('editing-class'))) return
 
   // add class that indicates it's currently being edited
   $this.addClass($this.data('editing-class'));
@@ -290,10 +320,32 @@ InlineEditor.focusHandler = function (evt) {
   InlineEditor.Selection.putInNode(this);
 
   $this.trigger('custom_focus');
-  InlineEditor.in_focusHandler = false;
+  // InlineEditor.in_focusHandler = false;
 };
+// focus on something inside an editable element (but not the editable element itself)
+InlineEditor.subFocusHandler = function (evt) {
+  // console.debug('focused:', evt.currentTarget, evt.currentTarget.ownerDocument.activeElement,
+  //   evt.currentTarget.ownerDocument.defaultView.getSelection().anchorNode, evt.currentTarget.ownerDocument.defaultView.getSelection().anchorOffset,
+  //   evt.currentTarget.ownerDocument.defaultView.getSelection().focusNode, evt.currentTarget.ownerDocument.defaultView.getSelection().focusOffset
+  // );
+  var node = InlineEditor.getEditorOrParentEditor(evt.currentTarget).node;
+  var $node = $(node);
+  if ($node.hasClass($node.data('editing-class'))) return;
+  $node.addClass($node.data('editing-class'));
+  // just in FF: if selection is in parent node, move it to around the child node... other browsers fail the if statement and do nothing
+  if (evt.currentTarget.ownerDocument.defaultView.getSelection().anchorNode == node)
+    new InlineEditor.Selection(evt.currentTarget);
+  $node.trigger('custom_focus');
+}
+InlineEditor.subBlurHandler = function (evt) {
+  // console.debug('blured:', evt.currentTarget, evt.currentTarget.ownerDocument.activeElement, evt.currentTarget.ownerDocument.defaultView.getSelection().anchorNode, evt.currentTarget.ownerDocument.defaultView.getSelection().focusNode);
+  var $this = $(InlineEditor.getEditorOrParentEditor(evt.currentTarget).node);
+  if (! $this.hasClass($this.data('editing-class'))) return;
+  $this.removeClass($this.data('editing-class'));
+}
 
 InlineEditor.defaultBlurHandler = function (evt) {
+  // console.debug('blured:', evt.currentTarget, evt.currentTarget.ownerDocument.activeElement);
   var $this = $(this), editor = InlineEditor.getEditor(this);
   // remove class that indicates it's currently being edited
   $this.removeClass($this.data('editing-class'));
@@ -641,7 +693,7 @@ InlineEditor.isDocument = function (doc) {
   return doc.documentElement && doc.defaultView;
 };
 InlineEditor.isSelection = function (sel) {
-  alert(sel.anchorNode);
+  // alert(sel.anchorNode);
   return sel.anchorNode && sel.focusNode;
 };
 InlineEditor.isNode = function (node) {
@@ -663,6 +715,19 @@ InlineEditor.Selection = function (with_what) {
     this.document = with_what.anchorNode.ownerDocument;
     this.window = this.document.defaultView;
     sel = with_what;
+  } else if (InlineEditor.isNode(with_what)){
+    this.document = with_what.ownerDocument;
+    this.window = this.document.defaultView;
+    sel = this.window.getSelection();
+    var range = this.document.createRange();
+    range.selectNode(with_what);
+    // range.setStartBefore(with_what);
+    // range.setEndAfter(with_what);
+    // sel.removeAllRanges();
+    sel.addRange(range);
+    // console.debug('selecting:', sel.anchorNode, sel.anchorOffset, sel.focusNode, sel.focusOffset);
+    // sel.collapse(range.startContainer, range.startOffset);
+    // sel.extend(range.endContainer, range.endOffiset);
   } else {
     throw 'bad parameter for InlineEditor.Selection contructor';
   }
@@ -729,6 +794,7 @@ InlineEditor.Selection.newForReplacingNode = function (old_node, new_node) {
 
 // reposition caret or reselect saved selection
 InlineEditor.Selection.prototype.restore = function () {
+  if (! this.anchorNode) return;
   // preserving directionality of selection on browsers that support it (FF/Saf/Chr)
   var sel = this.window.getSelection();
   if (sel.collapse && sel.extend) {

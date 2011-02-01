@@ -18,8 +18,8 @@ toolbar_options = [
   ['Align Right',      'align_right',    false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyRight']],
   ['Insert/edit link', 'link',           true,  function(){toggleDrawer('link_drawer')},  false, false],
   ['Remove link',      'unlink',         true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['unlink']],
-  ['Insert Image',     'image',          false, function(){toggleDrawer('image_drawer')}, false, false],
-  ['Insert Video',     'video',          false, function(){toggleDrawer('video_drawer')}, false, false],
+  ['Insert/edit Image', 'image',         false, function(){toggleDrawer('image_drawer')}, false, false],
+  ['Insert/edit Video', 'video',         false, function(){toggleDrawer('video_drawer')}, false, InlineEditor.isFocusedEditor],
   // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertParagraph']],
   // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'p']],
   // ['Pre',           'blockPre',       false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'pre']],
@@ -118,7 +118,8 @@ var drawer_options = {
       {'id': 'height',   label: 'Height', size: 10}
     ],
     get_editable: function() {
-      return null; // TODO
+      console.debug(InlineEditor.isFocusedEditor(), window.document.activeElement.nodeName, window.document.activeElement);
+      return (InlineEditor.isFocusedEditor() && window.document.activeElement.nodeName == 'VIDEO') ? window.document.activeElement : null;
     },
     populate_editable_fields: function(video_node) {
       // TODO
@@ -393,6 +394,9 @@ function initInlineEditor(options) {
   $('.editable').bind('cursor_move custom_focus', function (event) {
     refreshButtons();
   });
+  // $('.editable').find(InlineEditor.SUB_FOCUSABLE_SELECTOR).bind('custom_focus', function (event) {
+  //   refreshButtons();
+  // });
   
   // draw javascript-only drawers
   var dwr_def = drawer_defaults;
@@ -424,6 +428,15 @@ function initInlineEditor(options) {
       return false;
     });
   }
+  
+  // $('.editable video').focus(function(event) {
+  //   // console.debug(event);
+  //   $(event.currentTarget).addClass('selected');
+  // });
+  // $('.editable video').blur(function(event) {
+  //   // console.debug(event);
+  //   $(event.currentTarget).removeClass('selected');
+  // });
 }
 
 
@@ -437,14 +450,12 @@ function refreshButtons() {
     return;
   }
 
-  var editable_active = InlineEditor.isFocusedEditor();
-  //console.log("refreshButtons: editable_active=", editable_active);
   var editor = InlineEditor.focusedEditor();
 
   $(toolbar_options).each(function (index) {
     var btn = $('#k3_ribbon .' + this.klass);
     btn.removeClass('toggled_on');
-    if (! editable_active) {
+    if (! editor) {
       btn.addClass('disabled');
     } else {
       // Block level editor buttons are disabled for inline-level editable fields.
@@ -458,7 +469,12 @@ function refreshButtons() {
           }
         }
         if (this.query_enabled_cmd) {
-          if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
+          if (
+            typeof this.query_enabled_cmd == 'function' ?
+            this.query_enabled_cmd() :
+            editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])
+          ) {
+          // if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
             btn.removeClass('disabled')
           } else {
             btn.addClass('disabled');
@@ -480,7 +496,7 @@ function refreshButtons() {
   select.get(0).selectedIndex = -1;
   //console.log("select.get(0).selectedIndex=", select.get(0).selectedIndex);
 
-  if (! editable_active) {
+  if (! editor) {
     select.attr('disabled', true);
   } else {
     select.removeAttr('disabled');
@@ -502,7 +518,12 @@ function refreshButtons() {
         }
 
         if (this.query_enabled_cmd) {
-          if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
+          if (
+            typeof this.query_enabled_cmd == 'function' ?
+            this.query_enabled_cmd() :
+            editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])
+          ) {
+          // if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
             option.removeAttr('disabled');
           } else {
             option.attr('disabled', true);
@@ -528,6 +549,8 @@ function toggleDrawer(id) {
   } else {
     drawer.data('focused', InlineEditor.focusedEditor());
     drawer.data('selected', new InlineEditor.Selection(this.document));
+    // console.debug('focus:', drawer.data('focused').node)
+    // console.debug('selected:', drawer.data('selected').anchorNode, ',', drawer.data('selected').anchorOffset, '-', drawer.data('selected').focusNode, ',', drawer.data('selected').focusOffset);
     drawer.trigger('open');
   }
   drawer.slideToggle();
