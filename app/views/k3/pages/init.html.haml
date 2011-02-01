@@ -9,8 +9,8 @@
 :javascript
   $(function() {
     $('#k3_ribbon').k3_ribbon({tabs: [
-      new K3_Ribbon.Tab('k3_pages', 'Page', [
-        new K3_Ribbon.Section('main', [
+      new K3_Ribbon.Tab('k3_pages', {label: 'Page', sections: [
+        new K3_Ribbon.Section('main', {items: [
           new K3_Ribbon.Button({
             element: $('<li/>', { class: "icon button new_page" }).
               append($('<a/>', {title: "New Page", href: "javascript:;", html: '&nbsp;'})),
@@ -52,8 +52,8 @@
               }
             },
           }),
-        ])
-      ])
+        ]})
+      ]})
     ]})
     $('#k3_ribbon').k3_ribbon({
       always_enabled: [
