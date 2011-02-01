@@ -144,7 +144,7 @@ var structured_toolbar_options = [];
 $(toolbar_options).each(function (i) {
   option = {
     label:             this[0],
-    klass:             this[1],
+    class:             this[1],
     is_inline:         this[2],
     editor_cmd:        this[3],
     query_state_cmd:   this[4],
@@ -265,21 +265,6 @@ function initInlineEditor(options) {
   //------------------------------------------------------------------------------------------------
   // Integrate with K3_Ribbon
 
-  var $ribbon = $('#k3_ribbon');
-  /*
-  $ribbon.mousedown(function() {
-    var data = $('#k3_ribbon').data('k3_inline_editor');
-    $(this).data('focused', InlineEditor.focusedEditor());
-    $(this).data('selected', new InlineEditor.Selection(this.document));
-  });
-  */
-
-  var $pane = $ribbon.find('.panes .edit')
-  var $toolbar = $('<div class="k3_inline_editor k3_section"></div>').
-    append('<ul></ul>').
-    appendTo($pane);
-  var $ul = $toolbar.find('ul');
-  
   var tab = new K3_Ribbon.Tab('k3_inline_editor', {
     label: 'Edit', 
     sections: [
@@ -290,18 +275,16 @@ function initInlineEditor(options) {
     onClick: function() {
       InlineEditor.last_focused_element && InlineEditor.last_focused_element.focus();
       InlineEditor.last_selection       && InlineEditor.last_selection.restore();
-
-      //var data = $('#k3_ribbon').data('k3_inline_editor')
-      //data && data.last_focused_element && data.last_focused_editor.node.focus();
-      //data && data.last_selection       && data.last_selection.restore();
     },
   })
 
+  //------------------------------------------------------------------------------------------------
   // Add all the buttons to the ribbon/toolbar, according to the configuration stored in toolbar_options
   $(toolbar_options).each(function (index) {
-    if (!this.klass.match(/^block/)) {
+    var toolbar_option = this;
+    if (!this.class.match(/^block/)) {
       var button = new K3_Ribbon.Button({
-        element: $('<li/>', { class: "icon button " + this.klass }).
+        element: $('<li/>', { class: "icon button " + this.class }).
           append($('<a/>', {title: this.label, href: "javascript:;", html: '&nbsp;'})),
         onMousedown: function() {
           $(this).k3_ribbon('isEnabled') && $(this).trigger('invoke');
@@ -315,43 +298,164 @@ function initInlineEditor(options) {
 
           return false;
         },
+        onInvoke: function() {
+          var editor = InlineEditor.focusedEditor();
+          // ignore button presses if no editable area is selected (you can also use InlineEditor.isFocusedEditor())
+          if (! editor || ! editor.isEnabled() || $(this).hasClass('disabled')) {
+            return false;
+          }
+
+          // execute the command
+          if (typeof toolbar_option.editor_cmd == 'function') {
+            toolbar_option.editor_cmd();
+          } else {
+            var arg = typeof toolbar_option.cmd_args[1] == 'function' ? toolbar_option.cmd_args[1]() : toolbar_option.cmd_args[1];
+            editor[toolbar_option.editor_cmd](toolbar_option.cmd_args[0], arg);
+          }
+        },
+        refresh: function() {
+          var editor = InlineEditor.focusedEditor();
+          var btn = this.element;
+          btn.removeClass('toggled_on');
+          if (! editor) {
+            btn.addClass('disabled');
+          } else {
+            // Block level editor buttons are disabled for inline-level editable fields.
+            // If we're editing a block element, then show all buttons
+            // If we're editing an inline element, then only show is_inline buttons
+            if (! editor.isInline() || toolbar_option.is_inline) {
+              if (toolbar_option.query_state_cmd) {
+                if (editor[toolbar_option.query_state_cmd](toolbar_option.cmd_args[0], toolbar_option.cmd_args[1])) {
+                  //console.log(toolbar_option.class, 'is toggled on');
+                  btn.addClass('toggled_on')
+                }
+              }
+              if (toolbar_option.query_enabled_cmd) {
+                if (
+                  typeof toolbar_option.query_enabled_cmd == 'function' ?
+                  toolbar_option.query_enabled_cmd() :
+                  editor[toolbar_option.query_enabled_cmd](toolbar_option.cmd_args[0], toolbar_option.cmd_args[1])
+                ) {
+                  btn.removeClass('disabled')
+                } else {
+                  btn.addClass('disabled');
+                }
+              } else {
+                btn.removeClass('disabled');
+              }
+            } else {
+              btn.addClass('disabled');
+            }
+          }
+        }
       })
 
       tab.sectionsByName().inline_styles.items.push(button);
     }
   });
 
+  //------------------------------------------------------------------------------------------------
   // Add list of block styles as a drop-down select menu
   var select_item = new K3_Ribbon.ToolbarItem({
     element: $('<li/>', {}).
       append($('<select/>', {class: 'select_block_style'})),
+    refresh: function() {
+      var editor = InlineEditor.focusedEditor();
+      var select = this.element.find('select');
+      select.get(0).selectedIndex = -1;
+      //console.log("select=", select);
+      if (! editor) {
+        select.attr('disabled', true);
+      } else {
+        select.removeAttr('disabled');
+        var current_block_style = null;
+
+        $(toolbar_options).each(function (index) {
+          var option = $('#k3_ribbon .' + this.class);
+          if (this.class.match(/^block/) && 
+            (! editor.isInline() || this.is_inline)
+          ) {
+            if (this.query_state_cmd) {
+              if (editor[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1])) {
+                //console.log(this.class, 'is toggled on');
+                current_block_style = this.class;
+                option.addClass('toggled_on')
+              } else {
+                option.removeClass('toggled_on');
+              }
+            }
+
+            if (this.query_enabled_cmd) {
+              if (
+                typeof this.query_enabled_cmd == 'function' ?
+                this.query_enabled_cmd() :
+                editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])
+              ) {
+              // if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
+                option.removeAttr('disabled');
+              } else {
+                option.attr('disabled', true);
+              }
+            } else {
+              option.removeAttr('disabled');
+            }
+          } else {
+            option.attr('disabled', true);
+          }
+
+        });
+        select.val(current_block_style);
+      }
+    },
   })
 
-  var $select = select_item.element.find('select');
+  var select = select_item.element.find('select');
   $(toolbar_options).each(function (index) {
-    if (this.klass.match(/^block/)) {
-      var $option = $('<option>' + this.label + '</option>');
-      $option.attr('class', this.klass);
-      $option.attr('value', this.klass);
-      //$option.innerHTML = this.label;
-      $select.append($option);
+    var toolbar_option = this;
+
+    if (this.class.match(/^block/)) {
+      var option = $('<option>' + this.label + '</option>');
+      option.attr('class', this.class);
+      option.attr('value', this.class);
+      //option.innerHTML = this.label;
+      select.append(option);
+
+      option.bind('invoke', function() {
+        var editor = InlineEditor.focusedEditor();
+        // ignore button presses if no editable area is selected (you can also use InlineEditor.isFocusedEditor())
+        if (! editor || ! editor.isEnabled() || $(this).hasClass('disabled')) {
+          return false;
+        }
+
+        // execute the command
+        if (typeof toolbar_option.editor_cmd == 'function') {
+          toolbar_option.editor_cmd();
+        } else {
+          var arg = typeof toolbar_option.cmd_args[1] == 'function' ? toolbar_option.cmd_args[1]() : toolbar_option.cmd_args[1];
+          editor[toolbar_option.editor_cmd](toolbar_option.cmd_args[0], arg);
+        }
+      });
     }
   });
 
-  // Translate the event on the select into an 'invoke' event for the relevant option
-  $select.change(function (event) {
+  // Translate the 'change' event on the select into an 'invoke' event for the relevant *option*
+  select.change(function (event) {
     //console.log($(this).get(0).selectedIndex)
-    var $option = $(this).find("option:selected").eq(0)
+    var option = $(this).find("option:selected").eq(0)
 
     // When the user clicks on the select element in the toolbar, it causes the editable element to lose focus, so we need to restore focus to the editable.
     // (When the user clicks on a normal button, this isn't a problem, because we bound 'mousedown' instead of 'click'.)
     InlineEditor.last_focused_element && InlineEditor.last_focused_element.focus();
     //InlineEditor.last_selection       && InlineEditor.last_selection.restore();
 
-    $option.trigger('invoke')
+    option.trigger('invoke')
   })
   tab.sectionsByName().block_styles.items.push(select_item);
 
+  //------------------------------------------------------------------------------------------------
+
+
+  /*
   $toolbar.mousedown(function (event) {
     InlineEditor.clicking_in_toolbar = true;
     //console.log("mousedown: InlineEditor.clicking_in_toolbar=", InlineEditor.clicking_in_toolbar);
@@ -360,34 +464,11 @@ function initInlineEditor(options) {
     InlineEditor.clicking_in_toolbar = false;
     //console.log(event.type + ": InlineEditor.clicking_in_toolbar=", InlineEditor.clicking_in_toolbar);
   });
+  */
 
   $('#k3_ribbon').k3_ribbon({tabs: [tab]})
 
   //------------------------------------------------------------------------------------------------
-  // Bind command handlers for each toolbar command
-  $(toolbar_options).each(function (index) {
-    var self = this;
-    $toolbar.find('.' + this.klass).bind('invoke', function (event) {
-      var editor = InlineEditor.focusedEditor();
-      // ignore button presses if no editable area is selected (you can also use InlineEditor.isFocusedEditor())
-      if (! editor || ! editor.isEnabled()) {
-        return false;
-      }
-
-      // execute the command
-      if (! $(this).hasClass('disabled')) {
-        if (typeof self.editor_cmd == 'function') {
-          self.editor_cmd();
-        } else {
-          var arg = typeof self.cmd_args[1] == 'function' ? self.cmd_args[1]() : self.cmd_args[1];
-          editor[self.editor_cmd](self.cmd_args[0], arg);
-        }
-      }
-
-      // refresh button state
-      refreshButtons();
-    });
-  });
 
   // set initial toolbar button state, and set handlers to keep up to date
   refreshButtons();
@@ -450,94 +531,8 @@ function refreshButtons() {
     return;
   }
 
-  var editor = InlineEditor.focusedEditor();
-
-  $(toolbar_options).each(function (index) {
-    var btn = $('#k3_ribbon .' + this.klass);
-    btn.removeClass('toggled_on');
-    if (! editor) {
-      btn.addClass('disabled');
-    } else {
-      // Block level editor buttons are disabled for inline-level editable fields.
-      // If we're editing a block element, then show all buttons
-      // If we're editing an inline element, then only show is_inline buttons
-      if (! editor.isInline() || this.is_inline) {
-        if (this.query_state_cmd) {
-          if (editor[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1])) {
-            //console.log(this.klass, 'is toggled on');
-            btn.addClass('toggled_on')
-          }
-        }
-        if (this.query_enabled_cmd) {
-          if (
-            typeof this.query_enabled_cmd == 'function' ?
-            this.query_enabled_cmd() :
-            editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])
-          ) {
-          // if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
-            btn.removeClass('disabled')
-          } else {
-            btn.addClass('disabled');
-          }
-        } else {
-          btn.removeClass('disabled');
-        }
-      } else {
-        btn.addClass('disabled');
-      }
-    }
-  });
-
-  // We can no longer just do this, because the ribbon may not have been rendered yet:
-  //var select = $('#k3_ribbon select.select_block_style');
   var ribbon = $('#k3_ribbon').k3_ribbon('get');
-  var tab = ribbon.tabsByName().k3_inline_editor;
-  var select = tab.sectionsByName().block_styles.items[0].element.find('select');
-  select.get(0).selectedIndex = -1;
-  //console.log("select.get(0).selectedIndex=", select.get(0).selectedIndex);
-
-  if (! editor) {
-    select.attr('disabled', true);
-  } else {
-    select.removeAttr('disabled');
-    var current_block_style = null;
-
-    $(toolbar_options).each(function (index) {
-      var option = $('#k3_ribbon .' + this.klass);
-      if (this.klass.match(/^block/) && 
-        (! editor.isInline() || this.is_inline)
-      ) {
-        if (this.query_state_cmd) {
-          if (editor[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1])) {
-            //console.log(this.klass, 'is toggled on');
-            current_block_style = this.klass;
-            option.addClass('toggled_on')
-          } else {
-            option.removeClass('toggled_on');
-          }
-        }
-
-        if (this.query_enabled_cmd) {
-          if (
-            typeof this.query_enabled_cmd == 'function' ?
-            this.query_enabled_cmd() :
-            editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])
-          ) {
-          // if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
-            option.removeAttr('disabled');
-          } else {
-            option.attr('disabled', true);
-          }
-        } else {
-          option.removeAttr('disabled');
-        }
-      } else {
-        option.attr('disabled', true);
-      }
-
-    });
-    //select.val(current_block_style);
-  }
+  ribbon.refresh();
 }
 
 function toggleDrawer(id) {
