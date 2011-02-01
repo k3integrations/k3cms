@@ -165,7 +165,7 @@ var structured_toolbar_options = [];
 $(toolbar_options).each(function (i) {
   option = {
     label:             this[0],
-    class:             this[1],
+    'class':           this[1],
     is_inline:         this[2],
     editor_cmd:        this[3],
     query_state_cmd:   this[4],
@@ -303,9 +303,9 @@ function initInlineEditor(options) {
   // Add all the buttons to the ribbon/toolbar, according to the configuration stored in toolbar_options
   $(toolbar_options).each(function (index) {
     var toolbar_option = this;
-    if (!this.class.match(/^block/)) {
+    if (!this['class'].match(/^block/)) {
       var button = new K3_Ribbon.Button({
-        element: $('<li/>', { class: "icon button " + this.class }).
+        element: $('<li/>', { 'class': "icon button " + this['class'] }).
           append($('<a/>', {title: this.label, href: "javascript:;", html: '&nbsp;'})),
         onMousedown: function() {
           $(this).k3_ribbon('isEnabled') && $(this).trigger('invoke');
@@ -379,7 +379,7 @@ function initInlineEditor(options) {
   // Add list of block styles as a drop-down select menu
   var select_item = new K3_Ribbon.ToolbarItem({
     element: $('<li/>', {}).
-      append($('<select/>', {class: 'select_block_style'})),
+      append($('<select/>', {'class': 'select_block_style'})),
     refresh: function() {
       var editor = InlineEditor.focusedEditor();
       var select = this.element.find('select');
@@ -392,14 +392,14 @@ function initInlineEditor(options) {
         var current_block_style = null;
 
         $(toolbar_options).each(function (index) {
-          var option = $('#k3_ribbon .' + this.class);
-          if (this.class.match(/^block/) && 
+          var option = $('#k3_ribbon .' + this['class']);
+          if (this['class'].match(/^block/) && 
             (! editor.isInline() || this.is_inline)
           ) {
             if (this.query_state_cmd) {
               if (editor[this.query_state_cmd](this.cmd_args[0], this.cmd_args[1])) {
                 //console.log(this.class, 'is toggled on');
-                current_block_style = this.class;
+                current_block_style = this['class'];
                 option.addClass('toggled_on')
               } else {
                 option.removeClass('toggled_on');
@@ -434,10 +434,10 @@ function initInlineEditor(options) {
   $(toolbar_options).each(function (index) {
     var toolbar_option = this;
 
-    if (this.class.match(/^block/)) {
+    if (this['class'].match(/^block/)) {
       var option = $('<option>' + this.label + '</option>');
-      option.attr('class', this.class);
-      option.attr('value', this.class);
+      option.attr('class', this['class']);
+      option.attr('value', this['class']);
       //option.innerHTML = this.label;
       select.append(option);
 
