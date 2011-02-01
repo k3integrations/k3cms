@@ -64,7 +64,21 @@
 })();
 
 
+//--------------------------------------------------------------------------------------------------
+function assertValidKeys(options, valid_keys) {
+  $.each(options, function(key, value) {
+    var recognized = false;
+    // TODO: replace with detect()
+    $.each(valid_keys, function(i, valid_key) {
+      recognized = recognized || key.match(valid_key);
+    });
 
+    //if ($.inArray(key, valid_keys) === -1) {
+    if (!recognized) {
+      $.error("'" + key + "' is not a recognized option");
+    }
+  })
+}
 
 //--------------------------------------------------------------------------------------------------
 K3 = {
@@ -72,7 +86,6 @@ K3 = {
 
 //--------------------------------------------------------------------------------------------------
 // Data structures
-
 
 K3_Ribbon = Class.extend({
   init: function(options) {
@@ -91,21 +104,47 @@ K3_Ribbon = Class.extend({
       $.extend(this, options);
     }
   },
-  getTabs: function(tabs){
-    this.tabs; // += tabs
-  }
+
+  refresh: function() {
+    $.each(this.tabs, function(index, tab) {
+      tab.refresh();
+    })
+  },
+
+  tabsByName: function() {
+    var tabs = {};
+    $.each(this.tabs, function(index, tab) {
+      tabs[tab.name] = tab;
+    })
+    return tabs;
+  },
 });
+
+$.extend(K3_Ribbon, {
+  bindEventHandlers: function(element, options) {
+    $.each(options, function(key, value) {
+      if (key.match(/^on/)) {
+        delete options[key];
+        var event_name = key.replace(/^on/, '').toLowerCase() + '.k3_ribbon';
+        //console.log(event_name)
+        element.bind(event_name, value);
+      }
+    });
+  },
+})
 
 // A Tab represents both a tab and the pane underneath (containing Sections) that appears when you click on the tab
 K3_Ribbon.Tab = Class.extend({
-  init: function(name, label, sections) {
+  init: function(name, options) {
+    assertValidKeys(options, ['label', 'sections', /^on/]);
     this.name = name;
-    this.label = label;
-    this.sections = sections;
+    $.extend(this, options);
   },
 
   renderTab: function() {
-    return $('<li><a href="#' + this.name + '">' + this.label + '</a></li>')
+    var element = $('<li><a href="#' + this.name + '">' + this.label + '</a></li>')
+    K3_Ribbon.bindEventHandlers.call(this, element, this);
+    return element;
   },
   renderPane: function() {
     var pane = $('<div class="' + this.name + '"></div>')
@@ -115,20 +154,41 @@ K3_Ribbon.Tab = Class.extend({
     })
     return pane;
   },
+
+  refresh: function() {
+    $.each(this.sections, function(index, section) {
+      section.refresh();
+    })
+  },
+
+  sectionsByName: function() {
+    var sections = {};
+    $.each(this.sections, function(index, section) {
+      sections[section.name] = section;
+    })
+    return sections;
+  },
 });
 
 K3_Ribbon.Section = Class.extend({
-  init: function(name, items) {
+  init: function(name, options) {
     this.name = name;
-    this.items = items;
+    assertValidKeys(options, ['label', 'items', /^on/]);
+    $.extend(this, options);
   },
   render: function() {
     var section = $('<div class="k3_section ' + this.name + '"></div>')
     $.each(this.items, function(index, item) {
       //console.log("append(item)=", item);
-      section.append(item.options.element);
+      section.append(item.element);
     });
     return section;
+  },
+
+  refresh: function() {
+    $.each(this.items, function(index, item) {
+      item.refresh();
+    })
   },
 });
 
@@ -137,17 +197,12 @@ K3_Ribbon.ToolbarItem = Class.extend({
   // onClick
   // onDisable (inherits overridable default behavior?)
   init: function(options) {
+    $.extend(this, options);
     var self = this;
-    this.options = options;
-    this.element = options.element;
-    $.each(options, function(key, value) {
-      if (key.match(/^on/)) {
-        var event_name = key.replace(/^on/, '').toLowerCase() + '.k3_ribbon';
-        //console.log(event_name)
-        self.element.bind(event_name, value);
-      }
-    });
+    K3_Ribbon.bindEventHandlers.call(this, this.element, options);
   },
+
+  refresh: $.noop,
 });
 
 K3_Ribbon.Button = K3_Ribbon.ToolbarItem.extend({
@@ -170,17 +225,21 @@ K3_Ribbon.Drawer = Class.extend({
 
   var methods = {
     init: function(options) {
-      this.each(function() {
-        $(this).addClass('k3_ribbon');
-        var ribbon = $(this).data("k3_ribbon");
-        if (ribbon) {
-          ribbon.merge(options);
-        } else {
-          ribbon = new K3_Ribbon(options);
-        }
-        //console.log('ribbon=', ribbon)
-        $(this).data("k3_ribbon", ribbon);
-      });
+      this.addClass('k3_ribbon');
+      var ribbon = this.data("k3_ribbon");
+      if (ribbon) {
+        ribbon.merge(options);
+      } else {
+        ribbon = new K3_Ribbon(options);
+      }
+      //console.log('ribbon=', ribbon)
+      this.data("k3_ribbon", ribbon);
+      return ribbon;
+    },
+
+    get: function() {
+      var ribbon = this.data('k3_ribbon');
+      return ribbon;
     },
 
     render: function() {
@@ -189,14 +248,21 @@ K3_Ribbon.Drawer = Class.extend({
       // We disable everything at init time
       // You have to explicitly call enable for any items that should be enabled.
       this.k3_ribbon('disableAll');
+
+      $("ul.tabs").tabs("div.panes > div");
+    },
+
+    refresh: function() {
+      var ribbon = this.data('k3_ribbon');
+      ribbon.refresh();
     },
 
     addTabs: function(tabs) {
       // TODO: look for duplicate tabs by name and merge their items
 
-      var data = this.data('k3_ribbon');
-      $.merge(data.tabs, tabs);
-      this.data("k3_ribbon", data)
+      var ribbon = this.data('k3_ribbon');
+      $.merge(ribbon.tabs, tabs);
+      this.data("k3_ribbon", ribbon)
     },
 
 

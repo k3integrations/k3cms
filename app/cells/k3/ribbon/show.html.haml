@@ -13,23 +13,19 @@
 
   .row.row_2
     %ul.tabs
-      %li       <a href="#edit">Edit</a>
+      -#
+        - if outer_content_for?(:last_saved_status)
+          %li#last_saved_status
+            = outer_content_for :last_saved_status
 
-      - if outer_content_for?(:last_saved_status)
-        %li#last_saved_status
-          = outer_content_for :last_saved_status
-
-      %li.admin <a href="#admin">Admin</a>
+        %li.admin <a href="#admin">Admin</a>
 
   .row.row_3
     .panes
-      .edit
-        - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:edit] || []).each do |item|
-          = item
-
-      .admin
-        - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:admin] || []).each do |item|
-          = item
+      -#
+        .admin
+          - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:admin] || []).each do |item|
+            = item
 
 
 #k3_ribbon_underneath
@@ -42,6 +38,6 @@
   $(function() {
     $('#k3_ribbon').k3_ribbon();
     $('#k3_ribbon').k3_ribbon('render');
-
-    $("ul.tabs").tabs("div.panes > div");
+    $('#k3_ribbon').k3_ribbon('refresh');
   });
+
