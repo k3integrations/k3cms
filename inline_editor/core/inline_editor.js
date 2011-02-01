@@ -587,12 +587,6 @@ InlineEditor.Range.prototype.insertElement = function (elem, contents) {
 
 // checks if given argument can be selected with new InlineEditor.Range().select()
 InlineEditor.Range.isSelectable = function (with_what) {
-  // console.debug('Range isSelectable called with: ' + with_what);
-  // console.debug('Range isSelectable return type: ' + (
-  //   (with_what && with_what.anchorNode && with_what.focusNode && '1') ||
-  //   (with_what && with_what.isInlineEditorElement && '2') ||
-  //   (with_what && InlineEditor.isNode(with_what) && ! InlineEditor.isDocument(with_what) && '3')
-  // ));
   return (with_what && with_what.anchorNode && with_what.focusNode) ||
     (with_what && with_what.isInlineEditorElement) ||
     (with_what && InlineEditor.isNode(with_what) && ! InlineEditor.isDocument(with_what));
@@ -600,24 +594,10 @@ InlineEditor.Range.isSelectable = function (with_what) {
 // when given one arg: selects a given InlineEditor.Element, Selection, or DOM Node with current range
 // when given two args: selects area inclusively between two InlineEditor.Element objects, Nodes, or Selections
 InlineEditor.Range.prototype.select = function (with_what, to_what) {
-  // console.debug('range select called with: ' + with_what + ', ' + to_what);
   if (with_what.anchorNode) {
-    // alert(with_what.anchorNode + ' ' + with_what.anchorOffset);
     this.range.setStart(with_what.anchorNode, with_what.anchorOffset);
   } else {
-    // console.debug('with_what: ' + (with_what.isInlineEditorElement ? with_what.node : with_what) + ', has node? ' + with_what.isInlineEditorElement);
-    // console.debug('has setStartBefore: ' + this.range.setStartBefore);
-    // console.debug('container: ' + (with_what.isInlineEditorElement ? with_what.node : with_what).ownerDocument);
-    // console.debug('container type: ' + (with_what.isInlineEditorElement ? with_what.node : with_what).ownerDocument.nodeType);
-    // console.debug('container name: ' + (with_what.isInlineEditorElement ? with_what.node : with_what).ownerDocument.nodeName);
-    // console.debug('doc: ' + this.document);
-    // console.debug('doc type: ' + this.document.nodeType);
-    // console.debug('doc name: ' + this.document.nodeName);
-    // console.debug('container === doc: ' + ((with_what.isInlineEditorElement ? with_what.node : with_what).ownerDocument === this.document));
-    // console.debug('node type: ' + (with_what.isInlineEditorElement ? with_what.node : with_what).nodeType);
-    // console.debug('node name: ' + (with_what.isInlineEditorElement ? with_what.node : with_what).nodeName);
     this.range.setStartBefore(with_what.isInlineEditorElement ? with_what.node : with_what);
-    // console.debug('setStartBefore ran');
   }
   if (! to_what) {
     to_what = with_what;
@@ -627,7 +607,6 @@ InlineEditor.Range.prototype.select = function (with_what, to_what) {
   } else {
     this.range.setEndAfter(to_what.isInlineEditorElement ? to_what.node : to_what);
   }
-  // console.debug('range select returning');
 };
 // selects a given DOM Node with current range
 InlineEditor.Range.prototype.selectNode = function (node) {
@@ -721,13 +700,7 @@ InlineEditor.Selection = function (with_what) {
     sel = this.window.getSelection();
     var range = this.document.createRange();
     range.selectNode(with_what);
-    // range.setStartBefore(with_what);
-    // range.setEndAfter(with_what);
-    // sel.removeAllRanges();
     sel.addRange(range);
-    // console.debug('selecting:', sel.anchorNode, sel.anchorOffset, sel.focusNode, sel.focusOffset);
-    // sel.collapse(range.startContainer, range.startOffset);
-    // sel.extend(range.endContainer, range.endOffiset);
   } else {
     throw 'bad parameter for InlineEditor.Selection contructor';
   }
