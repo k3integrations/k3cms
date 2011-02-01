@@ -261,43 +261,72 @@ function initInlineEditor(options) {
     },
   });
 
-  $pane = $('#k3_ribbon .panes .edit')
-  $toolbar = $('<div class="k3_inline_editor k3_section"></div>').
+  //------------------------------------------------------------------------------------------------
+  // Integrate with K3_Ribbon
+
+  var $ribbon = $('#k3_ribbon');
+  /*
+  $ribbon.mousedown(function() {
+    var data = $('#k3_ribbon').data('k3_inline_editor');
+    $(this).data('focused', InlineEditor.focusedEditor());
+    $(this).data('selected', new InlineEditor.Selection(this.document));
+  });
+  */
+
+  var $pane = $ribbon.find('.panes .edit')
+  var $toolbar = $('<div class="k3_inline_editor k3_section"></div>').
     append('<ul></ul>').
     appendTo($pane);
-  $ul = $toolbar.find('ul');
+  var $ul = $toolbar.find('ul');
   
-  // Add all the buttons to the toolbar, according to the configuration stored in toolbar_options
+  var tab = new K3_Ribbon.Tab('k3_inline_editor', {
+    label: 'Edit', 
+    sections: [
+      new K3_Ribbon.Section('inline_styles', {label: 'Inline styles', items: []}),
+      new K3_Ribbon.Section('insert',        {label: 'Insert', items: []}),
+      new K3_Ribbon.Section('block_styles',  {label: 'Paragraph/block styles', items: []}),
+    ],
+    onClick: function() {
+      InlineEditor.last_focused_element && InlineEditor.last_focused_element.focus();
+      InlineEditor.last_selection       && InlineEditor.last_selection.restore();
+
+      //var data = $('#k3_ribbon').data('k3_inline_editor')
+      //data && data.last_focused_element && data.last_focused_editor.node.focus();
+      //data && data.last_selection       && data.last_selection.restore();
+    },
+  })
+
+  // Add all the buttons to the ribbon/toolbar, according to the configuration stored in toolbar_options
   $(toolbar_options).each(function (index) {
     if (!this.klass.match(/^block/)) {
-      var $elem = $('<li><a href="javascript:;" title="' + this.label + '">' + 
-        '&nbsp;' +
-        '</a></li>');
-      $elem.addClass('icon');
-      $elem.addClass('button');
-      $elem.addClass(this.klass);
-      $ul.append($elem);
-      $elem.mousedown(function (event) {
-        $(this).trigger('invoke');
+      var button = new K3_Ribbon.Button({
+        element: $('<li/>', { class: "icon button " + this.klass }).
+          append($('<a/>', {title: this.label, href: "javascript:;", html: '&nbsp;'})),
+        onMousedown: function() {
+          $(this).k3_ribbon('isEnabled') && $(this).trigger('invoke');
 
-        // returning false doesn't cancel losing editor focus in IE, here's a nasty hacky fix!
-        if (navigator.userAgent.match(/MSIE/)) {
-          $(editor.node).one('blur', function () {
-            this.focus();
-          });
-        }
+          // returning false doesn't cancel losing editor focus in IE, here's a nasty hacky fix!
+          if (navigator.userAgent.match(/MSIE/)) {
+            $(editor.node).one('blur', function () {
+              this.focus();
+            });
+          }
 
-        return false;
+          return false;
+        },
       })
+
+      tab.sectionsByName().inline_styles.items.push(button);
     }
   });
 
   // Add list of block styles as a drop-down select menu
-  var $select = $('<li class=""></li>').
-    append('<select></select>').
-    appendTo($ul).
-    find('select');
-  $select.addClass('select_block_style')
+  var select_item = new K3_Ribbon.ToolbarItem({
+    element: $('<li/>', {}).
+      append($('<select/>', {class: 'select_block_style'})),
+  })
+
+  var $select = select_item.element.find('select');
   $(toolbar_options).each(function (index) {
     if (this.klass.match(/^block/)) {
       var $option = $('<option>' + this.label + '</option>');
@@ -320,6 +349,8 @@ function initInlineEditor(options) {
 
     $option.trigger('invoke')
   })
+  tab.sectionsByName().block_styles.items.push(select_item);
+
   $toolbar.mousedown(function (event) {
     InlineEditor.clicking_in_toolbar = true;
     //console.log("mousedown: InlineEditor.clicking_in_toolbar=", InlineEditor.clicking_in_toolbar);
@@ -328,7 +359,10 @@ function initInlineEditor(options) {
     InlineEditor.clicking_in_toolbar = false;
     //console.log(event.type + ": InlineEditor.clicking_in_toolbar=", InlineEditor.clicking_in_toolbar);
   });
-  
+
+  $('#k3_ribbon').k3_ribbon({tabs: [tab]})
+
+  //------------------------------------------------------------------------------------------------
   // Bind command handlers for each toolbar command
   $(toolbar_options).each(function (index) {
     var self = this;
@@ -438,8 +472,14 @@ function refreshButtons() {
     }
   });
 
-  var select = $('#k3_ribbon select.select_block_style');
+  // We can no longer just do this, because the ribbon may not have been rendered yet:
+  //var select = $('#k3_ribbon select.select_block_style');
+  var ribbon = $('#k3_ribbon').k3_ribbon('get');
+  var tab = ribbon.tabsByName().k3_inline_editor;
+  var select = tab.sectionsByName().block_styles.items[0].element.find('select');
   select.get(0).selectedIndex = -1;
+  //console.log("select.get(0).selectedIndex=", select.get(0).selectedIndex);
+
   if (! editable_active) {
     select.attr('disabled', true);
   } else {
@@ -475,7 +515,7 @@ function refreshButtons() {
       }
 
     });
-    select.val(current_block_style);
+    //select.val(current_block_style);
   }
 }
 
