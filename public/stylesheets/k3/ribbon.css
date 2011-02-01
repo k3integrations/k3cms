@@ -106,7 +106,7 @@ body {
 #k3_ribbon ul.tabs {
   margin: 0 !important;
   padding: 0;
-  height: 20px;
+  height: 17px; /* a tag: 15px (height) + 1px + 1px (border) */
   border-bottom: 1px solid #666;
 }
 
@@ -129,7 +129,7 @@ body {
   position: relative;
   top: 1px;
 
-  height: 18px;
+  height: 15px;
   margin: 0 2px 0 2px;
   padding: 0px 10px 0px;
   border: 1px solid #666;
@@ -139,7 +139,7 @@ body {
   background-color: #efefef;
   -moz-border-radius: 4px 4px 0 0;
 
-  font-size: 13px;
+  font-size: 12px;
   text-decoration: none;
   color: #777;
 }
