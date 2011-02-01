@@ -3,8 +3,10 @@
     .split_left
       %ul
         %li.toggle_edit_mode
-          Edit mode: #{{true => 'on', false => 'off'}[edit_mode?]}
-          = link_to "Turn #{{false => 'on', true => 'off'}[edit_mode?]}", params.merge({:edit => (!edit_mode?).to_s})
+          - if edit_mode?
+            = link_to "Done editing", params.merge({:edit => false.to_s})
+          - else
+            = link_to "Start editing", params.merge({:edit => true.to_s})
 
     .split_right
       %ul
@@ -37,8 +39,18 @@
 
 :javascript
   $(function() {
-    $('#k3_ribbon').k3_ribbon();
-    $('#k3_ribbon').k3_ribbon('render');
-    $('#k3_ribbon').k3_ribbon('refresh');
+    if (#{edit_mode?.to_json}) {
+      $('body').removeClass('edit_mode_off');
+      $('body').addClass(   'edit_mode_on');
+      $('#k3_ribbon').k3_ribbon();
+      $('#k3_ribbon').k3_ribbon('render');
+      $('#k3_ribbon').k3_ribbon('refresh');
+      $('#k3_ribbon_underneath').height($('#k3_ribbon').height())
+    } else {
+      $('body').removeClass('edit_mode_on');
+      $('body').addClass(   'edit_mode_off');
+      $('#k3_ribbon_underneath').height($('#k3_ribbon').height())
+    }
   });
+
 
