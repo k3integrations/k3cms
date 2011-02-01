@@ -91,9 +91,16 @@ InlineEditor.prototype.bindEventHandlers = function () {
   $node.bind('save_error.inline_editor'     , {}, options.saveError);
   $node.bind('save_if_changed.inline_editor', {}, InlineEditor.saveIfChanged);
   $node.bind('focusout.inline_editor'       , {}, InlineEditor.focusout);
-  $node.find(InlineEditor.SUB_FOCUSABLE_SELECTOR).bind('focus.inline_editor', {}, InlineEditor.subFocusHandler);
-  $node.find(InlineEditor.SUB_FOCUSABLE_SELECTOR).bind('blur.inline_editor' , {}, InlineEditor.subBlurHandler);
-  
+  var self = this;
+  $node.find(InlineEditor.SUB_FOCUSABLE_SELECTOR).each(function() {
+    self.bindSubEventHandlersToNode(this);
+  });
+}
+InlineEditor.prototype.bindSubEventHandlersToNode = function (node) {
+  var $node = $(node);
+  $node.unbind('.inline_editor');
+  $node.bind('focus.inline_editor', {}, InlineEditor.subFocusHandler);
+  $node.bind('blur.inline_editor' , {}, InlineEditor.subBlurHandler);
 }
 
 // checks if focus is currently on any active InlineEditor-editable object...
@@ -328,6 +335,7 @@ InlineEditor.subFocusHandler = function (evt) {
   // just in FF: if selection is in parent node, move it to around the child node... other browsers fail the if statement and do nothing
   if (evt.currentTarget.ownerDocument.defaultView.getSelection().anchorNode == node)
     new InlineEditor.Selection(evt.currentTarget);
+  $node.trigger('custom_focus');
 }
 InlineEditor.subBlurHandler = function (evt) {
   // console.debug('blured:', evt.currentTarget, evt.currentTarget.ownerDocument.activeElement, evt.currentTarget.ownerDocument.defaultView.getSelection().anchorNode, evt.currentTarget.ownerDocument.defaultView.getSelection().focusNode);
@@ -786,6 +794,7 @@ InlineEditor.Selection.newForReplacingNode = function (old_node, new_node) {
 
 // reposition caret or reselect saved selection
 InlineEditor.Selection.prototype.restore = function () {
+  if (! this.anchorNode) return;
   // preserving directionality of selection on browsers that support it (FF/Saf/Chr)
   var sel = this.window.getSelection();
   if (sel.collapse && sel.extend) {

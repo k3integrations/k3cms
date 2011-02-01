@@ -19,7 +19,7 @@ toolbar_options = [
   ['Insert/edit link', 'link',           true,  function(){toggleDrawer('link_drawer')},  false, false],
   ['Remove link',      'unlink',         true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['unlink']],
   ['Insert/edit Image', 'image',         false, function(){toggleDrawer('image_drawer')}, false, false],
-  ['Insert/edit Video', 'video',         false, function(){toggleDrawer('video_drawer')}, false, false],
+  ['Insert/edit Video', 'video',         false, function(){toggleDrawer('video_drawer')}, false, InlineEditor.isFocusedEditor],
   // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertParagraph']],
   // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'p']],
   // ['Pre',           'blockPre',       false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'pre']],
@@ -118,7 +118,8 @@ var drawer_options = {
       {'id': 'height',   label: 'Height', size: 10}
     ],
     get_editable: function() {
-      return null; // TODO
+      console.debug(InlineEditor.isFocusedEditor(), window.document.activeElement.nodeName, window.document.activeElement);
+      return (InlineEditor.isFocusedEditor() && window.document.activeElement.nodeName == 'VIDEO') ? window.document.activeElement : null;
     },
     populate_editable_fields: function(video_node) {
       // TODO
@@ -355,6 +356,9 @@ function initInlineEditor(options) {
   $('.editable').bind('cursor_move custom_focus', function (event) {
     refreshButtons();
   });
+  // $('.editable').find(InlineEditor.SUB_FOCUSABLE_SELECTOR).bind('custom_focus', function (event) {
+  //   refreshButtons();
+  // });
   
   // draw javascript-only drawers
   var dwr_def = drawer_defaults;
@@ -428,7 +432,12 @@ function refreshButtons() {
           }
         }
         if (this.query_enabled_cmd) {
-          if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
+          if (
+            typeof this.query_enabled_cmd == 'function' ?
+            this.query_enabled_cmd() :
+            editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])
+          ) {
+          // if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
             btn.removeClass('disabled')
           } else {
             btn.addClass('disabled');
@@ -466,7 +475,12 @@ function refreshButtons() {
         }
 
         if (this.query_enabled_cmd) {
-          if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
+          if (
+            typeof this.query_enabled_cmd == 'function' ?
+            this.query_enabled_cmd() :
+            editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])
+          ) {
+          // if (editor[this.query_enabled_cmd](this.cmd_args[0], this.cmd_args[1])) {
             option.removeAttr('disabled');
           } else {
             option.attr('disabled', true);
