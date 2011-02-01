@@ -112,17 +112,21 @@ var drawer_options = {
     title: 'Video',
     fields: [
       // see: http://diveintohtml5.org/video.html#what-works
-      {'id': 'h264_url', label: 'MP4 H.264/AAC Format URL'},
-      {'id': 'ogg_url',  label: 'Ogg Theora/Vorbis Format URL'},
+      {'id': 'h264_url', label: 'MP4 H.264/AAC Format URL', size: 60},
+      {'id': 'ogg_url',  label: 'Ogg Theora/Vorbis Format URL', size: 60},
       {'id': 'width',    label: 'Width',  size: 10},
       {'id': 'height',   label: 'Height', size: 10}
     ],
     get_editable: function() {
-      console.debug(InlineEditor.isFocusedEditor(), window.document.activeElement.nodeName, window.document.activeElement);
       return (InlineEditor.isFocusedEditor() && window.document.activeElement.nodeName == 'VIDEO') ? window.document.activeElement : null;
     },
     populate_editable_fields: function(video_node) {
-      // TODO
+      var h264_tags = $(video_node).find('source[type="video/h264"]');
+      var ogg_tags = $(video_node).find('source[type="video/ogg"]');
+      $('#video_drawer_h264_url').val(h264_tags.length > 0 ? h264_tags.get(0).src : '');
+      $('#video_drawer_ogg_url').val(ogg_tags.length > 0 ? ogg_tags.get(0).src : '');
+      $('#video_drawer_width').val(video_node.width);
+      $('#video_drawer_height').val(video_node.height);
     },
     oncreate: function() {
       // for testing try @720x400:
@@ -135,7 +139,24 @@ var drawer_options = {
       InlineEditor.focusedEditor().execCommand('insertHTML', '<video controls="controls" style="display: block;"' + width + height + '>' + h264_tag + ogg_tag + '</video>');
     },
     onupdate: function(video_node) {
-      // TODO
+      var h264_tags = $(video_node).find('source[type="video/h264"]');
+      var ogg_tags = $(video_node).find('source[type="video/ogg"]');
+      if (h264_tags.length > 0 && $('#video_drawer_h264_url').val() != '') {
+        h264_tags.get(0).src = $('#video_drawer_h264_url').val();
+      } else if (h264_tags.length > 0) {
+        h264_tags.remove();
+      } else {
+        $(video_node).append('<source src="' + $('#video_drawer_h264_url').val() + '" type="video/h264" />');
+      }
+      if (ogg_tags.length > 0 && $('#video_drawer_ogg_url').val() != '') {
+        ogg_tags.get(0).src = $('#video_drawer_ogg_url').val();
+      } else if (ogg_tags.length > 0) {
+        ogg_tags.remove();
+      } else {
+        $(video_node).append('<source src="' + $('#video_drawer_ogg_url').val() + '" type="video/ogg" />');
+      }
+      video_node.width = $('#video_drawer_width').val();
+      video_node.height = $('#video_drawer_height').val();
     }
   }
 };
@@ -538,11 +559,11 @@ function refreshButtons() {
 function toggleDrawer(id) {
   var drawer = $('.' + id + '.drawer');
   if (drawer.is(':visible')) {
-    if (drawer.data('focused'))  drawer.data('focused').node.focus();
+    if (drawer.data('focused'))  drawer.data('focused').focus();
     if (drawer.data('selected')) drawer.data('selected').restore();
     drawer.trigger('close');
   } else {
-    drawer.data('focused', InlineEditor.focusedEditor());
+    drawer.data('focused', this.document.activeElement);
     drawer.data('selected', new InlineEditor.Selection(this.document));
     // console.debug('focus:', drawer.data('focused').node)
     // console.debug('selected:', drawer.data('selected').anchorNode, ',', drawer.data('selected').anchorOffset, '-', drawer.data('selected').focusNode, ',', drawer.data('selected').focusOffset);
