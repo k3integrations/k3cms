@@ -222,6 +222,9 @@ body {
   border-left-color: #ddd;
   */
 }
+.k3_section li.button a {
+  text-decoration: none !important;
+}
 #k3_ribbon li.button.toggled_on {
   border-top-color: #666;
   border-right-color: #ddd;
