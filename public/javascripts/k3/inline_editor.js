@@ -66,13 +66,14 @@ var drawer_options = {
     populate_editable_fields: function(a_node) {
       $('#link_drawer_url').val(a_node.href);
     },
-    oncreate: function() {
+    onCreate: function() {
       InlineEditor.focusedEditor().execCommand('createLink', $('#link_drawer_url').val());
     },
-    onupdate: function(a_node) {
+    onUpdate: function(a_node) {
       a_node.href = $('#link_drawer_url').val();
     }
   },
+
   image_drawer: {
     title: 'Image',
     fields: [
@@ -98,12 +99,12 @@ var drawer_options = {
       $('#image_drawer_url').val(img_node.src);
       // $('#image_drawer_position').val(img_node.style.float); // TODO float/inline positioning
     },
-    oncreate: function() {
+    onCreate: function() {
       // for testing try @86x62:
       // http://localhost:3000/images/logo.png
       var editor = InlineEditor.focusedEditor().execCommand('insertImage', $('#image_drawer_url').val());
     },
-    onupdate: function(img_node) {
+    onUpdate: function(img_node) {
       img_node.src = $('#image_drawer_url').val();
       // TODO: float/inline positioning
     }
@@ -128,7 +129,7 @@ var drawer_options = {
       $('#video_drawer_width').val(video_node.width);
       $('#video_drawer_height').val(video_node.height);
     },
-    oncreate: function() {
+    onCreate: function() {
       // for testing try @720x400:
       // http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb_trailer_iphone.m4v
       // http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb400p.ogv
@@ -138,7 +139,7 @@ var drawer_options = {
       var ogg_tag  = $('#video_drawer_ogg_url').val()  == '' ? '' : '<source src="' + $('#video_drawer_ogg_url').val()  + '" type="video/ogg" />';
       InlineEditor.focusedEditor().execCommand('insertHTML', '<video controls="controls" style="display: block;"' + width + height + '>' + h264_tag + ogg_tag + '</video>');
     },
-    onupdate: function(video_node) {
+    onUpdate: function(video_node) {
       var h264_tags = $(video_node).find('source[type="video/h264"]');
       var ogg_tags = $(video_node).find('source[type="video/ogg"]');
       if (h264_tags.length > 0 && $('#video_drawer_h264_url').val() != '') {
@@ -523,9 +524,9 @@ function initInlineEditor(options) {
       toggleDrawer(event.data.dwr_id);
       var editable = event.data.dwr.get_editable();
       if (editable == null) {
-        event.data.dwr.oncreate();
+        event.data.dwr.onCreate();
       } else {
-        event.data.dwr.onupdate(editable);
+        event.data.dwr.onUpdate(editable);
       }
       return false;
     });
@@ -558,18 +559,25 @@ function refreshButtons() {
 
 function toggleDrawer(id) {
   var drawer = $('.' + id + '.drawer');
-  if (drawer.is(':visible')) {
-    if (drawer.data('focused'))  drawer.data('focused').focus();
-    if (drawer.data('selected')) drawer.data('selected').restore();
-    drawer.trigger('close');
-  } else {
+  var opening = !drawer.is(':visible');
+  if (opening) {
+    // Opening drawer
     drawer.data('focused', this.document.activeElement);
     drawer.data('selected', new InlineEditor.Selection(this.document));
     // console.debug('focus:', drawer.data('focused').node)
     // console.debug('selected:', drawer.data('selected').anchorNode, ',', drawer.data('selected').anchorOffset, '-', drawer.data('selected').focusNode, ',', drawer.data('selected').focusOffset);
     drawer.trigger('open');
+  } else {
+    // Closing drawer
+    if (drawer.data('focused'))  drawer.data('focused').focus();
+    if (drawer.data('selected')) drawer.data('selected').restore();
+    drawer.trigger('close');
   }
   drawer.slideToggle();
+  if (opening) {
+    drawer.find(':input:visible:eq(0)').focus()
+  }
+
 }
 
 function drawerContents(id, title, fieldsinfo, submittext) {
