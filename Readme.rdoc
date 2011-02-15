@@ -67,8 +67,13 @@ Or you can use the default behavior, which simply looks for and updates all elem
 
 There aren't currently any specs. We should probably add some for the InlineEditorCell, etc.
 
+== License
 
-= Credits
+Copyright 2010 K3 Integrations, LLC
+
+Licensed under the GNU Lesser General Public License, Version 3 (see License.txt).
+
+== Credits
 
 WYMEditor (http://www.wymeditor.org/) for some of their icons.
 
