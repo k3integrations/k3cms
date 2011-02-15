@@ -535,9 +535,6 @@ function initInlineEditor(options) {
     $('.' + dwr_id + '.drawer').bind('open', {dwr_id: dwr_id, dwr: dwr}, function(event) {
       // When the drawer is opened, cretae the form and populate it from the editable, if possible.
       var editable = event.data.dwr.get_editable();
-      console.log("editable=", typeof editable);
-      console.log("editable=", editable);
-      console.log("editable=", editable.nodeName);
       if (editable == null) {
         $('#' + event.data.dwr_id + '_title').text(dwr_def.new_title_prefix + event.data.dwr.title);
         $('#' + event.data.dwr_id + '_submit').val(dwr_def.new_submit);
