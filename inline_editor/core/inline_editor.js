@@ -539,6 +539,11 @@ InlineEditor.getDocumentFrom = function (with_what) {
   }
 };
 
+// Document: how is this different from this.document.createRange()?
+InlineEditor.Range.getCurrent = function() {
+  return new InlineEditor.Range(new InlineEditor.Selection(window.document));
+};
+
 // wraps current InlineEditor.Range with indicated element type, preserving selection and contents
 InlineEditor.Range.prototype.wrapWithTypeSafe = function (type) {
   this.wrapWithElementSafe(new InlineEditor.Element(type));

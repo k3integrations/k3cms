@@ -58,13 +58,29 @@ var drawer_options = {
       // TODO: push this into core as InlineEditor.Selection.getFirstIntersecting('a') or some such?
       var editor = InlineEditor.focusedEditor();
       if (! editor) return null;
+      var rng = InlineEditor.Range.getCurrent();
       var anchors = $(editor.node).find('a').filter(function () {
         return InlineEditor.Selection.intersectsNode(this);
       });
-      return anchors.length > 0 ? anchors.get(0) : null;
+      // If we found an a element, return it
+      if (anchors.length > 0) {
+        return anchors.get(0);
+      }
+      // Otherwise, consider using the selected text, if it looks like it could be a URL
+      if (rng.range.startContainer.nodeName == '#text') {
+        var val = rng.range.startContainer.nodeValue;
+        if ( val.match(/^[\S]*$/) ) {
+          return val;
+        }
+      }
+      return null;
     },
-    populate_editable_fields: function(a_node) {
-      $('#link_drawer_url').val(a_node.href);
+    populate_editable_fields: function(editable) {
+      if (typeof editable == 'string') {
+        $('#link_drawer_url').val(editable);
+      } else { // if (editable.nodeName == 'A') {
+        $('#link_drawer_url').val(editable.href);
+      }
     },
     onCreate: function() {
       InlineEditor.focusedEditor().execCommand('createLink', $('#link_drawer_url').val());
@@ -88,9 +104,9 @@ var drawer_options = {
       // TODO: push this into core as InlineEditor.Selection.getOnlyContained('img') or some such?
       var editor = InlineEditor.focusedEditor();
       if (! editor) return null;
-      var rng = new InlineEditor.Range(new InlineEditor.Selection(window.document));
+      var rng = InlineEditor.Range.getCurrent();
       var images = $(editor.node).find('img').filter(function () {
-        // alert(new InlineEditor.Range(sel) + ' ' + new InlineEditor.Range(this))
+        // console.log(new InlineEditor.Range(sel) + ' ' + new InlineEditor.Range(this))
         return rng.equals(new InlineEditor.Range(this));
       });
       return images.length > 0 ? images.get(0) : null;
@@ -506,8 +522,12 @@ function initInlineEditor(options) {
   for (var dwr_id in drawer_options) {
     var dwr = drawer_options[dwr_id];
     $('#k3_drawers').append(drawerContents(dwr_id, '', dwr.fields));
+
     $('.' + dwr_id + '.drawer').bind('open', {dwr_id: dwr_id, dwr: dwr}, function(event) {
+      // When the drawer is opened, cretae the form and populate it from the editable, if possible.
       var editable = event.data.dwr.get_editable();
+      console.log("editable=", typeof editable);
+      console.log("editable=", editable);
       if (editable == null) {
         $('#' + event.data.dwr_id + '_title').text(dwr_def.new_title_prefix + event.data.dwr.title);
         $('#' + event.data.dwr_id + '_submit').val(dwr_def.new_submit);
@@ -520,13 +540,14 @@ function initInlineEditor(options) {
         event.data.dwr.populate_editable_fields(editable);
       }
     });
+
     $('#' + dwr_id + '_form').bind('submit', {dwr_id: dwr_id, dwr: dwr}, function(event) {
       toggleDrawer(event.data.dwr_id);
       var editable = event.data.dwr.get_editable();
-      if (editable == null) {
-        event.data.dwr.onCreate();
-      } else {
+      if (editable && editable.nodeName == 'A') {
         event.data.dwr.onUpdate(editable);
+      } else {
+        event.data.dwr.onCreate();
       }
       return false;
     });
