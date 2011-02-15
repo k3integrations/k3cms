@@ -118,3 +118,9 @@ is identical to:
 == Specs
 
 To run specs, cd to this directory and run:  bundle exec rspec spec
+
+== License
+
+Copyright 2010 K3 Integrations, LLC
+
+Licensed under the GNU Lesser General Public License, Version 3 (see License.txt).
