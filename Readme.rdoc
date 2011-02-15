@@ -1,0 +1,9 @@
+= K3 Ribbon
+
+Provides a ribbon with tabs and toolbars for the K3 framework.
+
+== License
+
+Copyright 2010 K3 Integrations, LLC
+
+Licensed under the GNU Lesser General Public License, Version 3 (see License.txt).
