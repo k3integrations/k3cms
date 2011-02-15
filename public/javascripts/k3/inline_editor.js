@@ -82,11 +82,20 @@ var drawer_options = {
         $('#link_drawer_url').val(editable.href);
       }
     },
+    value_to_update_editable_with: function() {
+      var val = $('#link_drawer_url').val();
+      if (val.match(/^[\w-]+:\/\/?/)) {
+        return val;
+      } else {
+        // If it doesn't already have a protocol, add a default. Otherwise, if they go to edit it again, when it reads a.href, it will have the entire base URL of the site prepended (not just a protocol), which means the domain name might appear twice.
+        return 'http://' + val;
+      }
+    },
     onCreate: function() {
-      InlineEditor.focusedEditor().execCommand('createLink', $('#link_drawer_url').val());
+      InlineEditor.focusedEditor().execCommand('createLink', this.value_to_update_editable_with());
     },
     onUpdate: function(a_node) {
-      a_node.href = $('#link_drawer_url').val();
+      a_node.href = this.value_to_update_editable_with();
     }
   },
 
@@ -528,6 +537,7 @@ function initInlineEditor(options) {
       var editable = event.data.dwr.get_editable();
       console.log("editable=", typeof editable);
       console.log("editable=", editable);
+      console.log("editable=", editable.nodeName);
       if (editable == null) {
         $('#' + event.data.dwr_id + '_title').text(dwr_def.new_title_prefix + event.data.dwr.title);
         $('#' + event.data.dwr_id + '_submit').val(dwr_def.new_submit);
