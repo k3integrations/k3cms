@@ -115,8 +115,7 @@ var drawer_options = {
       if (! editor) return null;
       var rng = InlineEditor.Range.getCurrent();
       var images = $(editor.node).find('img').filter(function () {
-        // console.log(new InlineEditor.Range(sel) + ' ' + new InlineEditor.Range(this))
-        return rng.equals(new InlineEditor.Range(this));
+        return rng.approxEquals(new InlineEditor.Range(this));
       });
       return images.length > 0 ? images.get(0) : null;
     },
