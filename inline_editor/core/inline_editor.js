@@ -750,6 +750,10 @@ InlineEditor.Selection.prototype.intersectsRange = function (range) {
 InlineEditor.Selection.intersectsRange = function (range) {
   return new InlineEditor.Range(range.window.getSelection()).intersectsRange(range);
 };
+// Searches nodes contained in selection for the selector. If it matches exactly once, return it. Otherwise return null? 
+InlineEditor.Selection.prototype.getOnlyContained = function(selector) {
+  // TODO: implement
+}
 
 // Saf/Chr will not properly put the cursor inside a contentEditable element, if you are moving focus from a form element!
 // this fixes that (and does nothing if it wasn't broken), call it from the onfocus event to fix it
