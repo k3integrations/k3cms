@@ -652,10 +652,6 @@ InlineEditor.Range.prototype.intersectsRange = function (range) {
 
 // tests if two range instances point to an identical area
 window.InlineEditor.Range.prototype.equals = function (range) {
-  //console.log("this.range.startContainer === range.range.startContainer=", this.range.startContainer === range.range.startContainer);
-  //console.log("this.range.endContainer   === range.range.endContainer=", this.range.endContainer   === range.range.endContainer);
-  //console.log("this.range.startOffset === range.range.startOffset=", this.range.startOffset, range.range.startOffset);
-  //console.log("this.range.endOffset === range.range.endOffset=", this.range.endOffset, range.range.endOffset);
   return !!range && // this.range == range.range;
     this.range.startContainer === range.range.startContainer && this.range.startOffset === range.range.startOffset &&
     this.range.endContainer   === range.range.endContainer   && this.range.endOffset   === range.range.endOffset;
@@ -666,6 +662,10 @@ window.InlineEditor.Range.prototype.equals = function (range) {
 // when you select an image from right to left, it reports endOffset as 1
 // But they're the same selection! So if you want to account for that idiosyncrasy and still consider those 2 range objects as equal, you can use this function instead of equals().
 window.InlineEditor.Range.prototype.approxEquals = function (range) {
+  //console.log("this.range.startContainer === range.range.startContainer=", this.range.startContainer === range.range.startContainer, this.range.startContainer, range.range.startContainer);
+  //console.log("this.range.endContainer   === range.range.endContainer=",   this.range.endContainer   === range.range.endContainer,   this.range.endContainer, range.range.endContainer);
+  //console.log("this.range.startOffset === range.range.startOffset=", this.range.startOffset, range.range.startOffset);
+  //console.log("this.range.endOffset === range.range.endOffset=", this.range.endOffset, range.range.endOffset);
   return !!range &&
     this.range.startContainer === range.range.startContainer && this.range.startOffset === range.range.startOffset &&
     this.range.endContainer   === range.range.endContainer   && Math.abs(this.range.endOffset - range.range.endOffset) <= 1;
