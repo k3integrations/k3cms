@@ -213,8 +213,50 @@ K3_Ribbon.Button = K3_Ribbon.ToolbarItem.extend({
 });
 
 K3_Ribbon.Drawer = Class.extend({
-  init: function(options) {
-    //...
+  init: function(id, options) {
+    this.id = id;
+    $.extend(this, options);
+  },
+  render: function() {
+    var self = this;
+    var root = $('<div/>', { id: this.id, class: 'drawer hidden ' + this.id });
+    root.append('<h2 id="' + this.id + '_title">' + entityEscape(this.title) + '</h2>');
+    var form;
+    root.append(form = $('<form id="' + this.id + '_form" class="form ' + this.id + '" accept-charset="UTF-8">'));
+      form.append(this.fields);
+      form.append('<input type="submit" id="' + this.id + '_submit" value="' + (this.submit_text || 'Submit') + '">&nbsp; ');
+      form.append('<a onclick="toggleDrawer(\'' + this.id + '\'); return false;" href="#">Cancel</a>');
+
+    //K3_Ribbon.bindEventHandlers.call(this, root, this);
+
+    // Set id attr based on name
+    root.find('input').each(function() {
+      if ($(this).attr('id') == '') {
+        $(this).attr('id', self.id + '_' + $(this).attr('name'));
+      };
+    });
+    root.find('label').each(function() {
+      if ($(this).attr('for') == '') {
+        $(this).attr('for', self.id + '_' + $(this).data('name'));
+      };
+    });
+
+    root.data('drawer', this);
+    return root;
+  },
+  default_populate_with_defaults: function() {
+    console.log("populate_with_defaults");
+    this.find('input:text').val('');
+  },
+  populate_with_defaults: function() {
+    this.default_populate_with_defaults();
+  },
+  get: function() {
+    //return $('#k3_drawers .' + this.id + '.drawer');
+    return $('#k3_drawers #' + this.id);
+  },
+  find: function(selector) {
+    return this.get().find(selector);
   },
 });
 
