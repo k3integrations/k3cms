@@ -42,6 +42,43 @@ toolbar_options = [
   ['Plain',            'blockDiv',       false, 'switchToBlock', 'isCurrentBlock',   false,                ['div']],
 ];
 
+K3_Ribbon.Drawer.FloatField = {
+  fields: ($('<div/>', { class: "field" }).
+    append($('<label/>', { text: 'Position', 'data-name': 'float' })).
+
+    append($('<input/>', { type: 'radio', name: 'float', value: 'none', id: 'image_drawer_float_none' })).
+    append($('<label/>', { text: 'Inline', for: 'image_drawer_float_none' })).
+
+    append($('<input/>', { type: 'radio', name: 'float', value: 'left', id: 'image_drawer_float_float_left' })).
+    append($('<label/>', { text: 'Float Left', for: 'image_drawer_float_float_left' })).
+
+    append($('<input/>', { type: 'radio', name: 'float', value: 'right', id: 'image_drawer_float_float_right' })).
+    append($('<label/>', { text: 'Float Right', for: 'image_drawer_float_float_right' }))
+  ),
+  populate_with_defaults: function(drawer_id) {
+    //$('#image_drawer_float').val('right');
+    $('#' + drawer_id + ' input:radio[name=float][value=' + 'right' + ']').attr('checked', true)
+  },
+  populate_from_editable: function(drawer_id, editable) {
+    var value = $(editable).css('float') || 'none';
+    $('#' + drawer_id + ' input:radio[name=float][value=' + value + ']').attr('checked', true)
+  },
+  onUpdate: function(drawer_id, editable) {
+    var float = $('#' + drawer_id + ' input:radio[name=float]:checked').val()
+
+    // FIXME: This wasn't working for me for video tags:
+    //editable.style.float = float;
+    // If you output this, it will *say* it changed it, but it's not reflected in the HTML!:
+    //console.log("editable.style.float=", editable.style.float);
+    //console.log("editable=", editable);
+
+    // Workaround:
+    //$(editable).attr('style', $(editable).attr('style') + '; float: ' + float)
+    // Better!:
+    $(editable).css('float', float);
+  }
+}
+
 var drawers = [
   new K3_Ribbon.Drawer('link_drawer', {
     title: 'Link',
@@ -105,18 +142,7 @@ var drawers = [
           append($('<label/>', { text: 'Image URL', 'data-name': 'url' })).
           append($('<input/>', { type: 'text', name: 'url', size: 60 }))
         ).
-        append($('<div/>', { class: "field" }).
-          append($('<label/>', { text: 'Position', 'data-name': 'float' })).
-
-          append($('<input/>', { type: 'radio', name: 'float', value: 'none', id: 'image_drawer_float_none' })).
-          append($('<label/>', { text: 'Inline', for: 'image_drawer_float_none' })).
-
-          append($('<input/>', { type: 'radio', name: 'float', value: 'left', id: 'image_drawer_float_float_left' })).
-          append($('<label/>', { text: 'Float Left', for: 'image_drawer_float_float_left' })).
-
-          append($('<input/>', { type: 'radio', name: 'float', value: 'right', id: 'image_drawer_float_float_right' })).
-          append($('<label/>', { text: 'Float Right', for: 'image_drawer_float_float_right' }))
-        )
+        append(K3_Ribbon.Drawer.FloatField.fields)
     ),
     get_editable: function() {
       // TODO: push this into core as InlineEditor.Selection.getOnlyContained('img') or some such?
@@ -130,14 +156,12 @@ var drawers = [
       return images.length > 0 ? images.get(0) : null;
     },
     populate_with_defaults: function() {
-      //$('#image_drawer_float').val('right');
-      $('#image_drawer input:radio[name=float][value=' + 'right' + ']').attr('checked', true)
       this.default_populate_with_defaults();
+      K3_Ribbon.Drawer.FloatField.populate_with_defaults(this.id);
     },
     populate_from_editable: function(img_node) {
       $('#image_drawer_url').val(img_node.src);
-      var value = img_node.style.float || 'none';
-      $('#image_drawer input:radio[name=float][value=' + value + ']').attr('checked', true)
+      K3_Ribbon.Drawer.FloatField.populate_from_editable(this.id, img_node);
     },
     onCreate: function() {
       // for testing try @86x62:
@@ -151,8 +175,7 @@ var drawers = [
     },
     onUpdate: function(img_node) {
       img_node.src = $('#image_drawer_url').val();
-      var float = $('#image_drawer input:radio[name=float]:checked').val()
-      img_node.style.float = float;
+      K3_Ribbon.Drawer.FloatField.onUpdate(this.id, img_node);
     }
   }),
   new K3_Ribbon.Drawer('video_drawer', {
@@ -178,6 +201,7 @@ var drawers = [
           append($('<label/>', { text: 'Height' })).
           append($('<input/>', { type: 'text', name: 'height', size: 10 }))
         ).
+        append(K3_Ribbon.Drawer.FloatField.fields).
         append($('<p><a href="#" onclick="$(\'.video_drawer.drawer\').data(\'drawer\').set_test_values()">Use a test video</a></p>'))
     ),
     get_editable: function() {
@@ -190,6 +214,10 @@ var drawers = [
       this.find('#video_drawer_width').val(720);
       this.find('#video_drawer_height').val(400);
     },
+    populate_with_defaults: function() {
+      this.default_populate_with_defaults();
+      K3_Ribbon.Drawer.FloatField.populate_with_defaults(this.id);
+    },
     populate_from_editable: function(video_node) {
       var h264_tags = $(video_node).find('source[type="video/h264"]');
       var ogg_tags = $(video_node).find('source[type="video/ogg"]');
@@ -198,6 +226,7 @@ var drawers = [
       this.find('#video_drawer_poster_url').val(video_node.poster);
       this.find('#video_drawer_width').val(video_node.width);
       this.find('#video_drawer_height').val(video_node.height);
+      K3_Ribbon.Drawer.FloatField.populate_from_editable(this.id, video_node);
     },
     onCreate: function() {
       var h264_tag = $('#video_drawer_h264_url').val()   == '' ? '' : '<source src="' + $('#video_drawer_h264_url').val() + '" type="video/h264" />';
@@ -228,6 +257,7 @@ var drawers = [
       video_node.height = $('#video_drawer_height').val();
       video_node.poster = $('#video_drawer_poster_url').val();
       $('#video_drawer_poster_url').val() == '' && $(video_node).removeAttr('poster')
+      K3_Ribbon.Drawer.FloatField.onUpdate(this.id, video_node);
     }
   }),
 ];
@@ -629,6 +659,7 @@ function refreshButtons() {
   ribbon.refresh();
 }
 
+// TODO: Move out to drawer class
 function toggleDrawer(id) {
   var drawer = $('.' + id + '.drawer');
   var opening = !drawer.is(':visible');
