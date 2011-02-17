@@ -130,7 +130,8 @@ var drawers = [
       return images.length > 0 ? images.get(0) : null;
     },
     populate_with_defaults: function() {
-      $('#image_drawer_float').val('right');
+      //$('#image_drawer_float').val('right');
+      $('#image_drawer input:radio[name=float][value=' + 'right' + ']').attr('checked', true)
       this.default_populate_with_defaults();
     },
     populate_from_editable: function(img_node) {
@@ -141,7 +142,12 @@ var drawers = [
     onCreate: function() {
       // for testing try @86x62:
       // http://localhost:3000/images/logo.png
-      var editor = InlineEditor.focusedEditor().execCommand('insertImage', $('#image_drawer_url').val());
+      InlineEditor.focusedEditor().execCommand('insertImage', $('#image_drawer_url').val());
+      // TODO: Is there a cleaner and more fail-safe way to get the element that was just inserted? The problem with the current method is that there could be multiple img tags that have the same src!
+      var img_node = $(this.editable_container()).find('img[src=' + $('#image_drawer_url').val() + ']')[0];
+      if (img_node) {
+        this.onUpdate(img_node);
+      }
     },
     onUpdate: function(img_node) {
       img_node.src = $('#image_drawer_url').val();
