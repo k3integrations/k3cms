@@ -234,18 +234,31 @@ K3_Ribbon.Drawer = Class.extend({
       if ($(this).attr('id') == '') {
         $(this).attr('id', self.id + '_' + $(this).attr('name'));
       };
+      // If not already prefixed (as is the case for K3_Ribbon.Drawer.FloatField, where we use generic ids like 'float_none'), we need to prefix now...
+      if ($(this).attr('id') && $(this).attr('id').indexOf(self.id + '_') !== 0) {
+        $(this).attr('id', self.id + '_' + $(this).attr('id'));
+      };
     });
     root.find('label').each(function() {
       if ($(this).attr('for') == '') {
-        $(this).attr('for', self.id + '_' + $(this).data('name'));
+        //$(this).attr('for', self.id + '_' + $(this).data('name'));
+        $(this).attr('for', $(this).data('name'));
+      };
+      // If not already prefixed (as is the case for K3_Ribbon.Drawer.FloatField, where we use generic ids like 'float_none'), we need to prefix now...
+      if ($(this).attr('for') && $(this).attr('for').indexOf(self.id + '_') !== 0) {
+        $(this).attr('for', self.id + '_' + $(this).attr('for'));
       };
     });
 
     root.data('drawer', this);
     return root;
   },
+
+  // If get_editable returns an object, we are editing an *existing* editable -- use populate_from_editable
+  // If get_editable returns null, we are inserting *new* content -- use populate_with_defaults
+  get_editable: function() {
+  },
   default_populate_with_defaults: function() {
-    console.log("populate_with_defaults");
     this.find('input:text').val('');
   },
   populate_with_defaults: function() {
@@ -258,6 +271,10 @@ K3_Ribbon.Drawer = Class.extend({
   find: function(selector) {
     return this.get().find(selector);
   },
+  editable_container: function() {
+    return this.get().data('focused');
+  },
+
 });
 
 //--------------------------------------------------------------------------------------------------
