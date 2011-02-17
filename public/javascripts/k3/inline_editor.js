@@ -46,14 +46,14 @@ K3_Ribbon.Drawer.FloatField = {
   fields: ($('<div/>', { class: "field" }).
     append($('<label/>', { text: 'Position', 'data-name': 'float' })).
 
-    append($('<input/>', { type: 'radio', name: 'float', value: 'none', id: 'image_drawer_float_none' })).
-    append($('<label/>', { text: 'Inline', for: 'image_drawer_float_none' })).
+    append($('<input/>', { type: 'radio', name: 'float', value: 'none', id: 'float_none' })).
+    append($('<label/>', { text: 'Inline', for: 'float_none' })).
 
-    append($('<input/>', { type: 'radio', name: 'float', value: 'left', id: 'image_drawer_float_float_left' })).
-    append($('<label/>', { text: 'Float Left', for: 'image_drawer_float_float_left' })).
+    append($('<input/>', { type: 'radio', name: 'float', value: 'left', id: 'float_float_left' })).
+    append($('<label/>', { text: 'Float Left', for: 'float_float_left' })).
 
-    append($('<input/>', { type: 'radio', name: 'float', value: 'right', id: 'image_drawer_float_float_right' })).
-    append($('<label/>', { text: 'Float Right', for: 'image_drawer_float_float_right' }))
+    append($('<input/>', { type: 'radio', name: 'float', value: 'right', id: 'float_float_right' })).
+    append($('<label/>', { text: 'Float Right', for: 'float_float_right' }))
   ),
   populate_with_defaults: function(drawer_id) {
     //$('#image_drawer_float').val('right');
@@ -142,7 +142,8 @@ var drawers = [
           append($('<label/>', { text: 'Image URL', 'data-name': 'url' })).
           append($('<input/>', { type: 'text', name: 'url', size: 60 }))
         ).
-        append(K3_Ribbon.Drawer.FloatField.fields)
+        // The clone is necessary because if you try to append the same $('<element/>') to 2 different targets, the 2nd call *moves* it from the 1st to the 2nd
+        append(K3_Ribbon.Drawer.FloatField.fields.clone())
     ),
     get_editable: function() {
       // TODO: push this into core as InlineEditor.Selection.getOnlyContained('img') or some such?
@@ -201,7 +202,8 @@ var drawers = [
           append($('<label/>', { text: 'Height' })).
           append($('<input/>', { type: 'text', name: 'height', size: 10 }))
         ).
-        append(K3_Ribbon.Drawer.FloatField.fields).
+        // The clone is necessary because if you try to append the same $('<element/>') to 2 different targets, the 2nd call *moves* it from the 1st to the 2nd
+        append(K3_Ribbon.Drawer.FloatField.fields.clone()).
         append($('<p><a href="#" onclick="$(\'.video_drawer.drawer\').data(\'drawer\').set_test_values()">Use a test video</a></p>'))
     ),
     get_editable: function() {
