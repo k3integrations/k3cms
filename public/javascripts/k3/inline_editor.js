@@ -62,14 +62,17 @@ var drawers = [
       if (anchors.length > 0) {
         return anchors.get(0);
       }
-      // Otherwise, consider using the selected text, if it looks like it could be a URL
+      return null;
+    },
+    populate_with_defaults: function() {
+      var rng = InlineEditor.Range.getCurrent();
+      // Consider using the selected text, if it looks like it could be a URL
       if (rng.range.startContainer.nodeName == '#text') {
         var val = rng.range.startContainer.nodeValue;
         if ( val.match(/^[\S]*$/) ) {
-          return val;
+          $('#link_drawer_url').val(val);
         }
       }
-      return null;
     },
     populate_from_editable: function(editable) {
       if (typeof editable == 'string') {
@@ -584,7 +587,6 @@ function initInlineEditor(options) {
 
     drawer.get().find('form').bind('submit', {drawer: drawer}, function(event) {
       var drawer = event.data.drawer;
-      console.log("drawer=", drawer);
       toggleDrawer(drawer.id);
       var editable = drawer.get_editable();
       if (editable) {
