@@ -56,7 +56,6 @@ K3_Ribbon.Drawer.FloatField = {
     append($('<label/>', { text: 'Float Right', for: 'float_float_right' }))
   ),
   populate_with_defaults: function(drawer_id) {
-    //$('#image_drawer_float').val('right');
     $('#' + drawer_id + ' input:radio[name=float][value=' + 'right' + ']').attr('checked', true)
   },
   populate_from_editable: function(drawer_id, editable) {
@@ -66,15 +65,12 @@ K3_Ribbon.Drawer.FloatField = {
   onUpdate: function(drawer_id, editable) {
     var float = $('#' + drawer_id + ' input:radio[name=float]:checked').val()
 
-    // FIXME: This wasn't working for me for video tags:
-    //editable.style.float = float;
-    // If you output this, it will *say* it changed it, but it's not reflected in the HTML!:
-    //console.log("editable.style.float=", editable.style.float);
-    //console.log("editable=", editable);
+    // Add a class so that we can select left-floated images in CSS and give them a different margin
+    $(editable).removeClass('left right');
+    if (float == 'left' || float == 'right') {
+      $(editable).addClass(float);
+    }
 
-    // Workaround:
-    //$(editable).attr('style', $(editable).attr('style') + '; float: ' + float)
-    // Better!:
     $(editable).css('float', float);
   }
 }
