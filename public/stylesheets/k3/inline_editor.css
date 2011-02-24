@@ -24,20 +24,20 @@ sub { bottom: -0.19em; }
   cursor: text;
 }
 .editable:hover {
-  outline-color: #CA5F51; /* red */
-     -moz-box-shadow: 0 0 10px #CA5F51;
-  -webkit-box-shadow: 0 0 10px #CA5F51;
-          box-shadow: 0 0 10px #CA5F51;
+  outline-color: #009000; /* green */
+     -moz-box-shadow: 0 0 12px #009000;
+  -webkit-box-shadow: 0 0 12px #009000;
+          box-shadow: 0 0 12px #009000;
 }
 .editing,
 .editing:hover {
   outline-width: 2px;
-  /*outline-color: #8A1F11; */
-  outline-color: #CA5F51; /* red */
-     -moz-box-shadow: 0 0 10px red;
-  -webkit-box-shadow: 0 0 10px red;
-          box-shadow: 0 0 10px red;
+  outline-color: #009000; /* green */
+     -moz-box-shadow: 0 0 12px #00C000;
+  -webkit-box-shadow: 0 0 12px #00C000;
+          box-shadow: 0 0 12px #00C000;
 }
+/* Gecko seems to render the outline way *outside* of the box-shadow, which looks hideous, so for now just disable the outline completely for Gecko */
 .gecko .editable:hover,
 .gecko .editing,
 .gecko .editing:hover {
