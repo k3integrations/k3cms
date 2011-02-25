@@ -59,19 +59,23 @@ K3_Ribbon.Drawer.FloatField = {
     $('#' + drawer_id + ' input:radio[name=float][value=' + 'right' + ']').attr('checked', true)
   },
   populate_from_editable: function(drawer_id, editable) {
-    var value = $(editable).css('float') || 'none';
+    if ($(editable).hasClass('float_left')) {
+      var value = 'left';
+    } else if ($(editable).hasClass('float_right')) {
+      var value = 'right';
+    } else {
+      var value = 'none';
+    }
     $('#' + drawer_id + ' input:radio[name=float][value=' + value + ']').attr('checked', true)
   },
   onUpdate: function(drawer_id, editable) {
     var float = $('#' + drawer_id + ' input:radio[name=float]:checked').val()
 
-    // Add a class so that we can select left-floated images in CSS and give them a different margin
-    $(editable).removeClass('left right');
+    // We're setting a class so that we can select left-floated images in CSS and give them a different margin
+    $(editable).removeClass('float_left float_right');
     if (float == 'left' || float == 'right') {
-      $(editable).addClass(float);
+      $(editable).addClass('float_' + float);
     }
-
-    $(editable).css('float', float);
   }
 }
 

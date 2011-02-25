@@ -1,4 +1,12 @@
 /*------------------------------------------------------------------------------------------------*/
+.float_left {
+  float: left;
+}
+.float_right {
+  float: right;
+}
+
+/*------------------------------------------------------------------------------------------------*/
 /* superscript/subscript look (browsers are horrible-looking by default!) */
 sup, sub {
   vertical-align: baseline;
