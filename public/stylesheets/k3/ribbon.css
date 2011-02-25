@@ -130,6 +130,11 @@ body {
   margin: 0;
   list-style-type: none;
 }
+
+#k3_ribbon ul.tabs li.last_saved_status {
+  float: right;
+}
+
 #k3_ribbon ul.tabs li.admin {
   float: right;
 }

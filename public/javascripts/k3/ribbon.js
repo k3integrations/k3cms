@@ -65,6 +65,8 @@
 
 
 //--------------------------------------------------------------------------------------------------
+// Miscellaneous helper methods
+
 function assertValidKeys(options, valid_keys) {
   $.each(options, function(key, value) {
     var recognized = false;
@@ -78,6 +80,17 @@ function assertValidKeys(options, valid_keys) {
       $.error("'" + key + "' is not a recognized option");
     }
   })
+}
+
+// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date
+function ISODateString(d) {
+  function pad(n){return n<10 ? '0'+n : n}
+  return d.getUTCFullYear()+'-'
+    + pad(d.getUTCMonth()+1)+'-'
+    + pad(d.getUTCDate())+'T'
+    + pad(d.getUTCHours())+':'
+    + pad(d.getUTCMinutes())+':'
+    + pad(d.getUTCSeconds())+'Z'
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -130,6 +143,23 @@ $.extend(K3_Ribbon, {
         element.bind(event_name, value);
       }
     });
+  },
+
+  set_saved_status: function(last_saved_at) {
+    if (last_saved_at instanceof Date) {
+      var status_element = $('li.last_saved_status');
+      //console.log("last_saved_at=", last_saved_at);
+      status_element.html('');
+      status_element.
+        append("Saved ").
+        append($('<span/>', { class: "timeago", title: ISODateString(last_saved_at), html: last_saved_at }));
+        //append($('<button/>', { class: "save_button", html: 'Saved', disabled: true }));
+      status_element.find('.timeago').timeago();
+    } else if (last_saved_at == 'Error') {
+      // TODO: update this status to indicate that there was an error
+    } else {
+      console.debug('Expected a Date object but got', last_saved_at);
+    }
   },
 })
 
