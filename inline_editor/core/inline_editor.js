@@ -76,7 +76,12 @@ InlineEditor.prototype.updateOptions = function (options) {
 
 InlineEditor.SUB_FOCUSABLE_TYPES = ['video', 'audio', 'iframe', 'object'];
 InlineEditor.SUB_FOCUSABLE_SELECTOR = InlineEditor.SUB_FOCUSABLE_TYPES.join(', ');
+InlineEditor.prototype.getConf = function () {
+  var $node = $(this.node);
+  return $node.data();
+}
 InlineEditor.prototype.bindEventHandlers = function () {
+  //var options = this.getConf();
   var $node = $(this.node);
   var options = $node.data();
 
@@ -301,6 +306,10 @@ InlineEditor.defaultLiveChangeHandler = function (evt) {
   editor.idleSaveTimeout = setTimeout(function () {
     $this.trigger('save_if_changed');
   }, $this.data('idle-save-time'));
+
+  // Whereas save_if_changed isn't triggered until the idle delay, onChange gets triggered immediately...
+  var options = editor.getConf();
+  options.onChange();
 };
 
 InlineEditor.focusHandler = function (evt) {
@@ -435,6 +444,7 @@ InlineEditor.DEFAULT_OPTIONS = {
   liveChange: InlineEditor.defaultLiveChangeHandler,
   save:       InlineEditor.defaultSaveHandler,
   saveError:  InlineEditor.defaultErrorHandler,
+  onChange:   null,
 };
 
 

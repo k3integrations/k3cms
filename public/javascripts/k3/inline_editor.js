@@ -347,7 +347,11 @@ function initInlineEditor(options) {
   $('.editable').inlineEditor(options);
   $('.editable').inlineEditor({
     saving : function(event) {
-      $('#last_saved_status').html('Saving...');
+      K3_Ribbon.onSaving();
+    },
+
+    onChange: function(event) {
+      K3_Ribbon.set_dirty_status(true);
     },
 
     saveSuccess : function(event, data, msg, xhr) {
