@@ -314,6 +314,12 @@ Object.keys = Object.keys || (function () {
 
 //==================================================================================================
 K3_InlineEditor = {
+  /*
+   * object_name: for example, 'k3_blog_blog_post'    -- in Rails, you can get this from dom_class(object)
+   * object_id:   for example, 'k3_blog_blog_post_18' -- in Rails, you can get this from dom_id(object)
+   * object:      an object representing the state of the object in the database -- in Rails, you can get this from object.to_json
+   * source_element: a jQuery object that selects which element *not* to update from the data in object
+   */
   updatePageFromObject: function(object_name, object_id, object, source_element) {
     $.each(object, function(attr_name, value) {
       if (value === null) value = '';
