@@ -119,7 +119,7 @@ body {
 #k3_ribbon ul.tabs {
   margin: 0 !important;
   padding: 0;
-  height: 17px; /* a tag: 15px (height) + 1px + 1px (border) */
+  height: 17px; /* 'a' tag: 15px (height) + 1px + 1px (border) */
   border-bottom: 1px solid #666;
 }
 
@@ -132,7 +132,12 @@ body {
 }
 
 #k3_ribbon ul.tabs li.last_saved_status {
+  margin-top: -6px;
   float: right;
+}
+#k3_ribbon ul.tabs {
+  /* This didn't work: */
+  /*margin-top: 6px !important;*/
 }
 
 #k3_ribbon ul.tabs li.admin {

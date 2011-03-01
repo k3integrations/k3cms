@@ -152,15 +152,33 @@ $.extend(K3_Ribbon, {
       status_element.html('');
       status_element.
         append("Saved ").
-        append($('<span/>', { class: "timeago", title: ISODateString(last_saved_at), html: last_saved_at }));
-        //append($('<button/>', { class: "save_button", html: 'Saved', disabled: true }));
+        append($('<span/>', { class: "timeago",
+          title: ISODateString(last_saved_at), 
+          html: last_saved_at
+        })).
+        append($('<button/>', { class: "save_button",
+          click: function() { K3_Ribbon.onSaving(); }
+        }));
       status_element.find('.timeago').timeago();
+      K3_Ribbon.set_dirty_status(false);
     } else if (last_saved_at == 'Error') {
       // TODO: update this status to indicate that there was an error
     } else {
       console.debug('Expected a Date object but got', last_saved_at);
     }
   },
+
+  set_dirty_status: function(dirty) {
+    if (dirty) {
+      $('#k3_ribbon .save_button').html('Save now').removeAttr('disabled');
+    } else {
+      $('#k3_ribbon .save_button').html('Saved').attr('disabled', true);
+    };
+  },
+  onSaving: function(dirty) {
+    $('#k3_ribbon .save_button').html('Saving...').attr('disabled', true);
+  },
+
 })
 
 // A Tab represents both a tab and the pane underneath (containing Sections) that appears when you click on the tab
