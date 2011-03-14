@@ -1,4 +1,4 @@
-require 'k3_cancan'
+require 'cancan'
 
 module K3
   module Pages

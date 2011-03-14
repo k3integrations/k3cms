@@ -1,4 +1,5 @@
 require "rails"
+require 'cells'
 require "k3_pages"
 #require 'facets' # Causes an error in Rails!
 require 'facets/kernel/__dir__'
