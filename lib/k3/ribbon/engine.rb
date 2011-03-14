@@ -8,6 +8,7 @@ module K3
   module Ribbon
 
     class Engine < Rails::Engine
+      config.action_view.javascript_expansions[:k3] ||= []
       config.action_view.javascript_expansions[:k3].concat [
         'jquery.tools.min.js',
         'jquery.timeago.js',
