@@ -24,6 +24,12 @@ module K3
         class ::ApplicationController
           before_filter :set_edit_mode
         end
+
+        #require 'k3/ribbon/ribbon_helper'
+        ActiveSupport.on_load(:action_view) do
+          #require 'ruby-debug'; debugger
+          include K3::Ribbon::RibbonHelper
+        end
       end
     end
 
