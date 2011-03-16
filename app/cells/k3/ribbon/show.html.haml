@@ -10,7 +10,7 @@
 
     .split_right
       %ul
-        - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:top] || []).each do |item|
+        - @options[:k3_ribbon_items] and (@options[:k3_ribbon_items][:top] || []).each do |item|
           = item
 
   .row.row_2
@@ -25,13 +25,13 @@
     .panes
       -#
         .admin
-          - @opts[:k3_ribbon_items] and (@opts[:k3_ribbon_items][:admin] || []).each do |item|
+          - @options[:k3_ribbon_items] and (@options[:k3_ribbon_items][:admin] || []).each do |item|
             = item
 
 
 #k3_ribbon_underneath
 #k3_drawers
-  - @opts[:k3_ribbon_drawers] and @opts[:k3_ribbon_drawers].each do |name, drawer|
+  - @options[:k3_ribbon_drawers] and @options[:k3_ribbon_drawers].each do |name, drawer|
     = drawer
 
 
