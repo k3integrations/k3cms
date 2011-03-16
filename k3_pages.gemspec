@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.summary     = "K3 Static Pages"
   s.description = 'Provides the ability to create static pages in a website'
-  s.authors     = ['John Ash', 'Tyler Rick']
-  s.email       = ['jash@k3integrations.com', 'tyler@k3integrations.com']
+  s.authors     = `git shortlog --summary --numbered         | awk '{print $2, $3    }'`.split("\n")
+  s.email       = `git shortlog --summary --numbered --email | awk '{print $2, $3, $4}'`.split("\n")
   s.homepage    = 'http://www.k3integrations.com'
 
   s.add_dependency 'facets'
@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'cancan'
   s.add_dependency 'haml'
   s.add_dependency 'k3_authorization'
+
   s.add_development_dependency 'rspec', '~> 2.2.0'
   s.add_development_dependency 'rspec-rails', '~> 2.2.0'
   s.add_development_dependency 'sqlite3-ruby'
