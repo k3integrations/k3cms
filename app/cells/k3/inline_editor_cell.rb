@@ -1,8 +1,5 @@
 class K3::InlineEditorCell < Cell::Base
 
-  require 'cells/helpers'
-  helper Cells::Helpers::CaptureHelper
-
   helper  K3::Ribbon::RibbonHelper
   include K3::Ribbon::RibbonHelper # for edit_mode?
   helper K3::InlineEditor::InlineEditorHelper
