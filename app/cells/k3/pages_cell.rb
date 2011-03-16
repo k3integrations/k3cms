@@ -13,12 +13,6 @@ public
     render
   end
 
-  def last_saved_status
-    if @page && !@page.new_record?
-      render
-    end
-  end
-
   def metadata_drawer
     render
   end

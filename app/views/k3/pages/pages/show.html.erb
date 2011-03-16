@@ -8,9 +8,6 @@
   <% content_for :meta_keywords do %>
 <%= @page.meta_keywords -%>
   <% end %>
-  <% content_for :last_saved_status do %>
-    <%= render_cell 'k3/pages', :last_saved_status, :page => @page %>
-  <% end %>
   <% if edit_mode? and can?(:edit, K3::Page) %>
     <script type="text/javascript">
       $(function() {

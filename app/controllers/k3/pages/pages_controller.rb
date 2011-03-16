@@ -88,12 +88,6 @@ module K3
         end
       end
 
-      def last_saved_status
-        respond_to do |format|
-          format.html { render :text => render_cell('k3/pages', :last_saved_status, :page => @page) }
-        end
-      end
-
     end
   end
 end
