@@ -5,7 +5,7 @@ class K3::PagesCell < Cell::Rails
   before_filter :set_common_variables
 private
   def set_common_variables
-    @page = @opts[:page]
+    @page = options[:page]
   end
 
 public
