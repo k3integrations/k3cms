@@ -45,7 +45,9 @@
             onMousedown: function(event) {
               var a = $(this).find('a').eq(0);
               if ($(this).k3_ribbon('isEnabled')) {
-                a.attr('href', a.data('href'));
+                if (a.data('href')) {
+                  a.attr('href', a.data('href'));
+                }
               } else {
                 a.data('href', a.attr('href'));
                 a.attr('href', 'javascript:;');
