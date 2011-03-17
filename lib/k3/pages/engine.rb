@@ -26,7 +26,7 @@ module K3
       end
 
       config.to_prepare do |app|
-        require Pathname[__DIR__] + '../../../app/models/user.rb'
+        require Pathname[__DIR__] + '../../../app/models/user_decorator.rb'
       end
 
     end
