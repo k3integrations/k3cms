@@ -14,6 +14,9 @@ module K3
         'jquery.timeago.js',
         'k3/ribbon.js',
       ]
+      config.action_view.stylesheet_expansions[:k3].concat [
+        'k3/ribbon.css',
+      ]
 
       initializer 'k3.ribbon.add_cells_paths' do |app|
         Cell::Base.view_paths += [Pathname[__DIR__] + '../../../app/cells']
