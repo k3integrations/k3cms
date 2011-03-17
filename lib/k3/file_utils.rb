@@ -54,7 +54,7 @@ module K3
       app_file = Rails.root             + app_file
       app_file.dirname.mkpath
       app_file.unlink if app_file.symlink?
-      app_file.make_symlink(gem_file.relative_path_from(app_file)) unless app_file.exist?
+      app_file.make_symlink(gem_file.relative_path_from(app_file.dirname)) unless app_file.exist?
     end
 
     # Given a glob pattern, this will create a symlink in the target app for
