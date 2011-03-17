@@ -13,6 +13,9 @@ module K3
       config.action_view.javascript_expansions[:k3].concat [
         'k3/pages.js',
       ]
+      config.action_view.stylesheet_expansions[:k3].concat [
+        'k3/pages.css',
+      ]
 
       initializer 'k3.pages.add_cells_paths' do |app|
         Cell::Base.view_paths += [Pathname[__DIR__] + '../../../app/cells']
