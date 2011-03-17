@@ -30,15 +30,15 @@ module K3
         #require 'haml-rails'
       end
 
-      config.to_prepare do
-        ::ApplicationController.send :include, K3::Ribbon::ControllerMethods
-        class ::ApplicationController
+      initializer 'k3.ribbon.action_controller' do
+        ActiveSupport.on_load(:action_controller) do
+          include K3::Ribbon::ControllerMethods
           before_filter :set_edit_mode
         end
+      end
 
-        #require 'k3/ribbon/ribbon_helper'
+      initializer 'k3.ribbon.action_view' do
         ActiveSupport.on_load(:action_view) do
-          #require 'ruby-debug'; debugger
           include K3::Ribbon::RibbonHelper
         end
       end
