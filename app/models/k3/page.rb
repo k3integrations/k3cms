@@ -1,4 +1,5 @@
 require 'active_record'
+require File.expand_path('../../../../lib/route_set_decorator', __FILE__)
 
 module K3
   class Page < ActiveRecord::Base
@@ -13,9 +14,17 @@ module K3
     class RouteDoesNotConflictWithRailsRoutesValidator < ActiveModel::EachValidator
       def validate_each(record, attribute, value)
         begin
-          if value and rails_route = Rails.application.routes.recognize_path(value)
-            Rails.logger.debug "... The url of #{record.to_s} conflicts with #{rails_route.inspect}."
-            record.errors[attribute] << ": The URL of this user-created page is the same as that of a built-in page. Please choose a different URL for your page."
+          if value and rails_route = Rails.application.routes.recognize_route_from_path(value)
+            # Ignore catch-all routes, which is defined here to mean those that match with a *
+            # For example, when integrated with Spree: They have this catch-all route:
+            #   match '/*path' => 'content#show'
+            # which is represented with this object:
+            #   #<Rack::Mount::Route @app=#<ActionDispatch::Routing::RouteSet::Dispatcher:0x00000004b057d0 @defaults={:controller=>"content", :action=>"show"}, @glob_param=nil, @controllers={}>
+            #   @conditions={:path_info=>/\A\/(?<path>.+)(?:\.(?<format>[^\/.?]+))?\Z/} @defaults={:controller=>"content", :action=>"show"} @name=nil>
+            unless rails_route.conditions[:path_info].to_s =~ /\(\?<\w+>\.\+\)/
+              Rails.logger.debug "... The url of #{record.to_s} conflicts with #{rails_route.inspect}."
+              record.errors[attribute] << ": The URL of this user-created page is the same as that of a built-in page. Please choose a different URL for your page."
+            end
           end
         rescue ActionController::RoutingError
           # This is actually the normal case
