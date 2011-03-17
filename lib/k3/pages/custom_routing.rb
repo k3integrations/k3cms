@@ -21,7 +21,9 @@ module K3
           #
           # TODO: (Only) If logged in as editor, check if this route conflicts with normal Rails routes
           # But how do we check if they're logged in? Inspect rack.session manually?
-          #
+          session = env["rack.session"]
+          # if key = session['warden.user.user.key']
+
           if !page.valid?
             env['PATH_INFO'] = "/k3_pages/#{page.id}/edit"
             @app.call(env)
@@ -39,6 +41,7 @@ module K3
           end
 
         else
+          orig_env = env.dup
           # Continue processing stack
           @status, @headers, @response = @app.call(env)
 
@@ -46,6 +49,22 @@ module K3
             # Use our custom 404 handler
             Rails.logger.debug "... CustomRouting: Handling 404"
             encoded_path = env['PATH_INFO'].to_s.gsub('&', '%26')
+
+            # The call to @app.call(env) may have modified env in ways we don't want it to have.
+            # In particular, with Spree, it would have matched their catch-all route:
+            #   match '/*path' => 'content#show'
+            # and caused env['action_dispatch.request.parameters'] to look something like
+            #   {"controller"=>"content", "action"=>"show", "path"=>"the_unrecognized_path"},
+            # That would cause problems when we call @app.call(env) again below
+            # Instead of this:
+            #   Parameters: {"requested_path"=>"/the_unrecognized_path"}
+            # we saw this:
+            #   Parameters: {"path"=>"the_unrecognized_path"}
+            # To be safe and prevent that from happening, we revert env before tweaking it.
+            env = orig_env
+            # This seems to also work:
+            # env.delete_if {|k,v| k =~ /action_dispatch.request/ }
+
             env['PATH_INFO']    = "/k3_pages/not_found"
             env['QUERY_STRING'] = "requested_path=#{encoded_path}"
             @status, @headers, @response = @app.call(env)
