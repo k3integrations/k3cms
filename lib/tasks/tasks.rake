@@ -6,11 +6,8 @@ namespace :k3 do
     
     desc "Copy public files"
     task :copy_public do
-      if ENV['k3_use_symlinks']
-        K3::FileUtils.symlink_files_from_gem K3::Ribbon, 'public/**/*'
-      else
-        K3::FileUtils.copy_from_gem K3::Ribbon, 'public'
-      end
+      method = ENV['k3_use_symlinks'] ? :symlink_files_from_gem : :copy_files_from_gem
+      K3::FileUtils.send method, K3::Ribbon, 'public/**/*'
     end
     
     desc "Copy migrations"
