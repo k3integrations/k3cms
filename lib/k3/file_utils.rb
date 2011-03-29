@@ -80,5 +80,28 @@ module K3
       end
     end
 
+    # Given a glob pattern, this will create a copy in the target app for
+    # each file matching the glob in the gem's directory.  Only files will be
+    # copied, not directories.  Example:
+    # K3::FileUtils.copy_files_from_gem K3::Blog, 'public/**/*'
+    #
+    def self.copy_files_from_gem(gem_class, gem_glob)
+      Dir.chdir gem_class::Engine.root do
+        Dir[gem_glob].each do |file|
+          gem_file = gem_class::Engine.root + file
+          next unless gem_file.file?
+          app_file = Rails.root             + file
+          app_file.dirname.mkpath
+          app_file.unlink if app_file.symlink?
+          if app_file.exist?
+            puts "  Skipping #{file} (#{app_file} already exists)"
+          else
+            puts "  Copying  #{file}"
+            copy_file gem_file, app_file
+          end
+        end
+      end
+    end
+
   end
 end
