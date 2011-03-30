@@ -7,6 +7,8 @@ module K3
       file = src_file
       copy = true
       differs = false
+      dest_file = Pathname.new(dest_file)
+      dest_file.unlink if dest_file.symlink?
       if File.exists?(dest_file)
         if ::FileUtils.compare_file(src_file, dest_file)
           copy = false
@@ -21,6 +23,7 @@ module K3
         puts "  Copying file #{file}" if verbose
         ::FileUtils.mkdir_p(File.dirname(dest_file))
         ::FileUtils.copy(src_file, dest_file)
+
       elsif ::FileUtils.compare_file(src_file, dest_file)
         puts "  Identical: #{file}" if verbose
       end
@@ -57,26 +60,53 @@ module K3
       app_file.make_symlink(gem_file.relative_path_from(app_file.dirname)) unless app_file.exist?
     end
 
+    #-----------------------------------------------------------------------------------------------
+
+    # If ENV['k3_use_symlinks'] is set, this will use symlink_files_from_gem, otherwise will use copy_files_from_gem
+    def self.copy_or_symlink_files_from_gem(*args)
+      method = ENV['k3_use_symlinks'] ? :symlink_files_from_gem : :copy_files_from_gem
+      send method, *args
+    end
+
+    private
+    def self.each_file_from_gem(gem_class, gem_glob, dest = nil)
+      Dir.chdir gem_class::Engine.root do
+        Dir[gem_glob].each do |file|
+          gem_file = gem_class::Engine.root + file
+          next unless gem_file.file?
+          if dest
+            dest = Pathname.new(dest)
+            if dest.directory?
+              app_file = dest + file
+            elsif dest.relative?
+              app_file = Rails.root + dest
+            else
+              app_file = dest
+            end
+          else
+            app_file = Rails.root + file
+          end
+          app_file.dirname.mkpath
+          app_file.unlink if app_file.symlink? || (app_file.exist? && ENV['k3_delete_before_copy'])
+          if app_file.exist?
+            puts "  Skipping #{file} (#{app_file} already exists)"
+          else
+            yield file, gem_file, app_file
+          end
+        end
+      end
+    end
+
     # Given a glob pattern, this will create a symlink in the target app for
     # each file matching the glob in the gem's directory.  Only files will be
     # symlinked, not directories.  Example:
     # K3::FileUtils.symlink_files_from_gem K3::Blog, 'public/**/*'
     #
-    def self.symlink_files_from_gem(gem_class, gem_glob)
-      Dir.chdir gem_class::Engine.root do
-        Dir[gem_glob].each do |file|
-          gem_file = gem_class::Engine.root + file
-          next unless gem_file.file?
-          app_file = Rails.root             + file
-          app_file.dirname.mkpath
-          app_file.unlink if app_file.symlink?
-          if app_file.exist?
-            puts "  Skipping #{file} (#{app_file} already exists)"
-          else
-            puts "  Linking  #{file}"
-            app_file.make_symlink(gem_file.relative_path_from(app_file.dirname))
-          end
-        end
+    def self.symlink_files_from_gem(gem_class, gem_glob, dest = nil)
+      each_file_from_gem(gem_class, gem_glob, dest) do |file, gem_file, app_file|
+        puts "  Linking  #{file}"
+        puts "    (#{app_file} -> #{gem_file})"
+        app_file.make_symlink(gem_file.relative_path_from(app_file.dirname))
       end
     end
 
@@ -85,21 +115,10 @@ module K3
     # copied, not directories.  Example:
     # K3::FileUtils.copy_files_from_gem K3::Blog, 'public/**/*'
     #
-    def self.copy_files_from_gem(gem_class, gem_glob)
-      Dir.chdir gem_class::Engine.root do
-        Dir[gem_glob].each do |file|
-          gem_file = gem_class::Engine.root + file
-          next unless gem_file.file?
-          app_file = Rails.root             + file
-          app_file.dirname.mkpath
-          app_file.unlink if app_file.symlink?
-          if app_file.exist?
-            puts "  Skipping #{file} (#{app_file} already exists)"
-          else
-            puts "  Copying  #{file}"
-            copy_file gem_file, app_file
-          end
-        end
+    def self.copy_files_from_gem(gem_class, gem_glob, dest = nil)
+      each_file_from_gem(gem_class, gem_glob, dest) do |file, gem_file, app_file|
+        puts "  Copying  #{file}"
+        copy_file gem_file, app_file
       end
     end
 
