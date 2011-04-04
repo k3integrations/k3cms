@@ -668,7 +668,9 @@ function refreshButtons() {
   }
 
   var ribbon = $('#k3_ribbon').k3_ribbon('get');
-  ribbon.refresh();
+  if (ribbon) {
+    ribbon.refresh();
+  }
 }
 
 // TODO: Move out to drawer class
