@@ -2,7 +2,7 @@ require 'fileutils'
 
 module K3
   class FileUtils
-    # TODO: reuse some code from Rails generators so that we can get for free: check for identical, offer to give a diff or overwrite, etc.
+    # TODO: reuse some code from Rails generators/Thor so that we can get for free: check for identical, offer to give a diff or overwrite, etc.
     def self.copy_file(src_file, dest_file, verbose=true)
       file = src_file
       copy = true
@@ -69,7 +69,7 @@ module K3
     end
 
     private
-    def self.each_file_from_gem(gem_class, gem_glob, dest = nil)
+    def self.each_file_from_gem(gem_class, gem_glob, dest, options = {})
       Dir.chdir gem_class::Engine.root do
         Dir[gem_glob].each do |file|
           gem_file = gem_class::Engine.root + file
@@ -88,7 +88,7 @@ module K3
           end
           app_file.dirname.mkpath
           app_file.unlink if app_file.symlink? || (app_file.exist? && ENV['k3_delete_before_copy'])
-          if app_file.exist?
+          if options[:skip_if_file_exists] && app_file.exist?
             puts "  Skipping #{file} (#{app_file} already exists)"
           else
             yield file, gem_file, app_file
@@ -103,7 +103,7 @@ module K3
     # K3::FileUtils.symlink_files_from_gem K3::Blog, 'public/**/*'
     #
     def self.symlink_files_from_gem(gem_class, gem_glob, dest = nil)
-      each_file_from_gem(gem_class, gem_glob, dest) do |file, gem_file, app_file|
+      each_file_from_gem(gem_class, gem_glob, dest, :skip_if_file_exists => true) do |file, gem_file, app_file|
         puts "  Linking  #{file}"
         puts "    (#{app_file} -> #{gem_file})"
         app_file.make_symlink(gem_file.relative_path_from(app_file.dirname))
@@ -116,7 +116,7 @@ module K3
     # K3::FileUtils.copy_files_from_gem K3::Blog, 'public/**/*'
     #
     def self.copy_files_from_gem(gem_class, gem_glob, dest = nil)
-      each_file_from_gem(gem_class, gem_glob, dest) do |file, gem_file, app_file|
+      each_file_from_gem(gem_class, gem_glob, dest, :skip_if_file_exists => false) do |file, gem_file, app_file|
         puts "  Copying  #{file}"
         copy_file gem_file, app_file
       end
