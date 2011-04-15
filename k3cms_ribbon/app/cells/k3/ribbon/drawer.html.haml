@@ -1,0 +1,3 @@
+.drawer.hidden{:class => @options[:name]}
+  = @options[:content]
+  = link_to_function 'Hide', "jQuery('.#{@options[:name]}.drawer').slideToggle()"

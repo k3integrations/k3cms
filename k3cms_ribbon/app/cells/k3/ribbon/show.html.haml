@@ -1,0 +1,52 @@
+#k3_ribbon
+  .row.row_1
+    .split_left
+      %ul
+        %li.toggle_edit_mode
+          - if edit_mode?
+            = link_to "Done editing", params.merge({:edit => false.to_s})
+          - else
+            = link_to "Start editing", params.merge({:edit => true.to_s})
+
+    .split_right
+      %ul
+        - @options[:k3_ribbon_items] and (@options[:k3_ribbon_items][:top] || []).each do |item|
+          = item
+
+  .row.row_2
+    %ul.tabs
+      %li= image_tag 'k3/ribbon/k3_logo.png', :id => 'k3_logo'
+      %li.last_saved_status
+
+      -#
+        %li.admin <a href="#admin">Admin</a>
+
+  .row.row_3
+    .panes
+      -#
+        .admin
+          - @options[:k3_ribbon_items] and (@options[:k3_ribbon_items][:admin] || []).each do |item|
+            = item
+
+
+#k3_ribbon_underneath
+#k3_drawers
+  - @options[:k3_ribbon_drawers] and @options[:k3_ribbon_drawers].each do |name, drawer|
+    = drawer
+
+
+:javascript
+  $(function() {
+    if (#{edit_mode?.to_json}) {
+      $('body').removeClass('edit_mode_off');
+      $('body').addClass(   'edit_mode_on');
+      $('#k3_ribbon').k3_ribbon();
+      $('#k3_ribbon').k3_ribbon('render');
+      $('#k3_ribbon').k3_ribbon('refresh');
+      $('#k3_ribbon_underneath').height($('#k3_ribbon').height())
+    } else {
+      $('body').removeClass('edit_mode_on');
+      $('body').addClass(   'edit_mode_off');
+      $('#k3_ribbon_underneath').height($('#k3_ribbon').height())
+    }
+  });

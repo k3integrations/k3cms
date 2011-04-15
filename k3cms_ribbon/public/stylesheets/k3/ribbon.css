@@ -1,0 +1,373 @@
+/*------------------------------------------------------------------------------------------------*/
+/* General, not necessarily ribbon-specific */
+
+.auto_clear:after { content: "."; display: block; line-height: 0; height: 0; clear: both; visibility: hidden; }
+
+body {
+  margin-top: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+/*
+.clear {
+  clear: both;
+}
+*/
+
+.split_left {
+  float: left;
+  width: 49%;
+  text-align: left;
+}
+
+.split_right {
+  float: right;
+  width: 49%;
+  text-align: right;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+/* Ribbon */
+
+#k3_ribbon {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+#k3_ribbon:after { content: "."; display: block; line-height: 0; height: 0; clear: both; visibility: hidden; }
+
+#k3_ribbon {
+  background: white;
+}
+
+#k3_ribbon .row + .row {
+  clear: both;
+}
+
+#k3_ribbon,
+#k3_ribbon ul
+{
+  margin: 0;
+  padding: 0;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+/* row_1 */
+
+#k3_ribbon .row_1 {
+  margin: 0 5px 0 5px;
+}
+
+#k3_ribbon .row_1 ul li {
+  list-style-type: none;
+}
+#k3_ribbon .row_1 .split_left ul li {
+  float: left;
+  padding: 0 5px 0 0;
+}
+#k3_ribbon .row_1 .split_right ul li {
+  float: right;
+  padding: 0 0 0 5px;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+
+#k3_ribbon .row_2 {
+  margin: 0 0 0 0;
+}
+
+.edit_mode_off #k3_ribbon .row_2 {
+  display: none;
+}
+
+#k3_ribbon .row_2 #k3_logo {
+  margin: 0 3px 0 3px;
+}
+
+
+/*------------------------------------------------------------------------------------------------*/
+#k3_ribbon .row_3 {
+  margin: 0 0 0 0;
+}
+
+.edit_mode_off #k3_ribbon .row_3 {
+  display: none;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+
+/* This should be the same height as the ribbon in order to push the actual page contents down so that the top is aligned with the bottom of the ribbon. */
+#k3_ribbon_underneath {
+  height: 65px;
+  background-color: white;
+}
+
+#k3_drawers {
+  clear: both;
+  width: 100%;
+  position: relative;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+/* Tabs */
+
+/* root element for tabs */
+#k3_ribbon ul.tabs {
+  margin: 0 !important;
+  padding: 0;
+  height: 17px; /* 'a' tag: 15px (height) + 1px + 1px (border) */
+  border-bottom: 1px solid #666;
+}
+
+/* single tab */
+#k3_ribbon ul.tabs li {
+  float: left;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+#k3_ribbon ul.tabs li.last_saved_status {
+  margin-top: -6px;
+  float: right;
+}
+#k3_ribbon ul.tabs {
+  /* This didn't work: */
+  /*margin-top: 6px !important;*/
+}
+
+#k3_ribbon ul.tabs li.admin {
+  float: right;
+}
+
+/* link inside the tab */
+#k3_ribbon ul.tabs a {
+  display: block;
+  float: left;
+
+  position: relative;
+  top: 1px;
+
+  height: 15px;
+  margin: 0 2px 0 2px;
+  padding: 0px 10px 0px;
+  border: 1px solid #666;
+  border-bottom: 0px;
+
+  outline: 0;
+  background-color: #efefef;
+  -moz-border-radius: 4px 4px 0 0;
+
+  font-size: 12px;
+  text-decoration: none;
+  color: #777;
+}
+
+#k3_ribbon ul.tabs a:hover {
+  background-color: #F7F7F7;
+  color: #333;
+}
+  
+/* selected tab */
+#k3_ribbon ul.tabs a.current {
+  background-color:        #fff; /* must match .panes>div.background-color */
+  border-bottom: 1px solid #fff; /* must match .panes>div.background-color */
+  color: #000;
+  cursor: default;
+}
+
+/* tab pane */
+#k3_ribbon .panes>div {
+  display: none;
+  border: 1px solid #666;
+  border-width: 0 1px 1px 1px;
+  min-height: 26px;
+  background-color: #fff;
+}
+
+#k3_ribbon .panes>div li {
+  float: left;
+  list-style-type: none;
+  margin: 0 2px 0 2px;
+}
+
+#k3_ribbon .panes>div li.icon {
+  margin: 0 0px 0 0px;
+}
+
+/* Tabs */
+/*------------------------------------------------------------------------------------------------*/
+/* Drawers */
+
+.drawer {
+  position: absolute;
+  padding: 10px;
+  width: 90%;
+  background: white;
+  border: 1px solid black;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+/* buttons */
+
+#k3_ribbon li.button {
+  position: relative;
+  display: block;
+  float: left;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  /*cursor: hand; /* use for old ie, but breaks ie9 */
+  /*
+  padding: 2px 5px;
+  background-color: white;
+  border-top-color: #ddd;
+  border-right-color: #666;
+  border-bottom-color: #666;
+  border-left-color: #ddd;
+  */
+}
+.k3_section li.button a {
+  text-decoration: none !important;
+}
+#k3_ribbon li.button.toggled_on {
+  border-top-color: #666;
+  border-right-color: #ddd;
+  border-bottom-color: #ddd;
+  border-left-color: #666;
+}
+#k3_ribbon li.button.disabled {
+  color: #ccc;
+  /*border-color: #eee;*/
+}
+#k3_ribbon li.button.disabled a:before {
+  content: url(/images/k3/inline_editor/disabled_overlay.png);
+  display: block;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+.k3_section li.button a:hover {
+  background-color: yellow;
+}
+.k3_section li.button.disabled a:hover {
+  background-color: transparent;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+/* selects and other types of controls/items */
+
+#k3_ribbon li select {
+  margin: 3px 0 0 0;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+/*
+* WYMeditor : what you see is What You Mean web-based editor
+* Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
+* Dual licensed under the MIT (MIT-license.txt)
+* and GPL (GPL-license.txt) licenses.
+*
+* For further information visit:
+*      http://www.wymeditor.org/
+*
+* File Name:
+*      skin.css
+*      main stylesheet for the default WYMeditor skin
+*      See the documentation for more info.
+*
+* File Authors:
+*      Daniel Reszka (d.reszka a-t wymeditor dotorg)
+*/
+
+/*TRYING TO RESET STYLES THAT MAY INTERFERE WITH WYMEDITOR*/
+/*
+p, h2, h3,
+ul, li {
+  background: transparent url();
+  margin: 0;
+  padding: 0
+  border-width:0
+  list-style: none;
+}
+*/
+
+/* auto-clear */
+.auto_clear:after           { content: "."; display: block; line-height: 0; height: 0; clear: both; visibility: hidden; }
+
+
+
+/*SECTIONS SYSTEM*/
+
+/*common defaults for all sections*/
+.k3_section {
+  /*margin-bottom: 5px;*/
+}
+.k3_section h2,
+.k3_section h3         { padding: 1px 3px; margin: 0; }
+.k3_section a          {
+  padding: 0 3px;
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
+/*hide section titles by default*/
+/*
+.k3_section h2         { display: none; }
+*/
+
+/*disable any margin-collapse*/
+/*
+.k3_section            { padding-top: 1px; padding-bottom: 1px; }
+*/
+
+/*auto-clear sections*/
+/*
+.k3_section ul:after   { content: "."; display: block; line-height: 0; height: 0; clear: both; visibility: hidden; }
+* html .k3_section ul         { height: 1%;}
+*/
+
+/*option: add this class to a section to make it render as a panel*/
+/*
+.k3_panel              { }
+.k3_panel h2           { display: block; }
+*/
+
+/*option: add this class to a section to make it render as a dropdown menu*/
+/*
+.k3_dropdown h2        { display: block; }
+.k3_dropdown ul        { display: none; position: absolute; background: white; }
+.k3_dropdown:hover ul,
+.k3_dropdown.hover ul  { display: block; }
+*/
+
+
+.k3_ribbon li.icon {
+  float:left;
+}
+.k3_ribbon li.icon a {
+  width: 20px;
+  height: 20px;
+  overflow: hidden;
+  padding: 2px
+}
+
+
+/*DECORATION*/
+/*
+.k3_section h2             { background: #ddd; border: solid gray; border-width: 0 0 1px;}
+.k3_section h2 span        { color: gray;}
+.k3_panel                  { padding: 0; border: solid gray; border-width: 1px; background: white;}
+.k3_panel ul               { margin: 2px 0 5px; }
+.k3_dropdown               { padding: 0; border: solid gray; border-width: 1px 1px 0 1px; }
+.k3_dropdown ul            { border: solid gray; border-width: 0 1px 1px 1px; margin-left: -1px; padding: 5px 10px 5px 3px;}
+*/
+
+/* End of CSS from WYMEditor */
+/*------------------------------------------------------------------------------------------------*/
