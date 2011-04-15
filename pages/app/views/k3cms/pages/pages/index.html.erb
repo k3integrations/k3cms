@@ -1,0 +1,35 @@
+<div class="k3cms_pages_pages_index">
+
+  <h1>Listing pages</h1>
+
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Url</th>
+      <th>Body</th>
+      <th>Author</th>
+      <th></th>
+      <th></th>
+    </tr>
+
+  <% @pages.each do |page| %>
+    <tr>
+      <td>
+        <% if edit_mode? and can?(:edit, K3cms::Page) %>
+          <% inline_editable('span', page, :title) do %>
+            <%= raw(page.title) %>
+          <% end %>
+        <% else %>
+          <%= raw(page.title) %>
+        <% end %>
+      </td>
+      <td><%= link_to page.url, page.url %></td>
+      <td><%= truncate(strip_tags(page.body), :length => 30) %></td>
+      <td><%= page.author %></td>
+      <td><%= link_to 'Edit', pretty_edit_k3cms_page_path(page) %></td>
+      <td><%= link_to 'Destroy', k3cms_page_path(page), :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+  </table>
+
+</div>

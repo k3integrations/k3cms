@@ -1,0 +1,216 @@
+= K3cms Authorization
+
+== Introduction
+
+This gem adds flexible authorization capabilities to Rails engines by allowing
+gem developers to add an authorization definition file, and then use any
+authorization libraries they wish in their gem (CanCan, etc).
+
+For example, there may be several gems that each use different authorization
+libraries.  One may use CanCan, another may use declarative_authorization, and
+another may have its own home-grown authorization implementation.  This is
+fine as long as each gem provides a config/authorization.rb file defining the
+abilities it recognizes and some default permission sets suggesting how these
+could be used.  This gem (k3cms_authorization) reads in those files and extends
+Rails engines to expose those settings.
+
+For example, SomeClass::Engine.authorization will return an AuthorizationSet
+object, containing the details from the authorization.rb file.
+
+This gem provides an API or middle ground so that gem developers can include
+authorization features in their code.  And application developers may use
+multiple, separately developed gems and have them all work together.
+
+In a full Rails app, an authorization glue gem can then pull authorization
+definitions from multiple gems together and present a complete, cohesive user
+experience to the admin user.
+
+
+== Authorization glue gem
+
+Another gem (separate from this one), must be used to pull together all the
+authorization definitions into a usable system.  This gem must define:
+
+* K3cms::Authorization::BaseController - inherits from ApplicationController
+  * k3cms_user - returns logged in user or faux "guest" user that returns guest privileges and responds_to k3cms_permitted?
+  * k3cms_authorization_required - gets called when authorization fails in a controller
+* Mostly likely a user interface for letting the end-user specify authorizations
+
+Some examples of authorization glue gems include:
+* k3cms_trivial_authorization
+* k3cms_spree_authorization
+* ...
+
+Each application should only be using *one* of these authorization glue gems.
+If none of the provided glue gems suit your needs, you can create a new one.
+
+The k3cms_authorization gem and the authorization glue gems are intended to be
+authorization-library-agnostic, and as such they should not include any
+references to specific authorization libraries like CanCan. The decision as to
+which specific authorization library to use (if any) is left to the specific
+(non-authorization) K3cms gems (see below). The k3cms_authorization gem and the
+authorization glue gems need to be written in such a way tha they don't care
+which underlying authorization library is used by the various participating K3
+CMS gems; they need to work with *all* of them.
+
+
+== How individual gems define abilities and permission sets
+
+In addition to the k3cms_authorization gem and the authorization glue gem that you
+choose to use, you will of course have many "normal" K3cms gems installed in
+your application. These are the gems which actually provide the useful
+abilities that the user can *do* if they have the necessary permissions and
+authorized to do those things.
+
+So these other gems need some way to inform the authorization gems which
+abilities it provides to users. That is done with a config/authorization.rb
+file provided by each the specific gem that has authorization requirments.
+
+=== Step 1: Provide an config/authorization.rb file
+
+This file defines/provides:
+* suggested permission sets
+  You must at a minimum provide a :default permission set.
+* abilities that your gem needs/uses for functionality provided by your gem
+* for each suggested permission sets that you listed, you need to define which
+  of your gem's abilities should be permitted/allowed by each of the 4 built-in
+  K3cms roles:
+  1. guest (not logged in)
+  2. users
+  3. managers
+  4. admins
+
+Here is a sample authorization.rb file (k3cms_pages/config/authorization.rb) that demonstrates the basics of the DSL:
+
+    MyGem::Engine.authorizations.draw do
+      # First define and describe some suggested permission sets.
+      suggested_permission_set :default, 'Allows managers to create & edit all pages, and delete their own pages'
+      suggested_permission_set :user_creation, 'Allows users to create and manage their own pages'
+      
+      # Context makes all abilities defined within to be prefixed with the
+      # singularized version of the given string.  Contexts can be nested.
+      context :pages do
+        ability :view, 'Can view a page'  # Creates :view_page ability
+        ability :edit, 'Can edit a page'
+        ability :edit_own, 'Can edit only my pages'
+        ability :create, 'Can create a new page'
+        ability :delete, 'Can delete a page'
+        ability :delete_own, 'Can delete only pages created by me'
+        
+        # This defines the abilities for the default suggested permission set
+        # in terms of the four default roles (guest, user, manager, admin)
+        extend_suggested_permission_set :default do
+          guest :has => :view
+          # NOTE: :includes_role without first defining the role to be included
+          # will cause an error.  The included abilities are limited to the
+          # context of this extend_suggested_permission_set block.
+          user :includes_role => :guest
+          manager :has => [:create, :edit_own, :delete_own], :includes_role => :user
+          # :all only applies to the abilities in this context (:pages)
+          admin :has => :all
+        end
+        
+        # Define abilities for the suggested permission set.
+        extend_suggested_permission_set :user_creation do
+          guest :has => :view
+          user :has => [:create, :edit_own, :delete_own], :includes_role => :guest
+          manager :has => :all
+          admin :has => :all
+        end
+      end
+      
+      # Another example, in the context of comments.
+      context :comments do
+        ability :create, 'Can comment on a post'
+        ...
+       
+        extend_suggested_permission_set(:default) do
+          guest :has => :create, :edit_own, :delete_own, :view
+          ...
+        end
+      end
+    end
+
+Note that:
+
+    context :pages do
+      context :comments do
+        ability :view, 'Can view a page'
+        ability :edit, 'Can edit a page'
+      end
+    end
+
+is identical to:
+
+    ability :view_page_comment, 'Can view a page'
+    ability :edit_page_comment, 'Can edit a page'
+
+It looks like admin does not automatically include the abilities of manager,
+manager does not automatically include the abilities of user, and so on. But
+usually, you probably *would* want higher roles to include all the abilities of
+lesser roles. So you need to remember to pass :includes_role => <lesser_role>
+to explicitly include the roles of the lesser role.
+
+=== Step 2: Provide the glue between the library-agnostic K3cms authorization libraries and the authorization library used by your gem/engine
+
+This step is optional and only if you need it, but you may need to translate
+the relatively generic K3cms abilities specified in your config/authorization.rb
+into more specific details specific to the models in your class.
+
+For example, in the example below, we create a CanCan::Ability class that takes
+as its input the generic K3cms abilities defined in config/authorization.rb
+(:view_page, :edit_page, :edit_own_page) and translates that into which
+specific *models* can be accessed for users with each of those abilities, and
+even which *records* from those models the user is permitted to read or to
+update (for example, can :update, K3cms::Page, :author_id => user.id).
+
+Here's an example of some glue code between k3cms_authorization and CanCan (from k3cms_pages/app/models/k3cms/pages/ability.rb):
+
+  module K3cms
+    module Pages
+      class Ability
+        include CanCan::Ability
+
+        def initialize(user)
+          if user.k3cms_permitted?(:view_page)
+            can :read, K3cms::Page
+          end
+
+          if user.k3cms_permitted?(:edit_page)
+            can :read, K3cms::Page
+            can :update, K3cms::Page
+          end
+
+          if user.k3cms_permitted?(:edit_own_page)
+            can :read, K3cms::Page
+            can :update, K3cms::Page, :author_id => user.id
+          end
+
+          # ...
+        end
+      end
+    end
+  end
+
+This example uses CanCan, but as mentioned elsewhere, you are free to use any authorization library you wish.
+
+
+== Summary of files in k3cms_authorization
+
+* authorization_set.rb - defines AuthorizationSet which stores a set of abilities, and a set of suggested_permission_sets for an engine
+* engine_additions.rb - extends the Rails::Engine class to return an AuthorizationSet object
+* exceptions.rb - defines several custom exceptions, used by this extension
+* parser.rb - defines a Parser class to parse the authorization.rb file of an engine and store the results in an AuthorizationSet
+* permission_set.rb = defines PermissionSet which stores the name, description, and abilities for default roles: admin, manager, member, guest
+* railtie.rb - Contains rails initialization which loads authorizations for all Engines.
+
+
+== Specs
+
+To run specs, cd to this directory and run:  bundle exec rspec spec
+
+== License
+
+Copyright 2010 K3 Integrations, LLC
+
+Licensed under the GNU Lesser General Public License, Version 3 (see License.txt).

@@ -1,0 +1,24 @@
+%h2 Page Information
+%div{:class => dom_class(@page), :id => dom_id(@page)}
+  .title
+    %label Title:
+    = inline_editable('span', @page, :title, 'data-idle-save-time' => '1000') do
+      = raw @page.title
+
+  .url
+    %label URL:
+    = inline_editable('span', @page, :url) do
+      = @page.url
+
+
+  = link_to_function 'Extended Information', "jQuery('.k3cms_page_extended_metadata.drawer').slideToggle()"
+  - k3cms_ribbon_render_drawer :k3cms_page_extended_metadata do
+    .title
+      %label Meta Description:
+      = inline_editable('span', @page, :meta_description) do
+        = @page.meta_description
+
+    .url
+      %label Meta Keywords:
+      = inline_editable('span', @page, :meta_keywords) do
+        = @page.meta_keywords

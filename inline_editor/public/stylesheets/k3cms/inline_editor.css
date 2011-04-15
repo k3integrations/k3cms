@@ -1,0 +1,96 @@
+/*------------------------------------------------------------------------------------------------*/
+.float_left {
+  float: left;
+}
+.float_right {
+  float: right;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+/* superscript/subscript look (browsers are horrible-looking by default!) */
+sup, sub {
+  vertical-align: baseline;
+  position: relative;
+  font-size: 0.83em;
+}
+sup { top: -0.33em; }
+sub { bottom: -0.19em; }
+
+/*------------------------------------------------------------------------------------------------*/
+/* editor outlines, to indicate editableness and focus */
+
+.editable {
+  min-height: 20px;
+  min-width: 20px !important;
+}
+.editable:hover,
+.editing {
+  margin: 0 -2px;
+  padding: 0 2px;
+  outline-style: solid;
+  outline-width: 1px;
+  cursor: text;
+}
+.editable:hover {
+  outline-color: #009000; /* green */
+     -moz-box-shadow: 0 0 12px #009000;
+  -webkit-box-shadow: 0 0 12px #009000;
+          box-shadow: 0 0 12px #009000;
+}
+.editing,
+.editing:hover {
+  outline-width: 2px;
+  outline-color: #009000; /* green */
+     -moz-box-shadow: 0 0 12px #00C000;
+  -webkit-box-shadow: 0 0 12px #00C000;
+          box-shadow: 0 0 12px #00C000;
+}
+/* Gecko seems to render the outline way *outside* of the box-shadow, which looks hideous, so for now just disable the outline completely for Gecko */
+.gecko .editable:hover,
+.gecko .editing,
+.gecko .editing:hover {
+  outline-width: 0;
+}
+
+.editing video:focus, .editing audio:focus, .editing iframe:focus, .editing object:focus {
+  outline: 1px solid #000;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+.k3cms_inline_editor.k3cms_section {
+}
+.k3cms_inline_editor.k3cms_section:after {
+  content: "."; display: block; line-height: 0; height: 0; clear: both; visibility: hidden;
+}
+
+/*------------------------------------------------------------------------------------------------*/
+/* Icons */
+.k3cms_inline_editor li.icon.button a {
+  background: url(/images/k3cms/inline_editor/icons.png) no-repeat;
+}
+
+.k3cms_inline_editor li.icon.button.emphasis a      { background-position: 0 -24px;}
+.k3cms_inline_editor li.icon.button.ordered_list a  { background-position: 0 -48px;}
+.k3cms_inline_editor li.icon.button.unordered_list a{ background-position: 0 -72px;}
+.k3cms_inline_editor li.icon.button.link a          { background-position: 0 -96px;}
+.k3cms_inline_editor li.icon.button.image a         { background-position: 0 -121px;}
+.k3cms_inline_editor li.icon.button.table a         { background-position: 0 -144px;}
+.k3cms_inline_editor li.icon.button.unlink a        { background-position: 0 -168px;}
+.k3cms_inline_editor li.icon.button.html a          { background-position: 0 -192px;}
+.k3cms_inline_editor li.icon.button.strong a        { background-position: 0 -384px;}
+.k3cms_inline_editor li.icon.button.preview a       { background-position: 0 -408px;}
+.k3cms_inline_editor li.icon.button.superscript a   { background-position: 0 -430px;}
+.k3cms_inline_editor li.icon.button.subscript a     { background-position: 0 -454px;}
+.k3cms_inline_editor li.icon.button.undo a          { background-position: 0 -502px;}
+.k3cms_inline_editor li.icon.button.redo a          { background-position: 0 -526px;}
+.k3cms_inline_editor li.icon.button.paste a         { background-position: 0 -552px;}
+.k3cms_inline_editor li.icon.button.indent a        { background-position: 0 -574px;}
+.k3cms_inline_editor li.icon.button.outdent a       { background-position: 0 -598px;}
+.k3cms_inline_editor li.icon.button.underline a     { background-position: 0 -624px;}
+.k3cms_inline_editor li.icon.button.strikethrough a { background-position: 0 -648px;}
+.k3cms_inline_editor li.icon.button.align_left a    { background-position: 0 -672px;}
+.k3cms_inline_editor li.icon.button.align_center a  { background-position: 0 -696px;}
+.k3cms_inline_editor li.icon.button.align_right a   { background-position: 0 -720px;}
+.k3cms_inline_editor li.icon.button.video a         { background-position: 0 -744px;}
+
+/*------------------------------------------------------------------------------------------------*/
