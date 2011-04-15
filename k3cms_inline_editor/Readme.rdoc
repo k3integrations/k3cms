@@ -1,0 +1,80 @@
+= InlineEditor jQuery plugin
+
+== Introduction
+
+inline_editor directory contains a jQuery plugin that can be used with or independently of the k3 framework.
+
+== Getting started
+
+To add inline-editing capabilities to an element, just call inlineEditor:
+
+    $(selector).inlineEditor(options);
+
+For example, to add inline-editing to all elements with the class 'editable', you can do:
+
+    $('.editable').inlineEditor(options);
+
+Saving will be triggered after 3 seconds of inactivity while the element is being edited (the length of the delay can be configured with 'idle-save-time' option), or by tabbing out of the field.
+
+InlineEditor will attempt to save the element's contents by posting it to a RESTful url specified with the 'url' option. The params will be based on the 'object' and 'attribute' options. For example, if you had this inline-editable element:
+
+    <span class="editable" data-url="/books/3" data-object="book" data-attribute="title">Title</span>
+
+, it would POST to "/books/3" with this data: book[title]=Title
+
+Options can either be passed in to inlineEditor() or specified as attributes of your element -- for example, <div data-idle-save-time="1000" ...>.
+
+For a full list of options, see: ...
+
+== Tests
+
+To run the test suite: ...
+
+
+
+
+= K3 Inline Editor
+
+== Introduction
+
+This is a Ruby gem in the k3 framework that adds inline-editing capabilities that can be used for editing pages or any other database objects in your application.
+
+== Getting started
+
+To render the body of a @blog_post object on the page as an inline-editable element, you would do something like this:
+
+    = inline_editable('div', @blog_post, :body) do
+      = raw(@blog_post.body)
+
+After the content is saved, it will do a GET to the same RESTful resource URL that was used for saving, retrieve the current state of the object from the response, and update the page with this updated state data.
+
+This is useful in case any other attributes of the resource have changed as a result of the save you just did (perhaps updating one attribute of your model automatically causes another one to be changed) or as a result of someone else editing the record at the same time as you.
+It also solves the problem of the same field appearing on the page in multiple places.
+
+After the object is retrieved, K3_InlineEditor will attempt to call {object_name}.updatePage(object_name, object) if this method exists. For example, if the 'object' option for your inline editor is 'book', it will attempt to call book.updatePage(), passing in the object_name and object.
+So you may supply a custom updatePage method for each type of object in your application that knows about any custom things on your page that need to get updated any time that model changes.
+
+Or you can use the default behavior, which simply looks for and updates all elements that match the following selector:
+
+    $.each(object, function(index, value) { 
+      var element = $('[data-object=' + object_name + '][data-attribute=' + index + ']')
+      if (element.length > 0) {
+        element.html(value)
+      }
+    })
+
+== Tests
+
+There aren't currently any specs. We should probably add some for the InlineEditorCell, etc.
+
+== License
+
+Copyright 2010 K3 Integrations, LLC
+
+Licensed under the GNU Lesser General Public License, Version 3 (see License.txt).
+
+== Credits
+
+WYMEditor (http://www.wymeditor.org/) for some of their icons.
+
+TinyMCE editor (http://tinymce.moxiecode.com/) for some of their icons.

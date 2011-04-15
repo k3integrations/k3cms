@@ -1,0 +1,13 @@
+/* button bar area at the top */
+body, html {
+  margin-top: 1.8em;
+}
+
+#ribbon {
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 0;
+  margin: 0;
+}
+
