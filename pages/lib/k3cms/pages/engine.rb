@@ -17,12 +17,18 @@ module K3cms
         'k3cms/pages.css',
       ]
 
-      initializer 'k3.pages.add_cells_paths' do |app|
+      initializer 'k3.pages.cells_paths' do |app|
         Cell::Base.view_paths += [Pathname[__DIR__] + '../../../app/cells']
       end
 
-      initializer 'k3.pages.add_middleware' do |app|
+      initializer 'k3.pages.middleware' do |app|
         app.middleware.use K3cms::Pages::CustomRouting
+      end
+
+      initializer 'k3.pages.hooks', :before => 'k3.core.hook_listeners' do |app|
+        class K3cms::Pages::Hooks < K3cms::ThemeSupport::HookListener
+          insert_after :top_of_page, :file => 'k3cms/pages/init.html.haml'
+        end
       end
 
       config.to_prepare do |app|

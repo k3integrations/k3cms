@@ -1,5 +1,6 @@
 require "k3cms_core"
 require "rails"
+require 'k3cms/theme_support'
 
 module K3cms
   module Core
@@ -12,6 +13,14 @@ module K3cms
       initializer 'k3.core.action_view' do
         ActiveSupport.on_load(:action_view) do
           include K3cms::Core::CoreHelper
+          include K3cms::Core::HookHelper
+        end
+      end
+
+      initializer 'k3.core.hook_listeners' do
+        puts "K3cms::ThemeSupport::HookListener.subclasses=#{K3cms::ThemeSupport::HookListener.subclasses.inspect}"
+        K3cms::ThemeSupport::HookListener.subclasses.each do |hook_class|
+          K3cms::ThemeSupport::Hook.add_listener(hook_class)
         end
       end
 

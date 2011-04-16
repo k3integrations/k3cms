@@ -1,6 +1,5 @@
 require "k3cms_inline_editor"
 require "rails"
-#require 'facets' # Causes an error in Rails!
 require 'facets/kernel/__dir__'
 require 'facets/pathname'
 
@@ -20,8 +19,17 @@ module K3cms
         'k3cms/inline_editor.css',
       ]
 
-      initializer 'k3.inline_editor.add_cells_paths' do |app|
+      initializer 'k3.inline_editor.cells_paths' do |app|
         Cell::Base.view_paths += [Pathname[__DIR__] + '../../../app/cells']
+      end
+
+      initializer 'k3.inline_editor.hooks', :before => 'k3.core.hook_listeners' do |app|
+        class K3cms::InlineEditor::Hooks < K3cms::ThemeSupport::HookListener
+          insert_after :top_of_page do
+            # TODO: should be able to call render_cell or other helpers directly from this context
+            %{<%= render_cell 'k3cms/inline_editor', :init_edit_mode %>}
+          end
+        end
       end
     end
 
