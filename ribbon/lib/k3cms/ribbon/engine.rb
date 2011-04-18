@@ -47,7 +47,13 @@ module K3cms
         class K3cms::Ribbon::Hooks < K3cms::ThemeSupport::HookListener
           insert_after :ribbon do
             # TODO: should be able to call render_cell or other helpers directly from this context
-            %{<%= k3cms_ribbon %>}
+            %{
+              <%
+                @k3cms_ribbon_items   = k3cms_ribbon_items
+                @k3cms_ribbon_drawers = k3cms_ribbon_drawers
+              %>
+              <%= k3cms_ribbon %>
+            }
           end
         end
       end
