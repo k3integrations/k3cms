@@ -1,6 +1,6 @@
 ENV["RAILS_ENV"] ||= 'test'
 
-Rspec.configure do |config|
+RSpec.configure do |config|
   # == Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
