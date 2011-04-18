@@ -25,7 +25,7 @@ module K3cms
         ::FileUtils.copy(src_file, dest_file)
 
       elsif ::FileUtils.compare_file(src_file, dest_file)
-        puts "  Identical: #{file}" if verbose
+        #puts "  Identical: #{file}" if verbose
       end
     end
 
