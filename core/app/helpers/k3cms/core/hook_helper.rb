@@ -48,5 +48,16 @@ module HookHelper
     names.inject({}) {|memo, key| memo[key.to_sym] = eval(key, binding); memo}
   end
 
+  def replace(hook_name, options = {}, &block)
+    K3cms::ThemeSupport::HookListener.send(:add_hook_modifier, hook_name, :replace, options.merge(:text => capture(&block)) )
+  end
+
+  def insert_before(hook_name, options = {}, &block)
+    K3cms::ThemeSupport::HookListener.send(:add_hook_modifier, hook_name, :insert_before, options.merge(:text => capture(&block)) )
+  end
+
+  def insert_after(hook_name, options = {}, &block)
+    K3cms::ThemeSupport::HookListener.send(:add_hook_modifier, hook_name, :insert_after, options.merge(:text => capture(&block)) )
+  end
 end
 end
