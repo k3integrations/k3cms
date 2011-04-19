@@ -5,4 +5,6 @@
 
 - if params[:focus]
   :javascript
-    var el = $('#{params[:focus]}').eq(0).focus()
+    jQuery(function() {
+      var el = $('#{params[:focus]}').eq(0).focus()
+    });
