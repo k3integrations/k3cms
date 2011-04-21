@@ -11,11 +11,13 @@ module K3cms
 
       #puts "config.action_view.javascript_expansions=#{config.action_view.javascript_expansions.inspect}"
       config.action_view.javascript_expansions[:k3].concat [
+        'jquery.purr.js',
         'css_browser_selector.js',
         'inline_editor.js',
         'k3cms/inline_editor.js',
       ]
       config.action_view.stylesheet_expansions[:k3].concat [
+        'k3cms/inline_editor/jquery.purr.css',
         'k3cms/inline_editor.css',
       ]
 

@@ -340,6 +340,24 @@ K3cms_InlineEditor = {
     })
   },
 
+  showPurrMessage: function(message) {
+    var notice =
+    '<div class="purr-notice">'
+      + '<div class="body">' 
+        + '<img src="/images/k3cms/inline_editor/info.png" alt="" />'
+        + '<h3>Validation error</h3>'
+        + '<p class="alert">' + message + '</p>'
+      + '</div>'
+      + '<div class="bottom">'
+      + '</div>'
+    + '</div>';
+              
+    $( notice ).purr({
+      usingTransparentPNG: true,
+      isSticky: false,
+    });
+  },  
+
   mainSaveHandler: function(data, msg, xhr, options) {
     var object_identifier = {
       object:      options.object_name,
@@ -347,16 +365,9 @@ K3cms_InlineEditor = {
     }
     object_selector = '[data-object=' + options.object_name + '][data-object-id=' + options.object_id + ']';
 
-    // Once they submit their correction, remove the error message from the page.
-    $('.alert' + object_selector).remove();
-
     if (data['error']) {
       // There were no HTTP errors, but there was an application-layer error, so show it to the user
-      var $alert = $('<p class="alert">' + data['error'] + '</p>').prependTo('#content');
-      // Identify it so we can remove this error notice later if they submit again
-      $.each(object_identifier, function(key, value) {
-        $alert.attr('data-' + key, value);
-      })
+      K3cms_InlineEditor.showPurrMessage(data['error']);
       // Focus the editable element again so they can correct their mistake (in case they just tabbed out of it)
       $('.editable' + object_selector + ':visible').eq(0).focus();
       $('#last_saved_status').html('<span style="color: #8A1F11">Not saved</span>');

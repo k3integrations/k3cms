@@ -1,0 +1,50 @@
+#purr-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+}
+
+#purr-container .purr-notice {
+  position: relative;
+  width: 324px;
+}
+
+#purr-container .purr-notice .close	{
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: block;
+  width: 18px;
+  height: 17px;
+  text-indent: -9999px;
+  background: url(/images/k3cms/inline_editor/jquery.purr-close.png) no-repeat 0 10px;
+}
+
+#purr-container .purr-notice .body {
+  min-height: 50px;
+  padding: 22px 22px 0 22px;
+  background: url(/images/k3cms/inline_editor/jquery.purr-top.png) no-repeat left top;
+  color: #f9f9f9;
+}
+
+#purr-container .purr-notice .body img {
+  width: 50px;
+  margin: 0 10px 0 0;
+  float: left;
+}
+#purr-container .purr-notice .body h3	{
+  color: #f9f9f9;
+  margin: 0;
+  font-size: 1.1em;
+}
+#purr-container .purr-notice .body p {
+  margin: 5px 0 0 60px;
+  font-size: 0.8em;
+  line-height: 1.4em;}
+
+#purr-container .purr-notice .bottom {
+  height: 22px;
+  background: url(/images/k3cms/inline_editor/jquery.purr-bottom.png) no-repeat left top;
+}
+
