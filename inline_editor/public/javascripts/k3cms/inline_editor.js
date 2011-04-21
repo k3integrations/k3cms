@@ -318,14 +318,14 @@ K3cms_InlineEditor = {
    * object_name: for example, 'k3cms_blog_blog_post'    -- in Rails, you can get this from dom_class(object)
    * object_id:   for example, 'k3cms_blog_blog_post_18' -- in Rails, you can get this from dom_id(object)
    * object:      an object representing the state of the object in the database -- in Rails, you can get this from object.to_json
-   * source_element: a jQuery object that selects which element *not* to update from the data in object
+   * source_element: a jQuery object that selects which element *not* to update from the data in object. May be null.
    */
   updatePageFromObject: function(object_name, object_id, object, source_element) {
     $.each(object, function(attr_name, value) {
       if (value === null) value = '';
       $('[data-object=' + object_name + '][data-object-id=' + object_id + '][data-attribute=' + attr_name + ']').each(function (index) {
         var element = $(this);
-        if (element.get(0) == source_element.get(0)) {
+        if (source_element && element.get(0) == source_element.get(0)) {
           // Don't update the element they just saved with the data loaded from the database because they may have continued editing immediately after saving and we don't want to blow those changes away
           //console.log('Skipping', element)
         } else {
@@ -338,6 +338,83 @@ K3cms_InlineEditor = {
         }
       })
     })
+  },
+
+  mainSaveHandler: function(data, msg, xhr, options) {
+    var object_identifier = {
+      object:      options.object_name,
+      'object-id': options.object_id,
+    }
+    object_selector = '[data-object=' + options.object_name + '][data-object-id=' + options.object_id + ']';
+
+    // Once they submit their correction, remove the error message from the page.
+    $('.alert' + object_selector).remove();
+
+    if (data['error']) {
+      // There were no HTTP errors, but there was an application-layer error, so show it to the user
+      var $alert = $('<p class="alert">' + data['error'] + '</p>').prependTo('#content');
+      // Identify it so we can remove this error notice later if they submit again
+      $.each(object_identifier, function(key, value) {
+        $alert.attr('data-' + key, value);
+      })
+      // Focus the editable element again so they can correct their mistake (in case they just tabbed out of it)
+      $('.editable' + object_selector + ':visible').eq(0).focus();
+      $('#last_saved_status').html('<span style="color: #8A1F11">Not saved</span>');
+
+    } else {
+      if (window[options.object_name] && window[options.object_name].updatePage) {
+        // Special handler for this object class
+        method = window[options.object_name].updatePage;
+      } else {
+        // Default handler
+        method = K3cms_InlineEditor.updatePageFromObject;
+      }
+
+      method(options.object_name, options['object-id'], options.object, options.element)
+
+      $('#last_saved_status').html('Saved seconds ago');
+    }
+  },
+
+  // options is an object with:
+  // * elements: a jQuery object with all of the elements that should be saved
+  // * url: where to save the data to via an Ajax post/put
+  //     This REST resource should return the created/updated object in JSON format (can simply redirect to the show page in Rails), or {error: 'the error'} if there's a validation error.
+  // * save-type: 'POST' (for creating new records) or 'PUT' (for updating existing records)
+  // * object_name: allows us to update the page with the response from the Ajax save
+  // * object-id:   allows us to update the page with the response from the Ajax save
+  // * replace_element
+  saveMultipleElements: function(options) {
+    var save_success = options.save_success;
+    options.save_success = function(data, msg, xhr) {
+      if (!data.error) {
+        //options.object = data;
+        options.object_name = Object.keys(data)[0]
+        options.object = data[options.object_name];
+        //console.debug("options.object=", options.object);
+      }
+      K3cms_InlineEditor.mainSaveHandler(data, msg, xhr, options);
+      // If it was a POST, we have to actually replace the New Object box with an Update Object box so that the url and save-type gets updated and inline-editing will work.
+      // I'm not sure if it's worth trying to make this reusable, but this was an attempt at that (in the meantime, just pass in a save_success callback):
+      /*
+      if (options['save-type'] == 'POST' && options.replace_element) {
+        //console.debug("post, new obj:", options.object.id);
+        //console.debug("window[options.object_name]=", window[options.object_name]);
+        if (window[options.object_name] && window[options.object_name].url_for) {
+          var render_url = window[options.object_name].url_for(options.object.id);
+          var element = $(options.replace_element).eq(0);
+          //console.debug("url=", url);
+          //console.debug("element=", element);
+          $.get(render_url, {size: 'small'}, function(data) {
+            element.replaceWith(data);
+            initInlineEditor();
+          });
+        }
+      }
+      */
+      save_success.call(this, data, msg, xhr, options);
+    };
+    InlineEditor.saveMultipleElements(options);
   },
 }
 
@@ -355,44 +432,17 @@ function initInlineEditor(options) {
     },
 
     saveSuccess : function(event, data, msg, xhr) {
-      // Once they submit their correction, remove the error message from the page.
       var element_data = $(this).data();
-      var object_and_attr_identifier = {
-        object:      element_data.object,
-        'object-id': element_data['object-id'],
-        attribute:   element_data.attribute,
-      }
-      object_and_attr_selector = '[data-object=' + element_data.object + '][data-object-id=' + element_data['object-id'] + '][data-attribute=' + element_data.attribute + ']'
-      $('.alert' + object_and_attr_selector).remove();
-
-      if (data['error']) {
-        // There were no HTTP errors, but there was an application-layer error, so show it to the user
-        var $alert = $('<p class="alert">' + data['error'] + '</p>').prependTo('#content');
-        // Identify it so we can remove this error notice later if they submit again
-        $.each(object_and_attr_identifier, function(key, value) {
-          $alert.attr('data-' + key, value);
-        })
-        // Focus the editable element again so they can correct their mistake (in case they just tabbed out of it)
-        $('.editable' + object_and_attr_selector + ':visible').eq(0).focus();
-        $('#last_saved_status').html('<span style="color: #8A1F11">Not saved</span>');
-
-      } else {
-        var editor = InlineEditor.getEditor(this);
-        editor.getObject(function(object) {
-          var object_name = Object.keys(object)[0]
-          //console.log(object_name, object[object_name])
-          if (window[object_name] && window[object_name].updatePage) {
-            // Special handler for this object class
-            method = window[object_name].updatePage;
-          } else {
-            // Default handler
-            method = K3cms_InlineEditor.updatePageFromObject;
-          }
-          method(object_name, element_data['object-id'], object[object_name], this)
-        })
-
-        $('#last_saved_status').html('Saved seconds ago');
-      }
+      // TODO: simplify after we change object to object_name
+      var options = $.extend({object_name: element_data.object}, element_data); delete options.object;
+      options.element = $(this);
+      var editor = InlineEditor.getEditor(this);
+      editor.getObject(function(object) {
+        var object_name = Object.keys(object)[0]
+        options.object = object[object_name];
+        //console.debug("fetched options.object=", options.object);
+        K3cms_InlineEditor.mainSaveHandler(data, msg, xhr, options);
+      })
     },
   });
 

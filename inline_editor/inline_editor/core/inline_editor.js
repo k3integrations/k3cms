@@ -383,11 +383,13 @@ InlineEditor.focusout = function (evt) {
   InlineEditor.last_selection = new InlineEditor.Selection(this.document);
 }
 
-InlineEditor.defaultSaveHandler = function (evt) {
+// Compare: defaultSaveHandler, saveMultipleElements
+InlineEditor.defaultSaveHandler = function(evt) {
   //console.log('in defaultSaveHandler')
   var $this = $(this)
   var editor = InlineEditor.getEditor(this);
   if ($this.data('url')) {
+    // TODO: can we just use type: PUT instead?
     var data = '_method=put';
     data += '&' + $this.data('object') + '[' + $this.data('attribute') + ']=' + encodeURIComponent(editor.lastSource);
     if (window.rails_authenticity_token) {
@@ -411,6 +413,33 @@ InlineEditor.defaultSaveHandler = function (evt) {
   }
 };
 
+// Compare: defaultSaveHandler, saveMultipleElements
+// TODO: Maybe make it automatically get url and save-type from the elements that the user wants to save. (That would only work if they were all for the same object and could be sent to the same URL. Although we could theoretically make separate requests for each object that they're trying to save...)
+InlineEditor.saveMultipleElements = function(options) {
+  var data = '';
+  options.elements.each(function () {
+    var $this = $(this)
+    var editor = InlineEditor.getEditor(this);
+    data += '&' + $this.data('object') + '[' + $this.data('attribute') + ']=' + encodeURIComponent(editor.lastSource);
+    $this.trigger('saving');
+  });
+  if (window.rails_authenticity_token) {
+    data += "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token);
+  }
+
+  $.ajax($.extend({
+    type: options['save-type'],
+    url: options.url,
+    dataType: 'json',
+    data: data,
+    success: options.save_success,
+    error: InlineEditor.defaultErrorHandler,
+  }, {}));
+
+};
+
+// Does an Ajax Get request to get the current state of the object from the database
+// TODO: rename to ajaxGetObject?
 InlineEditor.prototype.getObject = function(callback) {
   var $this = $(this.node);
   if ($this.data('url')) {
