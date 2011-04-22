@@ -20,6 +20,8 @@ module K3cms
           capture { yield }.try(:strip)
         end
       end
+
+
     end
   end
 end

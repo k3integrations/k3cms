@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'k3cms_core'
   s.add_dependency 'rails',        '~> 3.0.0'
   s.add_dependency 'facets'
+  s.add_dependency 'best_in_place'
   s.add_development_dependency 'rspec', '~> 2.2.0'
   s.add_development_dependency 'rspec-rails', '~> 2.2.0'
   s.add_development_dependency 'ruby-debug19'

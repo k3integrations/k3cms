@@ -455,6 +455,8 @@ K3cms_InlineEditor.initInlineEditor = function(options) {
       })
     },
   });
+
+  $(".best_in_place").best_in_place()
 }
 
 K3cms_InlineEditor.initRibbon = function() {
