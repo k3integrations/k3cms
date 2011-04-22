@@ -429,9 +429,8 @@ K3cms_InlineEditor = {
   },
 }
 
-  
 //==================================================================================================
-function initInlineEditor(options) {
+K3cms_InlineEditor.initInlineEditor = function(options) {
   $('.editable').inlineEditor(options);
   $('.editable').inlineEditor({
     saving : function(event) {
@@ -456,7 +455,9 @@ function initInlineEditor(options) {
       })
     },
   });
+}
 
+K3cms_InlineEditor.initRibbon = function() {
   //------------------------------------------------------------------------------------------------
   // Integrate with K3cms_Ribbon
 
