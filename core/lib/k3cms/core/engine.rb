@@ -1,3 +1,4 @@
+require 'singleton'
 require "k3cms_core"
 require "rails"
 require 'k3cms/theme_support'
