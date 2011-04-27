@@ -41,6 +41,11 @@ You can either:
 * install the `k3cms` gem first and then use the `k3cms` command to generate a new site for you,
 * _or_ if you have an existing application to which you want to add the K3cms, you can simply add the `k3cms` gem to your `Gemfile`.
 
+Prerequisites:
+
+* You must already have a User ActiveRecord model defined in app/models.  You can use the devise gem for this.  (Follow its install directions, but you do not need to create a #root_path route if you use the devise authorization driver mentioned below.)
+* You must have jQuery installed and included in all your layouts
+
 Adding to an existing application
 ---------------------------------
 
@@ -64,6 +69,35 @@ Now run the migrations that were just copied into db/ and prepare your database:
 
     rake db:migrate
     rake db:seed
+
+Also... You will need to add a few things to your layout.  Check out the demo_app for an example.
+
+And, add this to the User class:
+
+    include K3cms::Authorization::RealUser
+
+Add an authorization initializer file (initializers/framework_auth.rb).  If you are using devise, it will look like this:
+
+    require 'k3cms/authorization/drivers/devise'
+    #require 'k3cms/authorization/general_controller_methods'
+    require 'cancan'
+    
+    # Devise must initialize first, so use the following hook.
+    module ActionDispatch::Routing
+      class RouteSet #:nodoc:
+        def finalize_with_my_app!
+          finalize_without_my_app!
+          Cell::Base.send :include, Devise::Controllers::Helpers
+          Cell::Base.send :include, K3cms::Authorization::Drivers::Devise
+          Cell::Base.send :include, K3cms::Authorization::GeneralControllerMethods
+          Cell::Base.send :include, CanCan::ControllerAdditions
+          ApplicationController.send :include, K3cms::Authorization::Drivers::Devise
+          ApplicationController.send :include, K3cms::Authorization::GeneralControllerMethods
+          ApplicationController.send :include, CanCan::ControllerAdditions
+        end
+        alias_method_chain :finalize!, :my_app
+      end
+    end
 
 Now try it out! Go to <http://localhost:3000> to start using your new (or existing) application.
 
