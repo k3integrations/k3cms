@@ -37,6 +37,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
+  z-index: 9999;
 }
 #k3cms_ribbon:after { content: "."; display: block; line-height: 0; height: 0; clear: both; visibility: hidden; }
 
