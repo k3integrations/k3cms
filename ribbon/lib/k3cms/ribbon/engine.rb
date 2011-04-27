@@ -3,6 +3,7 @@ require "rails"
 #require 'facets' # Causes an error in Rails!
 require 'facets/kernel/__dir__'
 require 'facets/pathname'
+require 'cells'
 
 module K3cms
   module Ribbon

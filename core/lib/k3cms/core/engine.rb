@@ -6,7 +6,7 @@ require 'k3cms/theme_support'
 module K3cms
   module Core
     class Engine < Rails::Engine
-      #puts "#{self}"
+      puts self
 
       config.action_view.javascript_expansions.merge! :k3 => []
       config.action_view.stylesheet_expansions.merge! :k3 => []
