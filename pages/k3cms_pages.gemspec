@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'attribute_normalizer'
   s.add_dependency 'k3cms_core'
   s.add_dependency 'cancan'
-  s.add_dependency 'haml'
+  s.add_dependency 'haml', '= 3.0.25'
   s.add_dependency 'k3cms_authorization'
 
   s.add_development_dependency 'rspec', '~> 2.2.0'

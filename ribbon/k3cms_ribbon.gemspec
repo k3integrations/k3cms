@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'k3cms_core'
   s.add_dependency 'rails',        '~> 3.0.0'
   s.add_dependency 'activerecord', '~> 3.0.0'
-  s.add_dependency 'haml'
+  s.add_dependency 'haml', '= 3.0.25'
   s.add_dependency 'facets'
   s.add_dependency 'cells'
   s.add_development_dependency 'rspec', '~> 2.2.0'
