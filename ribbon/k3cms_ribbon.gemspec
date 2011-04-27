@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "k3cms/ribbon/version"
+require "k3cms/version"
 
 Gem::Specification.new do |s|
   s.name          = "k3cms_ribbon"
@@ -26,6 +26,6 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
-  s.version       = K3cms::Ribbon::Version
+  s.version       = K3cms::Version
   s.platform      = Gem::Platform::RUBY
 end

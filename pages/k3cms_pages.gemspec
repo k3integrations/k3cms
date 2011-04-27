@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "k3cms/pages/version"
+require "k3cms/version"
 
 Gem::Specification.new do |s|
   s.name        = "k3cms_pages"
-  s.version     = K3cms::Pages::VERSION
+  s.version     = K3cms::Version
   s.platform    = Gem::Platform::RUBY
   s.summary     = "K3cms Static Pages"
   s.description = 'Provides the ability to create static pages in a website'
