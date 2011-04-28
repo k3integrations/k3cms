@@ -18,6 +18,12 @@ module K3cms
         end
       end
 
+      initializer 'k3.pages.hooks', :before => 'k3.core.hook_listeners' do |app|
+        class K3cms::Core::Hooks < K3cms::ThemeSupport::HookListener
+          insert_after :inside_head, :file => 'k3cms/init.html.erb'
+        end
+      end
+
       initializer 'k3.core.hook_listeners' do
         puts "K3cms::ThemeSupport::HookListener.subclasses=#{K3cms::ThemeSupport::HookListener.subclasses.inspect}"
         K3cms::ThemeSupport::HookListener.subclasses.each do |hook_class|

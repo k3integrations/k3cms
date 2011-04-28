@@ -70,7 +70,19 @@ Now run the migrations that were just copied into db/ and prepare your database:
     rake db:migrate
     rake db:seed
 
-Also... You will need to add a few things to your layout.  Check out the demo_app for an example.
+Also... You will need to add a few things to your layout.
+
+Somewhere within your <head> tag, you need to add these lines:
+    <%= javascript_include_tag :defaults %>
+    <%= hook :inside_head %>%>
+
+Somewhere within your <body> tag, you need to add this line:
+    <%= hook :top_of_page %>
+
+And wherever you want the ribbon to appear in the document, you need to add this:
+    <%= k3cms_ribbon %>
+
+Check out the demo_app for an example.
 
 And, add this to the User class:
 
