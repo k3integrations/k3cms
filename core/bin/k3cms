@@ -1,7 +1,0 @@
-#!/usr/bin/env ruby
-
-tpl = File.expand_path(File.join(File.dirname(__FILE__),'..','templates','k3.rb'))
-
-eargs = ['rails', 'new'] + ARGV + ['-m', tpl, '-T', '-J']
-puts eargs.join(' ')
-exec(*eargs)

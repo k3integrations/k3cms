@@ -12,8 +12,9 @@ k3cms_core_gems = %w[
 
 Gem::Specification.new do |s|
   s.name          = "k3cms"
-  s.summary       = %q{K3cms}
-  s.description   = %q{The K3cms is a set of Ruby gems for Rails developers to quickly develop awesome websites with content management and much more.}
+  s.description   = %q{K3cms is a complete Content Management System (CMS) for Rails 3, designed to enable to people to quickly launch websites that can be easily managed by non-technical end users while providing advanced features for software developers and graphics professionals.}
+  s.summary       = %q{A Content Management System for Rails 3}
+
   s.homepage      = "http://k3cms.org"
 
   s.authors       = `git shortlog --summary --numbered         | awk '{print $2, $3    }'`.split("\n")

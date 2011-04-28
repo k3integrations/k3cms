@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require Pathname.new(__FILE__).dirname.realpath + '../lib/generators/app/generator'
+
+K3cms::Generators::AppGenerator.start(ARGV)

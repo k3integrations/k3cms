@@ -38,20 +38,66 @@ Installing and Getting Started
 
 You can either:
 
-* install the `k3cms` gem first and then use the `k3cms` command to generate a new site for you,
-* _or_ if you have an existing application to which you want to add the K3cms, you can simply add the `k3cms` gem to your `Gemfile`.
+* use the `k3cms` command to generate a _new_ application for you,
+* _or_ if you have an existing application to which you want to add the K3cms, simply add the `k3cms` gem to your `Gemfile` (and make a few changes as outlined below).
 
-Prerequisites:
+Tutorial: Generating an application with the `k3cms` command
+------------------------------------------------------------
 
-* You must already have a User ActiveRecord model defined in app/models.  You can use the devise gem for this.  (Follow its install directions, but you do not need to create a #root_path route if you use the devise authorization driver mentioned below.)
-* You must have jQuery installed and included in all your layouts
+This is the easiest option to get you up and running with a working k3cms application quickly.
+
+First install the `k3cms` gem, if you haven't already:
+
+    gem install k3cms
+
+Then simply run this to generate your app:
+
+    k3cms app_name
+
+That's it! Now try out your new app. Start your development web server with:
+
+    rails server
+
+and go to <http://localhost:3000/> in your browser. You might be surprised to find that the home page says "Page not found". But don't worry, there's a good reason for that: it says "Page not found" because you haven't _created_ a home page yet. So let's create a home page now.
+
+But first, you'll need to create a user account, since `k3cms_trivial_authorization` (the default authorization option) requires you to be logged in before you can create or edit pages. So go to <http://localhost:3000/users/sign_up> now and create an account.
+
+Now that you're logged in and back at the [Home page](http://localhost:3000/), click "Start editing" and then click "create it now". That was easy! Now you have a home page and can immediately start editing it.
+
+About the `k3cms` command
+--------------------------------------------------
+
+This command accepts all the same options as the `rails new` command. You can run `rails new --help` for a list of those options. Any options for `rails new` will automatically be passed on to the  `rails new` command.
+
+In addition to the options that `rails new` recognizes, the `k3cms` command recognizes a few additional options:
+
+    [--gems/--extra-gems=one two three]        # A space-seperated list of extra gems to add to the Gemfile and install (for example, '--gems=k3cms_blog k3cms_s3_podcast').
+    [--auth/--authentication=AUTHENTICATION]   # Which authentication library to install. Options are 'devise' or 'none'.
+                                               # Default: devise
+    [--authorization=AUTHORIZATION]            # Which authorization library to use. Known options are 'k3cms_trivial_authorization', 'k3cms_spree_authorization'.
+                                               # Default: k3cms_trivial_authorization
+    [--k3cms-edge]                             # Use the latest edge version from git://github.com/k3integrations/k3cms.git instead of from rubygems.org
+
+By default, it will assume you want to use Devise for authentication and will install it for you. If you'd rather set up a different authentication system, then just pass `--auth none` and you can set up authentication manually.
+
 
 Adding to an existing application
 ---------------------------------
 
-Start by adding the gem to your existing Rails 3.x application's `Gemfile`
+This will basically walk you through all the steps that the `k3cms` generator does for you automatically if you use the `k3cms` command to create a new app. There are a few steps involved, but it's really not too difficult to add K3cms to any Rails 3.x application!
+
+You must have a `User` ActiveRecord model defined in `app/models` in order to use K3cms.  You can use the `devise` gem for this -- or any other authentication system that provides a User model.  If you want to use devise, just follow its install directions, but you do not need to create a `root_path` route.
+
+    <pre>
+    rails generate devise:install
+    rails generate devise User
+    </pre>
+
+Once you've taken care of that prerequisite, start actually installing k3cms by adding the `k3cms` gem to your existing application's `Gemfile`:
 
     gem 'k3cms'
+
+(That will use the latest gem released on rubygems.org. If you want to use the latest edge version, you can use `gem 'k3cms', :git => 'git://github.com/k3integrations/k3cms.git'` instead.)
 
 You'll also want to choose one of the available authorization gems. `trivial_authorization` is a good one to start with if you don't already know you'll need something more complex.
 
@@ -61,38 +107,39 @@ Install all the gems from your `Gemfile`:
 
     bundle install
 
-Now copy all of the necessary migrations and assets from each K3cms gem referenced in your `Gemfile` with:
+Now copy all of the necessary migrations and assets from each K3cms gem referenced in your `Gemfile` with this command:
 
     rake k3cms:install
 
-Now run the migrations that were just copied into db/ and prepare your database:
+Now run the migrations that were just copied into the `db/` directory and prepare your database:
 
     rake db:migrate
     rake db:seed
 
-Also... You will need to add a few things to your layout.
+Also, you will need to add a few things to your layout...
 
-Somewhere within your <head> tag, you need to add these lines:
+You must have jQuery installed and included in your layouts. In your `config/application.rb`, we recommend you change the `:default` javascript_expansion to this:
+
+    config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
+
+Somewhere within your `<head>` tag, you need to add these lines:
+
     <%= javascript_include_tag :defaults %>
     <%= hook :inside_head %>%>
 
-Somewhere within your <body> tag, you need to add this line:
+Somewhere within your `<body>` tag, you need to add this line:
+
     <%= hook :top_of_page %>
 
 And wherever you want the ribbon to appear in the document, you need to add this:
+
     <%= k3cms_ribbon %>
 
-Check out the demo_app for an example.
-
-And, add this to the User class:
+Also, add this to the User class:
 
     include K3cms::Authorization::RealUser
 
-Start your server with:
-
-    rails server
-
-Now try it out! Go to <http://localhost:3000> to start using your new (or existing) application.
+If you have any trouble getting things set up, you can always refer to the official [demo_app](http://github.com/k3integrations/k3cms_demo_app) and compare it with how your app is set up.
 
 
 Working with the edge source
@@ -119,7 +166,7 @@ If you want to run all the tests across all the core K3cms gems, then you would 
 Each gem contains its own set of tests. For each gem that you want to run the tests for (each directory in the [k3cms repository](http://github.com/k3integrations/k3cms)), you need to do a quick one-time creation of a test application before you can run the tests. For example, to run the tests for the 'core' gem:
 
     > cd core
-    > rake test_app   # [TODO: doesn't exist yet]
+    > rake test_app
     > rake spec
     > rake cucumber
     > rake            # This will run both spec and cucumber tests for the gem
@@ -134,7 +181,7 @@ Each gem contains its own set of tests. For each gem that you want to run the te
     # If you want to run a single cucumber feature:
     > bundle exec cucumber features/manage_pages.feature --require features
 
-    # If you want to only run a particular scenario then specify a line number:
+    # If you want to only run a particular scenario in a feature then specify a line number too:
     > bundle exec cucumber features/manage_pages.feature:8 --require features
 
 
@@ -148,6 +195,6 @@ K3cms is an open source project. We welcome your contributions.
 License
 =======
 
-Copyright 2010-2011 K3 Integrations, LLC
+Copyright 2010-2011 [K3 Integrations, LLC](http://www.k3integrations.com/)
 
 K3cms is free software, distributed under the terms of the [GNU Lesser General Public License](http://www.gnu.org/copyleft/lesser.html), Version 3 (see License.txt).

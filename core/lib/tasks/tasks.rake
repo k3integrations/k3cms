@@ -10,6 +10,9 @@ namespace :k3cms do
   desc 'Install all K3cms gems'
   task :install do
     k3cms_invoke 'install'
+
+   #require Pathname.new(__FILE__).dirname + '../../../lib/generators/app/generator'
+   #K3cms::Generators::AppGenerator.start
   end
 
   desc 'Copy public files from all K3cms gems'
