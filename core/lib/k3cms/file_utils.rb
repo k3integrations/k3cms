@@ -87,7 +87,7 @@ module K3cms
             app_file = Rails.root + file
           end
           app_file.dirname.mkpath
-          app_file.unlink if app_file.symlink? || (app_file.exist? && ENV['k3cms_delete_before_copy'])
+          app_file.unlink if app_file.symlink? || (app_file.exist? && ENV['k3cms_use_symlinks'])
           if options[:skip_if_file_exists] && app_file.exist?
             puts "  Skipping #{file} (#{app_file} already exists)"
           else
