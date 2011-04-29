@@ -414,18 +414,22 @@ InlineEditor.defaultSaveHandler = function(evt) {
 };
 
 // Compare: defaultSaveHandler, saveMultipleElements
+// options.data: you can pass in additional data to be saved, for example by serializing a form
 // TODO: Maybe make it automatically get url and save-type from the elements that the user wants to save. (That would only work if they were all for the same object and could be sent to the same URL. Although we could theoretically make separate requests for each object that they're trying to save...)
 InlineEditor.saveMultipleElements = function(options) {
   var data = '';
+  var $this;
   options.elements.each(function () {
-    var $this = $(this)
+    $this = $(this);
     var editor = InlineEditor.getEditor(this);
     data += '&' + $this.data('object') + '[' + $this.data('attribute') + ']=' + encodeURIComponent(editor.lastSource);
-    $this.trigger('saving');
   });
+  data += (options.data.match(/^&/) ? '' : '&') + options.data;
   if (window.rails_authenticity_token) {
     data += "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token);
   }
+  //console.debug("data=", data);
+  $this.trigger('saving');
 
   $.ajax($.extend({
     type: options['save-type'],

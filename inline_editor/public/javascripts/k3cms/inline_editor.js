@@ -425,6 +425,13 @@ K3cms_InlineEditor = {
       */
       save_success.call(this, data, msg, xhr, options);
     };
+    editable_elements = options.elements.filter('.editable');
+    form_elements     = options.elements.filter('form');
+    //console.debug("editable_elements=", editable_elements);
+    //console.debug("form_elements=", form_elements);
+    options.data = form_elements.serialize();
+    //console.debug("options.data=", options.data);
+    options.elements = editable_elements;
     InlineEditor.saveMultipleElements(options);
   },
 }
