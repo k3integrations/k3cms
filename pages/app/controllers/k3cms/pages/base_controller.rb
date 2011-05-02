@@ -11,7 +11,7 @@ module K3cms
       end
 
       rescue_from CanCan::AccessDenied do |exception|
-        k3cms_authorization_required
+        k3cms_authorization_required(exception)
       end
 
       helper K3cms::InlineEditor::InlineEditorHelper

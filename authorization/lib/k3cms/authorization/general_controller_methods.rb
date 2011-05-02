@@ -10,8 +10,8 @@ module K3cms
         k3cms_user.k3cms_guest?
       end
 
-      def k3cms_failed_authorization
-        render :text => 'Failed Authorization'
+      def k3cms_failed_authorization(exception)
+        render :text => exception.message
       end
 
       def k3cms_successful_signin
