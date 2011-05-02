@@ -11,6 +11,11 @@ module K3cms
       config.action_view.javascript_expansions.merge! :k3 => []
       config.action_view.stylesheet_expansions.merge! :k3 => []
 
+      # A placeholder that other gems can hook into before or after
+      initializer 'k3.core' do
+        #puts 'k3.core'
+      end
+
       initializer 'k3.core.action_view' do
         ActiveSupport.on_load(:action_view) do
           include K3cms::Core::CoreHelper
@@ -29,6 +34,11 @@ module K3cms
         K3cms::ThemeSupport::HookListener.subclasses.each do |hook_class|
           K3cms::ThemeSupport::Hook.add_listener(hook_class)
         end
+      end
+
+      # A placeholder that other gems can hook into before or after
+      initializer 'k3.core.require_decorators' do
+        #puts 'k3.core.require_decorators'
       end
 
     end

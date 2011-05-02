@@ -5,6 +5,7 @@ module K3cms
     # This object stores a set of abilities (just a hash of :symbol => "Ability Name"),
     # and a set of abilities (a hash of :symbol => PermissionSet object)
     class AuthorizationSet
+      puts self
       attr_accessor :suggested_permission_sets, :abilities
       
       # :nodoc:

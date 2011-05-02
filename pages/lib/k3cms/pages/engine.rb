@@ -31,8 +31,11 @@ module K3cms
         end
       end
 
-      config.to_prepare do |app|
-        require Pathname[__DIR__] + '../../../app/models/user_decorator.rb'
+      initializer 'k3.pages.require_decorators', :after => 'k3.core.require_decorators' do |app|
+        #puts 'k3.pages.require_decorators'
+        Dir.glob(config.root + "app/**/*_decorator*.rb") do |c|
+          Rails.env.production? ? require(c) : load(c)
+        end
       end
 
     end
