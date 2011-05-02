@@ -10,8 +10,16 @@ module K3cms
         k3cms_user.k3cms_guest?
       end
 
+      def k3cms_failed_authorization_message(exception)
+        if CanCan::AccessDenied === exception
+          "#{exception.message} (#{exception.action} is not allowed for #{exception.subject})"
+        else
+          exception.message
+        end
+      end
+
       def k3cms_failed_authorization(exception)
-        render :text => exception.message
+        render :text => k3cms_failed_authorization_message(exception)
       end
 
       def k3cms_successful_signin
