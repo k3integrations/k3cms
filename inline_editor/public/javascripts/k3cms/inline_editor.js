@@ -388,7 +388,7 @@ K3cms_InlineEditor = {
   },
 
   // options is an object with:
-  // * elements: a jQuery object with all of the elements that should be saved
+  // * elements: a jQuery object with all of the elements that should be saved. The elements can be .editable elements, :input elements, or a form to serialize.
   // * url: where to save the data to via an Ajax post/put
   //     This REST resource should return the created/updated object in JSON format (can simply redirect to the show page in Rails), or {error: 'the error'} if there's a validation error.
   // * save-type: 'POST' (for creating new records) or 'PUT' (for updating existing records)
@@ -426,7 +426,7 @@ K3cms_InlineEditor = {
       save_success.call(this, data, msg, xhr, options);
     };
     editable_elements = options.elements.filter('.editable');
-    form_elements     = options.elements.filter('form');
+    form_elements     = options.elements.filter(':input,form');
     //console.debug("editable_elements=", editable_elements);
     //console.debug("form_elements=", form_elements);
     options.data = form_elements.serialize();
