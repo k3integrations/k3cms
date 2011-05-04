@@ -25,11 +25,14 @@ sub { bottom: -0.19em; }
 }
 .editable:hover,
 .editing {
-  margin: 0 -2px;
-  padding: 0 2px;
   outline-style: solid;
   outline-width: 1px;
   cursor: text;
+}
+.webkit .editable:hover,
+.webkit .editing {
+  margin:  0 -2px;
+  padding: 0  2px;
 }
 .editable:hover {
   outline-color: #009000; /* green */
