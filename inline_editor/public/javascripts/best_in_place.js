@@ -183,8 +183,23 @@ BestInPlaceEditor.prototype = {
 
     // Display all error messages from server side validation
     $.each(jQuery.parseJSON(request.responseText), function(index, value) {
-      var container = $("<span class='flash-error'></span>").html(value);
-      container.purr();
+      //var container = $("<span class='flash-error'></span>").html(value);
+      var container =
+      '<div class="purr-notice">'
+        + '<div class="body">'
+          + '<img src="/images/k3cms/inline_editor/info.png" alt="" />'
+          + '<h3>Validation error</h3>'
+          + '<p>' + value + '</p>'
+        + '</div>'
+        + '<div class="bottom">'
+        + '</div>'
+      + '</div>';
+
+      $(container).purr({
+        usingTransparentPNG: true,
+        isSticky: false,
+      });
+
     });
 
 		// Binding back after being clicked
