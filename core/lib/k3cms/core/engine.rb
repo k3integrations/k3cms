@@ -25,7 +25,7 @@ module K3cms
 
       initializer 'k3.pages.hooks', :before => 'k3.core.hook_listeners' do |app|
         class K3cms::Core::Hooks < K3cms::ThemeSupport::HookListener
-          insert_after :inside_head, :file => 'k3cms/init.html.erb'
+          insert_after :head, :file => 'k3cms/head.html.erb'
         end
       end
 

@@ -48,7 +48,8 @@ module K3cms
 
       def tweak_layout
         gsub_file 'app/views/layouts/application.html.erb', %r(</head>) do |match|
-          "  <%= hook :inside_head %>\n" +
+          "  <%= hook :head %>\n" +
+          "  <%= content_for :head %>\n" +
           match
         end
         gsub_file 'app/views/layouts/application.html.erb', %r(<body>) do |match|
