@@ -346,7 +346,7 @@ K3cms_InlineEditor = {
       + '<div class="body">' 
         + '<img src="/images/k3cms/inline_editor/info.png" alt="" />'
         + '<h3>Validation error</h3>'
-        + '<p class="alert">' + message + '</p>'
+        + '<p>' + message + '</p>'
       + '</div>'
       + '<div class="bottom">'
       + '</div>'
