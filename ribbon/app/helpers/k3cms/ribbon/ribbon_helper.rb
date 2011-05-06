@@ -25,10 +25,5 @@ module K3cms::Ribbon::RibbonHelper
     @k3cms_ribbon_drawers[name] = k3cms_ribbon_render_drawer(name) { yield }
     nil
   end
-
-  def edit_mode?
-    session[:edit_mode] = false if session[:edit_mode].nil?
-    session[:edit_mode]
-  end
 end
 

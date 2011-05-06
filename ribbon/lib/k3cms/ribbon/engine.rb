@@ -36,6 +36,9 @@ module K3cms
           include K3cms::Ribbon::ControllerMethods
           before_filter :set_edit_mode
         end
+        Cell::Base.class_eval do
+          include K3cms::Ribbon::ControllerMethods
+        end
       end
 
       initializer 'k3.ribbon.action_view' do
