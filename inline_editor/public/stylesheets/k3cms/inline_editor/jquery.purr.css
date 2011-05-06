@@ -39,9 +39,11 @@
   font-size: 1.1em;
 }
 #purr-container .purr-notice .body p {
+  color: #f9f9f9;
   margin: 5px 0 0 60px;
   font-size: 0.8em;
-  line-height: 1.4em;}
+  line-height: 1.4em;
+}
 
 #purr-container .purr-notice .bottom {
   height: 22px;
