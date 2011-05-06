@@ -14,12 +14,17 @@ module K3cms
                    :desc => "Suppress most output from generator",
                    :default => false
 
+      class_option :verbose,
+                   :type => :boolean,
+                   :desc => "Show verbose output from generator",
+                   :default => false
+
     private
 
       def verbosity
-        if options[:quiet]
+        if options.quiet
           0
-        elsif options[:verbose]
+        elsif options.verbose
           2
         else
           1
@@ -32,10 +37,20 @@ module K3cms
         end
       end
 
-      def silence_stream(stream)
-        if verbosity == 0
+      def to_stderr_if_verbose
+        if verbosity >= 2
+          '>&2'
+        end.to_s
+      end
+
+      def silence_stream(stream, options = {})
+        options[:unless_verbosity_gte] ||= 2
+
+        if verbosity >= options[:unless_verbosity_gte]
+          # Don't silence the stream
           yield
         else
+          # Silence the stream
           begin
             old_stream = stream.dup
             stream.reopen(RbConfig::CONFIG['host_os'] =~ /mswin|mingw/ ? 'NUL:' : '/dev/null')

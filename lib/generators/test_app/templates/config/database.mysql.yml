@@ -1,0 +1,17 @@
+development: &development
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: k3cms_test_app_development
+  pool: 5
+  username: root
+  password:
+  socket: /var/run/mysqld/mysqld.sock
+
+test:
+  <<: *development
+  database: k3cms_test_app_test
+
+cucumber:
+  <<: *development
+  database: k3cms_test_app_test

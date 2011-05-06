@@ -88,10 +88,8 @@ This will basically walk you through all the steps that the `k3cms` generator do
 
 You must have a `User` ActiveRecord model defined in `app/models` in order to use K3cms.  You can use the `devise` gem for this -- or any other authentication system that provides a User model.  If you want to use devise, just follow its install directions, but you do not need to create a `root_path` route.
 
-    <pre>
     rails generate devise:install
     rails generate devise User
-    </pre>
 
 Once you've taken care of that prerequisite, start actually installing k3cms by adding the `k3cms` gem to your existing application's `Gemfile`:
 

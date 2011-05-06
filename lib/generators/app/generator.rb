@@ -1,3 +1,5 @@
+# Compare: generators/test_app/generator.rb and lib/generators/app/generator.rb
+# TODO: Remove duplication
 require Pathname.new(__FILE__).dirname + '../base_generator'
 
 module K3cms
@@ -38,7 +40,7 @@ module K3cms
         system(*args)
       end
 
-      # Note: You still need to remember to do inside '.' any time you do a run command
+      # Note: You still need to remember to do in_root any time you do a run command
       def change_root_to_test_app
         self.destination_root = Pathname.new(destination_root) + "#{app_name}"
       end
@@ -99,7 +101,7 @@ module K3cms
           gem 'devise'
         end
 
-        inside '.' do
+        in_root do
           run 'bundle install >/dev/null'
         end
       end
@@ -129,7 +131,7 @@ module K3cms
       end
 
       def bundle_install
-        inside '.' do
+        in_root do
           run 'bundle install'
         end
       end
@@ -145,7 +147,7 @@ module K3cms
       end
 
       def git_init
-        inside '.' do
+        in_root do
           git :init
           git :add => "."
           git :commit => "-a -m 'Initial commit' >/dev/null"

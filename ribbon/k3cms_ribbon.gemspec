@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "k3cms/version"
+require 'pathname'
+require Pathname.new(__FILE__).dirname + "../lib/k3cms/version"
 
 Gem::Specification.new do |s|
   s.name          = "k3cms_ribbon"

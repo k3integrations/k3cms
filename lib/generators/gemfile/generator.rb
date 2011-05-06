@@ -14,9 +14,14 @@ module K3cms
                    :desc => "Include \"gem 'k3cms'\", etc. in generated Gemfile",
                    :default => true
 
+      class_option :install,
+                   :type => :boolean,
+                   :desc => "Run 'bundle install' after generating Gemfile",
+                   :default => false
+
       def create_gemfile_in_gem_root
         silence_stream(STDOUT) do
-          remove_file "Gemfile.lock"
+         #remove_file "Gemfile.lock"
           template "Gemfile.tt", "Gemfile", :force => true
 
           if options.include_k3cms_gems
@@ -28,6 +33,11 @@ module K3cms
         end
       end
 
+      def bundle_install
+        if options.install
+          run "bundle install #{to_stderr_if_verbose}"
+        end
+      end
 
     protected
 
