@@ -13,15 +13,25 @@ module K3cms
       # authorization.rb files have been loaded, the list of permissions will be empty
       # (the default) because none of the gems have added their permissions yet.
       initializer "k3cms.authorization.load_authorization_files", :before => 'k3.core.require_decorators' do |app|
-        puts "k3cms.authorization.load_authorization_files"
         K3cms::Authorization::AuthorizationSet.load app.railties.engines
       end
 
-      # If *Devise* is loaded, load some necessary Devise modules.
-      # TODO: can we move all of this into k3cms/authorization/drivers/devise.rb?
-      initializer 'k3.authorization.devise' do
+      initializer 'k3cms.authorization.action_controller' do
+        ActiveSupport.on_load(:action_controller) do
+          include K3cms::Authorization::GeneralControllerMethods
+        end
+        Cell::Base.class_eval do
+          # Too bad delegate :current_ability doesn't seem to work...
+          delegate :k3cms_user, :to => :parent_controller
+          helper_method :k3cms_user
+          #include  K3cms::Authorization::GeneralControllerMethods
+        end
+      end
+
+      # If Devise is loaded, load some necessary Devise modules.
+      initializer 'k3cms.authorization.devise' do
         if defined?(::Devise)
-            require 'k3cms/authorization/drivers/devise'
+          require 'k3cms/authorization/drivers/devise'
         end
       end
 

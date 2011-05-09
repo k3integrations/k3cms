@@ -44,13 +44,7 @@ end
 
 ActiveSupport.on_load(:action_controller) do
   include K3cms::Authorization::Drivers::Devise
-  include K3cms::Authorization::GeneralControllerMethods
 
-  class Cell::Rails
-    # Too bad delegate :current_ability doesn't work...
-    delegate :k3cms_user, :to => :parent_controller
-  end
   #Cell::Base.send :include, Devise::Controllers::Helpers
   #Cell::Base.send :include, K3cms::Authorization::Drivers::Devise
-  #Cell::Base.send :include, K3cms::Authorization::GeneralControllerMethods
 end
