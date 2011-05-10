@@ -1,0 +1,130 @@
+:javascript
+  $(function() {
+    var this_record_box = $('.edit_mode_on .#{dom_class(@record)}##{dom_id(@record)}');
+    //console.debug("this_record_box=", this_record_box.length);
+    var this_context_ribbon = $('.context_ribbon.#{dom_id(@record)}}');
+
+    this_record_box.tooltip({
+      // By default, the tooltip closes when you mouseenter the tooltip and then mouseleave it. This is a problem (at least with the table view). If they are moving their mouse right back down to the trigger, then the mouseleave from the tooltip should not trigger it to close!
+      events: {tooltip: ","},
+      delay: 100,
+      position: 'top left',
+      relative: true,
+      tip: this_context_ribbon.selector,
+      offset: #{@ribbon_offset.to_json},
+      onBeforeShow: function() {
+        this.getTip().css('width', this.getTrigger().innerWidth() + 'px');
+      },
+      onShow: function() {
+        this.getTrigger().addClass('active');
+      },
+      onBeforeHide: function(event) {
+        if (this.getTrigger().hasClass('new_record')) {
+          event.preventDefault()
+        }
+      },
+      onHide: function() {
+        this.getTrigger().removeClass('active');
+      },
+    });
+
+    this_record_box.bind('toggle', function() {
+      if ($(this).is(':visible')) {
+        $(this).trigger('close')
+      } else {
+        $(this).trigger('open')
+      }
+    });
+
+    this_record_box.bind('open', function() {
+      var $this = $(this);
+      $this.show();
+      $this.addClass('visible'); // for CSS
+
+      var tooltip = $this.data('tooltip');
+      if (tooltip) {
+        tooltip.show(); // There's a bug that makes this not work. isShown() incorrectly returns 'full'.
+        tooltip.getTip().show();
+      }
+
+      // TODO: fix expose for table/list view. The problem is, it seems, td's can't have a z-index. Possible workaround: divs inside the td can have a z-index. But still didn't seem to be a perfect or easy solution.
+      var use_expose_effect = $this.data('use_expose_effect')
+      //console.debug("use_expose_effect=", use_expose_effect, use_expose_effect ? 'yes' : 'no', typeof use_expose_effect);
+      if (use_expose_effect) $this.expose({
+        color:'#000',
+        opacity: 0.6,
+        onClose: function() {
+          var e = this.getExposed()
+          //console.debug("e.data('closing')=", e.data('closing'));
+          if (!e.data('closing') && $this.data('close_box_when_mask_closes') !== false) {
+            e.data('closing', 'expose is closed');
+            e.trigger('close');
+          }
+        },
+        closeOnClick: false,
+      });
+
+      // Focus first editable field
+      $(this_record_box.selector + ' .editable[data-attribute=code]').eq(0).focus()
+
+      if (#{dom_class(@record)}.onRecordBoxOpen)
+          #{dom_class(@record)}.onRecordBoxOpen();
+    });
+
+
+    this_record_box.bind('close', function() {
+      if ($.mask.isLoaded() && !$(this).data('closing')) {
+        $.mask.close();
+      } else if ($.mask.isLoaded() === undefined || $(this).data('closing') === 'expose is closed') {
+        $(this).hide();
+        $(this).removeClass('visible'); // for CSS
+        $(this).data('closing', false)
+        if (#{dom_class(@record)}.onRecordBoxClose)
+            #{dom_class(@record)}.onRecordBoxClose();
+      }
+
+      this_context_ribbon.hide();
+    });
+
+    this_record_box.find('.create_button').click(function() {
+      K3cms_InlineEditor.saveMultipleElements({
+        url: #{polymorphic_url(@record, :only_path => true).to_json},
+        'save-type': 'POST',
+        object_name: #{dom_class(@record).to_json},
+        elements: $('##{dom_id(@record)} .editable, ##{dom_id(@record)} :input'),
+        save_success: function(data, msg, xhr, options) {
+          if (data.error) {
+            return;
+          }
+
+          this_context_ribbon.remove();
+
+          var tooltip = $('##{dom_id(@record)}').data('tooltip');
+          tooltip.hide(); // There's a bug that makes this not work. isShown() incorrectly returns 'full'.
+          tooltip.getTip().hide(); // Workaround
+
+          $('##{dom_id(@record)}').data('close_box_when_mask_closes', false);
+          $.mask.close();
+
+          // Now that we've created the record, we need to do an Ajax request and actually replace the New Object box with an Update Object box
+          // so that we have an object_id and the correct url and save-type for updating, so that inline-editing will work.
+          // We could probably update the existing DOM elements, but this is easier...
+          $.get(#{dom_class(@record)}.url_for(options.object), #{@extra_params.to_json}, function(data) {
+            $('##{dom_id(@record)}').eq(0).replaceWith(data);
+
+            // Add the #new_#{dom_class(@record)} box back into the DOM (initially hidden) so they can add another New record
+            $.get(#{@new_record_path.to_json}, #{@extra_params.to_json}, function(data) {
+              $('.#{dom_class(@record)}_list .the_list>.#{dom_class(@record)}:visible:eq(0)').before(data);
+
+              // TODO: instead of having it add editors to *all* the '.editable' elements (some of which have already been initialized for editing),
+              // we should selectively add the inline editor to *only* the elements we just added to the DOM. (Or change initInlineEditor to use livequery or something
+              // so it automatically applies it to .editable elements as soon as they're added to the DOM.
+              K3cms_InlineEditor.initInlineEditor();
+            });
+          });
+        },
+      });
+    }); // ('.create_button').click(function()
+
+  });
+
