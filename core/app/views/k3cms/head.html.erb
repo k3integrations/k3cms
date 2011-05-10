@@ -2,5 +2,11 @@
   rails_authenticity_token = '<%= form_authenticity_token %>';
 </script>
 
-<%= stylesheet_link_tag :k3 %>
-<%= javascript_include_tag :k3 %>
+<%= stylesheet_link_tag :k3cms %>
+<%= javascript_include_tag :k3cms_viewing %>
+
+<% if edit_mode? %>
+  <!--[if gte IE 9]><!-->
+  <%= javascript_include_tag :k3cms_editing %>
+  <!--<![endif]-->
+<% end %>

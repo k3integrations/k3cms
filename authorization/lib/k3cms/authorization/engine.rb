@@ -12,7 +12,7 @@ module K3cms
       # cached in a class variable. So if User gets loaded before all the
       # authorization.rb files have been loaded, the list of permissions will be empty
       # (the default) because none of the gems have added their permissions yet.
-      initializer "k3cms.authorization.load_authorization_files", :before => 'k3.core.require_decorators' do |app|
+      initializer "k3cms.authorization.load_authorization_files", :before => 'k3cms.core.require_decorators' do |app|
         K3cms::Authorization::AuthorizationSet.load app.railties.engines
       end
 
