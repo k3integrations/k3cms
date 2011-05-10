@@ -47,13 +47,13 @@ K3cms_Ribbon.Drawer.FloatField = {
     append($('<label/>', { text: 'Position', 'data-name': 'float' })).
 
     append($('<input/>', { type: 'radio', name: 'float', value: 'none', id: 'float_none' })).
-    append($('<label/>', { text: 'Inline', for: 'float_none' })).
+    append($('<label/>', { text: 'Inline', 'for': 'float_none' })).
 
     append($('<input/>', { type: 'radio', name: 'float', value: 'left', id: 'float_float_left' })).
-    append($('<label/>', { text: 'Float Left', for: 'float_float_left' })).
+    append($('<label/>', { text: 'Float Left', 'for': 'float_float_left' })).
 
     append($('<input/>', { type: 'radio', name: 'float', value: 'right', id: 'float_float_right' })).
-    append($('<label/>', { text: 'Float Right', for: 'float_float_right' }))
+    append($('<label/>', { text: 'Float Right', 'for': 'float_float_right' }))
   ),
   populate_with_defaults: function(drawer_id) {
     $('#' + drawer_id + ' input:radio[name=float][value=' + 'right' + ']').attr('checked', true)
