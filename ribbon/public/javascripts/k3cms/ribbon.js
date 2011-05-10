@@ -152,11 +152,11 @@ $.extend(K3cms_Ribbon, {
       status_element.html('');
       status_element.
         append("Saved ").
-        append($('<span/>', { class: "timeago",
+        append($('<span/>', { 'class': "timeago",
           title: ISODateString(last_saved_at), 
           html: last_saved_at
         })).
-        append($('<button/>', { class: "save_button",
+        append($('<button/>', { 'class': "save_button",
           click: function() { K3cms_Ribbon.onSaving(); }
         }));
       status_element.find('.timeago').timeago();
@@ -267,7 +267,7 @@ K3cms_Ribbon.Drawer = Class.extend({
   },
   render: function() {
     var self = this;
-    var root = $('<div/>', { id: this.id, class: 'drawer hidden ' + this.id });
+    var root = $('<div/>', { id: this.id, 'class': 'drawer hidden ' + this.id });
     root.append('<h2 id="' + this.id + '_title">' + entityEscape(this.title) + '</h2>');
     var form;
     root.append(form = $('<form id="' + this.id + '_form" class="form ' + this.id + '" accept-charset="UTF-8">'));
