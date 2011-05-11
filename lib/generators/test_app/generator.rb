@@ -73,8 +73,25 @@ End
         bundle_install
       end
 
+      def rake_k3cms_install
+        inside "test_app" do
+          run 'rake k3cms:install'
+        end
+      end
+
       def create_databases_yml
         template "config/database.yml", "config/database.yml", :force => true
+      end
+
+      def run_migrations
+        inside "." do
+          silence_stream(STDERR, :unless_verbosity_gte => 1) do
+            # drop and recreate database, if necessary (if they're using mysql)
+            run "rake #{'db:drop db:create' if db_create?} " +
+                     "db:migrate db:seed RAILS_ENV=test     #{to_stderr_if_verbose}"
+            run "rake db:migrate db:seed RAILS_ENV=cucumber #{to_stderr_if_verbose}"
+          end
+        end
       end
 
     protected
@@ -93,17 +110,6 @@ End
 
       def app_name
         options[:app_name]
-      end
-
-      def run_migrations
-        inside "." do
-          silence_stream(STDERR, :unless_verbosity_gte => 1) do
-            # drop and recreate database, if necessary (if they're using mysql)
-            run "rake #{'db:drop db:create' if db_create?} " +
-                     "db:migrate db:seed RAILS_ENV=test     #{to_stderr_if_verbose}"
-            run "rake db:migrate db:seed RAILS_ENV=cucumber #{to_stderr_if_verbose}"
-          end
-        end
       end
 
       def db_create?
