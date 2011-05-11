@@ -1,2 +1,21 @@
-require 'bundler'
-Bundler::GemHelper.install_tasks
+#---------------------------------------------------------------------------------------------------
+require_relative '../core/lib/k3cms/core/common_rake_tasks'
+
+#---------------------------------------------------------------------------------------------------
+desc "Generates a Gemfile that points to your local development copies of K3cms gems"
+task :gemfile, [:args] do |t, args|
+  require '../lib/generators/gemfile/generator'
+  class GemfileGenerator < K3cms::Generators::GemfileGenerator
+    source_root Pathname.new(__FILE__).dirname
+
+  protected
+    def k3cms_gems_for_gemfile
+      <<-End
+gem 'k3cms_core',                       :path => '#{Pathname.new(__FILE__).dirname + '../core'}'
+      End
+    end
+  end
+  GemfileGenerator.start(args[:args].to_s.split(' '))
+end
+
+#---------------------------------------------------------------------------------------------------

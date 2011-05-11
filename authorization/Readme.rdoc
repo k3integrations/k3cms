@@ -207,7 +207,10 @@ This example uses CanCan, but as mentioned elsewhere, you are free to use any au
 
 == Specs
 
-To run specs, cd to this directory and run:  bundle exec rspec spec
+To run specs, cd to this directory and run:
+
+    rake bundle
+    rake spec
 
 == License
 

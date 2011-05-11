@@ -1,5 +1,7 @@
+require 'rails/engine'
+
 module Rails
-  class Engine
+  Engine.class_eval do
     class << self
       def authorization
         @authorization ||= K3cms::Authorization::AuthorizationSet.new

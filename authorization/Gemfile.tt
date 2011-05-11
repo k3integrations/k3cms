@@ -1,0 +1,16 @@
+# This Gemfile is generated from Gemfile.tt. Do not edit it directly!
+# Instead, please edit Gemfile.tt and run rake gemfile.
+
+# The rescue is because within the test_app, there is no gemspec
+gemspec rescue nil
+
+# These are only needed for development. That is why they're listed here and not in the gemspec.
+
+group :test do
+  gem 'rspec-rails'
+  gem 'machinist'
+  gem 'rcov'
+  gem 'rspec-cells', :git => 'git://github.com/apotonick/rspec-cells.git'
+  gem 'rspec_tag_matchers', :git => 'git://github.com/grimen/rspec_tag_matchers.git'
+end
+

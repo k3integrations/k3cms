@@ -1,6 +1,7 @@
 require 'singleton'
 require "k3cms_core"
 require "rails"
+require 'action_view/railtie'
 require 'k3cms/theme_support'
 
 module K3cms
