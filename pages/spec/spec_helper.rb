@@ -1,7 +1,7 @@
 require 'facets'
 require 'rails'
 require 'action_pack'
-require 'action_view/railtie' # so that config.action_view is available in engine.rb
+require 'action_view/railtie' # so that config.action_view is available in railtie.rb
 require 'active_record'       # Make sure this gets required before attribute_normalizer
 Bundler.require(:default, :development)
 require 'k3cms_authorization'

@@ -1,4 +1,4 @@
-K3cms::Ribbon::Engine.authorization.draw do
+K3cms::Ribbon::Railtie.authorization.draw do
   # First define and describe some suggested permission sets.
   suggested_permission_set :default, 'Allows managers and admins to view the ribbon'
   

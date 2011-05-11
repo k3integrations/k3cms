@@ -6,7 +6,7 @@ require 'cells'
 
 module K3cms
   module Ribbon
-    class Engine < Rails::Engine
+    class Railtie < Rails::Engine
 
       config.before_initialize do
         # Work around the fact that the line:
@@ -58,6 +58,7 @@ module K3cms
           end
         end
       end
+
     end
   end
 end

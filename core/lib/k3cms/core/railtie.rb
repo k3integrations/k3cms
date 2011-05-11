@@ -5,7 +5,7 @@ require 'k3cms/theme_support'
 
 module K3cms
   module Core
-    class Engine < Rails::Engine
+    class Railtie < Rails::Engine
       puts self
 
       config.action_view.javascript_expansions.merge! :k3cms_viewing => []

@@ -5,8 +5,8 @@ require 'facets/pathname'
 
 module K3cms
   module InlineEditor
+    class Railtie < Rails::Engine
 
-    class Engine < Rails::Engine
       config.before_initialize do
         # Anything in the .gemspec that needs to be *required* should be required here.
         # This is a workaround for the fact that this line:
@@ -41,7 +41,7 @@ module K3cms
           end
         end
       end
-    end
 
+    end
   end
 end

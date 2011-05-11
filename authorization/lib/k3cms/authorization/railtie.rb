@@ -3,7 +3,7 @@ require "rails"
 
 module K3cms
   module Authorization
-    class Engine < Rails::Engine
+    class Railtie < Rails::Engine
       puts self
 
       # This initializer must be loaded *before* all the require_decorators

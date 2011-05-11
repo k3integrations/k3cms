@@ -14,7 +14,7 @@ abilities it recognizes and some default permission sets suggesting how these
 could be used.  This gem (k3cms_authorization) reads in those files and extends
 Rails engines to expose those settings.
 
-For example, SomeClass::Engine.authorization will return an AuthorizationSet
+For example, SomeClass::Railtie.authorization will return an AuthorizationSet
 object, containing the details from the authorization.rb file.
 
 This gem provides an API or middle ground so that gem developers can include
@@ -82,7 +82,7 @@ This file defines/provides:
 
 Here is a sample authorization.rb file (k3cms_pages/config/authorization.rb) that demonstrates the basics of the DSL:
 
-    MyGem::Engine.authorizations.draw do
+    MyGem::Railtie.authorizations.draw do
       # First define and describe some suggested permission sets.
       suggested_permission_set :default, 'Allows managers to create & edit all pages, and delete their own pages'
       suggested_permission_set :user_creation, 'Allows users to create and manage their own pages'

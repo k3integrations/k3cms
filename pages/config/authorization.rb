@@ -1,4 +1,4 @@
-K3cms::Pages::Engine.authorization.draw do
+K3cms::Pages::Railtie.authorization.draw do
   # First define and describe some suggested permission sets.
   suggested_permission_set :default, 'Allows managers to create & edit all pages, and delete their own pages'
   suggested_permission_set :user_creation, 'Allows users to create and manage their own pages'

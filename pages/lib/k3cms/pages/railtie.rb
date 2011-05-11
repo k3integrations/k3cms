@@ -6,8 +6,8 @@ require 'facets/pathname'
 
 module K3cms
   module Pages
+    class Railtie < Rails::Engine
 
-    class Engine < Rails::Engine
       config.action_view.javascript_expansions[:k3cms_editing].concat [
         'k3cms/pages.js',
       ]
@@ -37,6 +37,5 @@ module K3cms
       end
 
     end
-
   end
 end

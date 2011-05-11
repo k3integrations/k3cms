@@ -1,6 +1,6 @@
 $:.unshift File.join(File.dirname(__FILE__), '..')  # so we can require 'app/models/k3cms/page'
 
-require 'k3cms/pages/engine'
+require 'k3cms/pages/railtie'
 
 module K3cms
   module Pages
