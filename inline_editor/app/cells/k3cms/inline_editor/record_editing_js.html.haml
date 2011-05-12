@@ -1,8 +1,11 @@
+-# vim: ft=javascript
+
 :javascript
   $(function() {
     var this_record_box = $('.edit_mode_on .#{dom_class(@record)}##{dom_id(@record)}');
     //console.debug("this_record_box=", this_record_box.length);
     var this_context_ribbon = $('.context_ribbon.#{dom_id(@record)}}');
+    //console.debug("this_context_ribbon=", this_context_ribbon);
 
     this_record_box.tooltip({
       // By default, the tooltip closes when you mouseenter the tooltip and then mouseleave it. This is a problem (at least with the table view). If they are moving their mouse right back down to the trigger, then the mouseleave from the tooltip should not trigger it to close!
@@ -65,7 +68,7 @@
       });
 
       // Focus first editable field
-      $(this_record_box.selector + ' .editable[data-attribute=code]').eq(0).focus()
+      this_context_ribbon.find('.editable,:input').eq(0).focus()
 
       if (#{dom_class(@record)}.onRecordBoxOpen)
           #{dom_class(@record)}.onRecordBoxOpen();
