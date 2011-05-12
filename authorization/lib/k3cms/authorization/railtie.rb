@@ -4,8 +4,9 @@ require "rails"
 module K3cms
   module Authorization
     class Railtie < Rails::Engine
-      puts __FILE__
       puts self
+
+      config.k3cms.authorization = ActiveSupport::OrderedOptions.new
 
       # This initializer must be loaded *before* all the require_decorators
       # initializers, because require_decorators causes User to be loaded, which

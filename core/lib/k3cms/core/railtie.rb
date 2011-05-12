@@ -9,6 +9,8 @@ module K3cms
     class Railtie < Rails::Engine
       puts self
 
+      config.k3cms = ActiveSupport::OrderedOptions.new
+
       config.action_view.javascript_expansions.merge! :k3cms_viewing => []
       config.action_view.javascript_expansions.merge! :k3cms_editing => []
       config.action_view.stylesheet_expansions.merge! :k3cms => []
