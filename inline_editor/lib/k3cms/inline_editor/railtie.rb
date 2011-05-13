@@ -7,12 +7,24 @@ module K3cms
   module InlineEditor
     class Railtie < Rails::Engine
 
-      config.before_initialize do
-        # Anything in the .gemspec that needs to be *required* should be required here.
-        # This is a workaround for the fact that this line:
-        #   Bundler.require(:default, Rails.env) if defined?(Bundler)
-        # in config/application.rb only does a 'require' for the gems explicitly listed in the *app*'s Gemfile -- not for the gems *they* might depend on (which are listed in a .gemspec file, not a Gemfile).
-        require 'best_in_place'
+      initializer 'k3cms.inline_editor.require_gems' do
+        config.before_initialize do
+          # Anything in the .gemspec that needs to be *required* should be required here.
+          # This is a workaround for the fact that this line:
+          #   Bundler.require(:default, Rails.env) if defined?(Bundler)
+          # in config/application.rb only does a 'require' for the gems explicitly listed in the *app*'s Gemfile -- not for the gems *they* might depend on (which are listed in a .gemspec file, not a Gemfile).
+          require 'best_in_place'
+        end
+      end
+
+      initializer 'k3cms.inline_editor.helpers' do
+        config.after_initialize do
+          helpers = proc {
+            helper K3cms::InlineEditor::InlineEditorHelper
+          }
+          ActiveSupport.on_load(:action_controller, &helpers)
+          Cell::Rails.class_eval(                   &helpers)
+        end
       end
       
       config.action_view.javascript_expansions[:k3cms_viewing].concat [
