@@ -9,6 +9,7 @@ module K3cms
 
       def call(env)
         pages = Page.where(:url => env['PATH_INFO']).all
+        env['ORIG_PATH_INFO'] = env['PATH_INFO'].dup
         Rails.logger.debug "... env['PATH_INFO']=#{env['PATH_INFO'].inspect}"
 
         if pages.any? and (page = pages.first)
@@ -35,7 +36,6 @@ module K3cms
             # Or perhaps it's not possible/wise to bypass ActionDispatch and before_filters, etc.
             #PagesController.new.process_action('show') #render_to_string
 
-            env['ORIG_PATH_INFO'] = env['PATH_INFO'].dup
             env['PATH_INFO'] = "/k3cms_pages/#{page.id}"
             Rails.logger.debug "... Serving page #{page.id} via #{env['PATH_INFO']}"
             @app.call(env)
