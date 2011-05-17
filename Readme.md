@@ -116,14 +116,14 @@ Now run the migrations that were just copied into the `db/` directory and prepar
 
 Also, you will need to add a few things to your layout...
 
-You must have jQuery installed and included in your layouts. In your `config/application.rb`, we recommend you change the `:default` javascript_expansion to this:
+You must have jQuery installed and included in your layouts. In your `config/application.rb`, we recommend you change the `:default` `javascript_expansion` to this:
 
     config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
 
-Somewhere within your `<head>` tag, you need to add these lines:
+Somewhere within your `<head>` tag, you need to make sure you have these lines:
 
     <%= javascript_include_tag :defaults %>
-    <%= hook :head %>%>
+    <%= hook :head %>
 
 Somewhere within your `<body>` tag, you need to add this line:
 
