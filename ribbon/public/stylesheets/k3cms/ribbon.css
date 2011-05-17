@@ -45,6 +45,10 @@ body {
   background: white;
 }
 
+#k3cms_ribbon a {
+  color: black;
+}
+
 #k3cms_ribbon .row + .row {
   clear: both;
 }
