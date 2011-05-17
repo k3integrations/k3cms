@@ -4,12 +4,30 @@ module K3cms
       module Devise
         extend ActiveSupport::Concern
 
-        # Devise specific
+        # This is to prevent the after_sign_in_path_for method in K3cms::Authorization::Drivers::Devise from overriding the version defined here.  That seems to
+        # be happening when the devise gem is required *after* the k3cms_authorization gem, which would cause the K3cms::Authorization::Drivers::Devise module to
+        # be included into Devise::SessionsController (or one of its ancestors) last, which means that its version is the one that gets used.
+        #
+        # By including ::Devise::Controllers::Helpers into this module, we trick Ruby into changing the ancestry for that class, so ancestors will now show:
+        #   ...
+        #   K3cms::Authorization::Drivers::Devise,
+        #   Devise::Controllers::Helpers,
+        #   ...
+        # no matter whether devise or k3cms_authorization is required first.
+        #
+        include ::Devise::Controllers::Helpers
+
+        included do
+          helper_method :k3cms_user, :k3cms_authorization_required
+        end
+
+      public
+
         def k3cms_user
           current_user || @k3cms_guest_user ||= K3cms::Authorization::GuestUser.new
         end
 
-        private
+      private
 
         def k3cms_authorization_required(exception = nil)
           if !user_signed_in?
@@ -29,12 +47,6 @@ module K3cms
 
         def after_sign_out_path_for(resource)
           k3cms_successful_signout
-        end
-
-        public
-
-        included do
-          helper_method :k3cms_user, :k3cms_authorization_required
         end
 
       end
