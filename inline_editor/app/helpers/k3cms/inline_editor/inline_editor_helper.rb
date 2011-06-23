@@ -17,7 +17,7 @@ module K3cms
           'data-url'       => url_for(object),
         }) unless object.new_record?
         content_tag( tag_name, options) do
-          capture { yield }.try(:strip)
+          capture { yield }.try(:strip).html_safe
         end
       end
 
