@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
   k3cms_core_gems.each do |gem_name|
     s.add_dependency gem_name
   end
-  s.add_dependency 'rake', '0.8.7'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
