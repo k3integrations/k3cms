@@ -8,10 +8,12 @@ module K3cms
       def inline_editable(tag_name, object, attr_name, options = {})
         raise ArgumentError, "object is nil" unless object
         options.reverse_merge!({
-          :class           => 'editable',
           'data-object'    => dom_class(object),
           'data-object-id' => dom_id(object),
           'data-attribute' => attr_name
+        })
+        options.merge!({
+          :class           => "editable #{options[:class]}",
         })
         options.reverse_merge!({
           'data-url'       => url_for(object),
