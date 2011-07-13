@@ -396,6 +396,9 @@ ul, li {
 .context_ribbon .left + .left {
   margin-left: 10px;
 }
+.context_ribbon .field label.left + .left {
+  margin-left: 5px;
+}
 
 .context_ribbon input {
   margin: 0;
