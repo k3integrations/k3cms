@@ -123,11 +123,11 @@ You must have jQuery installed and included in your layouts. In your `config/app
 Somewhere within your `<head>` tag, you need to make sure you have these lines:
 
     <%= javascript_include_tag :defaults %>
-    <%= hook :head %>
+    <%= k3cms_hook :head %>
 
 Somewhere within your `<body>` tag, you need to add this line:
 
-    <%= hook :top_of_page %>
+    <%= k3cms_hook :top_of_page %>
 
 And wherever you want the ribbon to appear in the document, you need to add this:
 

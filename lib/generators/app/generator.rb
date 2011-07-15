@@ -50,13 +50,13 @@ module K3cms
 
       def tweak_layout
         gsub_file 'app/views/layouts/application.html.erb', %r(</head>) do |match|
-          "  <%= hook :head %>\n" +
+          "  <%= k3cms_hook :head %>\n" +
           "  <%= content_for :head %>\n" +
           match
         end
         gsub_file 'app/views/layouts/application.html.erb', %r(<body>) do |match|
           match + "\n" +
-          "  <%= hook :top_of_page %>\n" +
+          "  <%= k3cms_hook :top_of_page %>\n" +
           "  <%= k3cms_ribbon %>\n"
         end
       end

@@ -33,16 +33,16 @@ module HookHelper
 
   # Allow hooks to be used in views like this:
   #
-  #   <%= hook :some_hook %>
+  #   <%= k3cms_hook :some_hook %>
   #
-  #   <%= hook :some_hook do %>
+  #   <%= k3cms_hook :some_hook do %>
   #     <p>Some HTML</p>
   #   <% end %>
   #
   # Also appends the result from content_for(:hook_name), so you don't have to add both a hook and a content_for in your layouts.
   # This lets you add things to your hooks from any *view* (using content_for), as well as from any railtie (using hook modifiers).
   #
-  def hook(hook_name, locals = {}, &block)
+  def k3cms_hook(hook_name, locals = {}, &block)
     content = block_given? ? capture(&block) : ''
     K3cms::ThemeSupport::Hook.render_hook(hook_name, content, self, locals) +
       content_for(hook_name)
