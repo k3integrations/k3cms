@@ -169,7 +169,7 @@ var drawers = [
       // http://localhost:3000/images/logo.png
       InlineEditor.focusedEditor().execCommand('insertImage', $('#image_drawer_url').val());
       // TODO: Is there a cleaner and more fail-safe way to get the element that was just inserted? The problem with the current method is that there could be multiple img tags that have the same src!
-      var img_node = $(this.editable_container()).find('img[src=' + $('#image_drawer_url').val() + ']')[0];
+      var img_node = $(this.editable_container()).find('img[src="' + $('#image_drawer_url').val() + '"]')[0];
       if (img_node) {
         this.onUpdate(img_node);
       }
