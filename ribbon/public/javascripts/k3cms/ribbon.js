@@ -279,7 +279,7 @@ K3cms_Ribbon.Drawer = Class.extend({
 
     // Set id attr based on name
     root.find('input').each(function() {
-      if ($(this).attr('id') == '') {
+      if (!$(this).attr('id')) {
         $(this).attr('id', self.id + '_' + $(this).attr('name'));
       };
       // If not already prefixed (as is the case for K3cms_Ribbon.Drawer.FloatField, where we use generic ids like 'float_none'), we need to prefix now...
@@ -288,7 +288,7 @@ K3cms_Ribbon.Drawer = Class.extend({
       };
     });
     root.find('label').each(function() {
-      if ($(this).attr('for') == '') {
+      if (!$(this).attr('for')) {
         //$(this).attr('for', self.id + '_' + $(this).data('name'));
         $(this).attr('for', $(this).data('name'));
       };
