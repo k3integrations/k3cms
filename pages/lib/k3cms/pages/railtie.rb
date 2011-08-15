@@ -8,6 +8,14 @@ module K3cms
   module Pages
     class Railtie < Rails::Engine
 
+      config.before_initialize do
+        # Anything in the .gemspec that needs to be *required* should be required here.
+        # This is a workaround for the fact that this line:
+        #   Bundler.require(:default, Rails.env) if defined?(Bundler)
+        # in config/application.rb only does a 'require' for the gems explicitly listed in the *app*'s Gemfile -- not for the gems *they* might depend on (which are listed in a .gemspec file, not a Gemfile).
+        require 'cancan'
+      end
+
       config.action_view.javascript_expansions[:k3cms_editing].concat [
         'k3cms/pages.js',
       ]
