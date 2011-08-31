@@ -42,7 +42,7 @@ module K3cms
     after_initialize :set_default_title_or_url
     def set_default_title_or_url
       self.title = url.gsub(%r[^/], '').humanize.gsub('-', ' ') if self.attributes['url']   && self.attributes['title'].nil?
-      self.title = 'Home' if root_url?
+      self.title = 'Home' if root_url? && self.attributes['title'].blank?
       self.url   = '/' + title.humanize.gsub(' ', '-').downcase if self.attributes['title'] && self.attributes['url'].nil?
     end
 
