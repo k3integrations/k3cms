@@ -38,15 +38,15 @@
 :javascript
   $(function() {
     if (#{edit_mode?.to_json}) {
-      $('body').removeClass('edit_mode_off');
-      $('body').addClass(   'edit_mode_on');
+      $('html').removeClass('edit_mode_off');
+      $('html').addClass(   'edit_mode_on');
       $('#k3cms_ribbon').k3cms_ribbon();
       $('#k3cms_ribbon').k3cms_ribbon('render');
       $('#k3cms_ribbon').k3cms_ribbon('refresh');
       $('#k3cms_ribbon_underneath').height($('#k3cms_ribbon').height())
     } else {
-      $('body').removeClass('edit_mode_on');
-      $('body').addClass(   'edit_mode_off');
+      $('html').removeClass('edit_mode_on');
+      $('html').addClass(   'edit_mode_off');
       $('#k3cms_ribbon_underneath').height($('#k3cms_ribbon').height())
     }
   });

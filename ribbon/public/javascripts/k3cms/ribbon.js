@@ -100,6 +100,14 @@ K3cms = {
 //--------------------------------------------------------------------------------------------------
 // Data structures
 
+// A Ribbon has multiple Tabs
+// A Tab has multiple Sections
+// A section has many Buttons
+//
+// To retrieve a ribbon, get it from the element itself, like this: $('#k3cms_ribbon').k3cms_ribbon('get')
+// To retrieve a specific tab, get it through the ribbon API:       $('#k3cms_ribbon').k3cms_ribbon('get').tabsByName().editing_tab
+// This API could probably be improved. (I like the jQuery Tools API best of all I've seen, and hope to use that as the basis when I rework the API...)
+//
 K3cms_Ribbon = Class.extend({
   init: function(options) {
     this.tabs = [];
@@ -134,6 +142,10 @@ K3cms_Ribbon = Class.extend({
 });
 
 $.extend(K3cms_Ribbon, {
+  edit_mode_on: function() {
+    return $('html').hasClass('edit_mode_on');
+  },
+
   bindEventHandlers: function(element, options) {
     $.each(options, function(key, value) {
       if (key.match(/^on/)) {
