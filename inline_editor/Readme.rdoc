@@ -63,13 +63,47 @@ Or you can use the default behavior, which simply looks for and updates all elem
       }
     })
 
+
+== Developer notes: How it is initialized
+
+./lib/k3cms/inline_editor/railtie.rb:
+
+          insert_after :top_of_page do
+            # TODO: should be able to call render_cell or other helpers directly from this context
+            %{<%= render_cell 'k3cms/inline_editor', :init_edit_mode %>}
+          end
+
+This only happens if edit mode is enabled...
+
+./app/cells/k3cms/inline_editor_cell.rb:
+
+  def init_edit_mode
+    render if edit_mode?
+  end
+
+./app/cells/k3cms/inline_editor/init_edit_mode.html.haml:
+
+  jQuery(function() {
+    K3cms_InlineEditor.initRibbon();
+    K3cms_InlineEditor.initInlineEditor();
+  });
+
+./public/javascripts/k3cms/inline_editor.js:469:K3cms_InlineEditor.initRibbon = function() {
+
+  Is resposible for adding buttons to the ribbon/toolbar
+
+initInlineEditor:
+
+  Is responsible for looking for areas on the page marked as inline_editable and actually making them editable.
+
+
 == Tests
 
 There aren't currently any specs. We should probably add some for the InlineEditorCell, etc.
 
 == License
 
-Copyright 2010 K3 Integrations, LLC
+Copyright 2010-2011 K3 Integrations, LLC
 
 Licensed under the GNU Lesser General Public License, Version 3 (see License.txt).
 
