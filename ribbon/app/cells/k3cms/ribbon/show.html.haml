@@ -37,7 +37,7 @@
 
 :javascript
   $(function() {
-    if (#{edit_mode?.to_json}) {
+    if (K3cms_Ribbon.edit_mode_on()) {
       $('html').removeClass('edit_mode_off');
       $('html').addClass(   'edit_mode_on');
       $('#k3cms_ribbon').k3cms_ribbon();

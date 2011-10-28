@@ -678,6 +678,7 @@ K3cms_InlineEditor.initRibbon = function() {
   // set initial toolbar button state, and set handlers to keep up to date
   refreshButtons();
   $('.editable').bind('cursor_move custom_focus', function (event) {
+    //console.log("calling refreshButtons");
     refreshButtons();
   });
   // $('.editable').find(InlineEditor.SUB_FOCUSABLE_SELECTOR).bind('custom_focus', function (event) {
@@ -788,3 +789,14 @@ function drawerContents(id, title, fieldsinfo, submittext) {
 function entityEscape(text) {
   return $('<div/>').text(text).html();
 }
+
+
+//==================================================================================================
+jQuery(function() {
+  //console.log("inline_editor loaded. K3cms_Ribbon.edit_mode_on()=", K3cms_Ribbon.edit_mode_on());
+  if (K3cms_Ribbon.edit_mode_on()) {
+    K3cms_InlineEditor.initRibbon();
+    K3cms_InlineEditor.initInlineEditor();
+  }
+});
+

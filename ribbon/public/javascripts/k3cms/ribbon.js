@@ -143,7 +143,7 @@ K3cms_Ribbon = Class.extend({
 
 $.extend(K3cms_Ribbon, {
   edit_mode_on: function() {
-    return $('html').hasClass('edit_mode_on');
+    return !!document.cookie.match(/edit_mode=true/)
   },
 
   bindEventHandlers: function(element, options) {
