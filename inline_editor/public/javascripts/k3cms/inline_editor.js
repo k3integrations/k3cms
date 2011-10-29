@@ -16,10 +16,10 @@ toolbar_options = [
   ['Align Left',       'align_left',     false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyLeft']],
   ['Align Center',     'align_center',   false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyCenter']],
   ['Align Right',      'align_right',    false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['justifyRight']],
-  ['Insert/edit link', 'link',           true,  function(){toggleDrawer('link_drawer')},  false, false],
+  ['Insert/edit link', 'link togglable', true,  function(){toggleDrawer('link_drawer')},  false, false],
   ['Remove link',      'unlink',         true,  'execCommand', 'queryCommandState', 'queryCommandEnabled', ['unlink']],
-  ['Insert/edit Image', 'image',         false, function(){toggleDrawer('image_drawer')}, false, false],
-  ['Insert/edit Video', 'video',         false, function(){toggleDrawer('video_drawer')}, false, InlineEditor.isFocusedEditor],
+  ['Insert/edit Image', 'image togglable',false,function(){toggleDrawer('image_drawer')}, false, false],
+  ['Insert/edit Video', 'video togglable',false,function(){toggleDrawer('video_drawer')}, false, InlineEditor.isFocusedEditor],
   // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandState', 'queryCommandEnabled', ['insertParagraph']],
   // ['P',             'blockParagraph', false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'p']],
   // ['Pre',           'blockPre',       false, 'execCommand', 'queryCommandValue', 'queryCommandEnabled', ['formatBlock', 'pre']],
@@ -505,15 +505,18 @@ K3cms_InlineEditor.initRibbon = function() {
         },
         onInvoke: function() {
           var editor = InlineEditor.focusedEditor();
-          // ignore button presses if no editable area is selected (you can also use InlineEditor.isFocusedEditor())
-          if (! editor || ! editor.isEnabled() || $(this).hasClass('disabled')) {
+          if ($(this).hasClass('disabled')) {
             return false;
           }
 
-          // execute the command
+          // Execute the command
           if (typeof toolbar_option.editor_cmd == 'function') {
             toolbar_option.editor_cmd();
           } else {
+            // Ignore button presses if no editable area is selected (you can also use InlineEditor.isFocusedEditor())
+            if (! editor || ! editor.isEnabled()) {
+              return false;
+            }
             var arg = typeof toolbar_option.cmd_args[1] == 'function' ? toolbar_option.cmd_args[1]() : toolbar_option.cmd_args[1];
             editor[toolbar_option.editor_cmd](toolbar_option.cmd_args[0], arg);
           }
@@ -707,7 +710,7 @@ K3cms_InlineEditor.initRibbon = function() {
 
     drawer.get().find('form').bind('submit', {drawer: drawer}, function(event) {
       var drawer = event.data.drawer;
-      toggleDrawer(drawer.id);
+      drawer.close();
       var editable = drawer.get_editable();
       if (editable) {
         drawer.onUpdate(editable);
@@ -744,52 +747,6 @@ function refreshButtons() {
     ribbon.refresh();
   }
 }
-
-// TODO: Move out to drawer class
-function toggleDrawer(id) {
-  var drawer = $('.' + id + '.drawer');
-  var opening = !drawer.is(':visible');
-  if (opening) {
-    // Opening drawer
-    drawer.data('focused', this.document.activeElement);
-    drawer.data('selected', new InlineEditor.Selection(this.document));
-    // console.debug('focus:', drawer.data('focused').node)
-    // console.debug('selected:', drawer.data('selected').anchorNode, ',', drawer.data('selected').anchorOffset, '-', drawer.data('selected').focusNode, ',', drawer.data('selected').focusOffset);
-    drawer.trigger('open');
-  } else {
-    // Closing drawer
-    if (drawer.data('focused'))  drawer.data('focused').focus();
-    if (drawer.data('selected')) drawer.data('selected').restore();
-    drawer.trigger('close');
-  }
-  drawer.slideToggle();
-  if (opening) {
-    drawer.find(':input:visible:eq(0)').focus()
-  }
-
-}
-
-function drawerContents(id, title, fieldsinfo, submittext) {
-  var fields = '';
-  for (var idx in fieldsinfo) {
-    fields += '<div class="field">' +
-      fieldsinfo[idx].label + ':' +
-      '<input type="text" size="' + (fieldsinfo[idx].size || 30) + '" id="' + id + '_' + fieldsinfo[idx].id + '" name="' + id + '[' + fieldsinfo[idx].id + ']">' +
-    '</div>'
-  }
-  return '<div class="drawer hidden ' + id + '">' +
-    '<h2 id="' + id + '_title">' + entityEscape(title) + '</h2>' +
-    '<form id="' + id + '_form" class="form ' + id + '" accept-charset="UTF-8">' +
-      fields +
-      '<input type="submit" id="' + id + '_submit" value="' + (submittext || 'Submit') + '">&nbsp; ' +
-      '<a onclick="toggleDrawer(\'' + id + '\'); return false;" href="#">Cancel</a>' +
-    '</form>' +
-  '</div>';
-}
-function entityEscape(text) {
-  return $('<div/>').text(text).html();
-}
-
 
 //==================================================================================================
 jQuery(function() {

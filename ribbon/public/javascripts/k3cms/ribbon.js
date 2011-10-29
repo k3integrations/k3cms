@@ -277,6 +277,31 @@ K3cms_Ribbon.Drawer = Class.extend({
     this.id = id;
     $.extend(this, options);
   },
+
+  open: function() {
+    this.get().data('focused', window.document.activeElement);
+    this.get().data('selected', new InlineEditor.Selection(window.document));
+    // console.debug('focus:', this.get().data('focused').node)
+    // console.debug('selected:', this.get().data('selected').anchorNode, ',', this.get().data('selected').anchorOffset, '-', this.get().data('selected').focusNode, ',', this.get().data('selected').focusOffset);
+    this.get().trigger('open');
+    this.get().slideToggle();
+    this.get().find(':input:visible:eq(0)').focus()
+  },
+  close: function() {
+    if (this.get().data('focused'))  this.get().data('focused').focus();
+    if (this.get().data('selected')) this.get().data('selected').restore();
+    this.get().trigger('close');
+    this.get().slideToggle();
+  },
+  toggle: function() {
+    var opening = !this.get().is(':visible');
+    if (opening) {
+      this.open();
+    } else {
+      this.close();
+    }
+  },
+
   render: function() {
     var self = this;
     var root = $('<div/>', { id: this.id, 'class': 'drawer hidden ' + this.id });
@@ -325,8 +350,8 @@ K3cms_Ribbon.Drawer = Class.extend({
     this.default_populate_with_defaults();
   },
   get: function() {
-    //return $('#k3cms_drawers .' + this.id + '.drawer');
-    return $('#k3cms_drawers #' + this.id);
+    return $('.' + this.id + '.drawer');
+    //return $('#k3cms_drawers #' + this.id);
   },
   find: function(selector) {
     return this.get().find(selector);
@@ -336,6 +361,14 @@ K3cms_Ribbon.Drawer = Class.extend({
   },
 
 });
+
+function entityEscape(text) {
+  return $('<div/>').text(text).html();
+}
+
+function toggleDrawer(id) {
+  $('.' + id + '.drawer').data('drawer').toggle();
+}
 
 //--------------------------------------------------------------------------------------------------
 // jQuery
