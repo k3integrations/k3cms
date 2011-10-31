@@ -36,7 +36,11 @@
 
 
 :javascript
+  // Note: We render the ribbon here instead of from ribbon.js because we want to wait until all of
+  // the K3cms extensions have had a chance to register any buttons for the ribbon before we render it. 
+  // The 'ready' callbacks from .js files get fired *before* this one, so it works out.
   $(function() {
+    //console.log("ribbon loaded. K3cms_Ribbon.edit_mode_on()=", K3cms_Ribbon.edit_mode_on());
     if (K3cms_Ribbon.edit_mode_on()) {
       $('html').removeClass('edit_mode_off');
       $('html').addClass(   'edit_mode_on');

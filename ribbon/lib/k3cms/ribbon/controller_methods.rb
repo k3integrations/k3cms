@@ -19,6 +19,8 @@ module K3cms
           cookies[:edit_mode] = false
         end
         cookies[:edit_mode] = false if cookies[:edit_mode].nil?
+        # cookies apparently only stores/returns strings, so convert to boolean
+        cookies[:edit_mode] = ActiveRecord::ConnectionAdapters::Column.value_to_boolean(cookies[:edit_mode])
         cookies[:edit_mode]
       end
 

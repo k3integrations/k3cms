@@ -18,11 +18,9 @@ module K3cms
       config.action_view.javascript_expansions[:k3cms_editing].concat [
         'jquery.tools.min.js',
         'jquery.timeago.js',
-        'k3cms/ribbon.js',
       ]
-      config.action_view.stylesheet_expansions[:k3cms].concat [
-        'k3cms/ribbon.css',
-      ]
+      config.action_view.javascript_expansions[:k3cms_viewing].concat [ 'k3cms/ribbon.js' ]
+      config.action_view.stylesheet_expansions[:k3cms        ].concat [ 'k3cms/ribbon.css' ]
 
       initializer 'k3cms.ribbon.cells_paths' do |app|
         Cell::Base.view_paths += [Pathname[__DIR__] + '../../../app/cells']
