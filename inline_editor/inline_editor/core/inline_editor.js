@@ -373,6 +373,14 @@ $.extend(InlineEditor, {
     return node.ownerDocument;
   },
 
+  getOnlyContained: function(selector) {
+    var editor = InlineEditor.focusedEditor();
+    if (! editor) return null;
+    //console.log("window.document.activeElement=", window.document.activeElement);
+    var selection = InlineEditor.Selection.getCurrent();
+    //console.log("selection=", selection);
+    return selection.getOnlyContained($(editor.node), 'img');
+  },
 
   // Compare: defaultSaveHandler, saveMultipleElements
   // options.data: you can pass in additional data to be saved, for example by serializing a form
