@@ -8,7 +8,7 @@
     //console.debug("this_context_ribbon=", this_context_ribbon);
 
     this_record_box.tooltip({
-      // By default, the tooltip closes when you mouseenter the tooltip and then mouseleave it. This is a problem (at least with the table view). If they are moving their mouse right back down to the trigger, then the mouseleave from the tooltip should not trigger it to close!
+      // By default, the tooltip closes when you mouseenter the tooltip and then mouseleave it (widget:  "mouseover,mouseout"). This would be a problem (at least with the table view). If they are moving their mouse right back down to the trigger, then the mouseleave from the tooltip should not trigger it to close!
       events: {tooltip: ","},
       delay: 100,
       position: 'top left',
