@@ -91,7 +91,7 @@ var drawers = [
       // TODO: push this into core as InlineEditor.Selection.getFirstIntersecting('a') or some such?
       var editor = InlineEditor.focusedEditor();
       if (! editor) return null;
-      var rng = InlineEditor.Range.getCurrent();
+      var rng = InlineEditor.Selection.getCurrent();
       var anchors = $(editor.node).find('a').filter(function () {
         return InlineEditor.Selection.intersectsNode(this);
       });
@@ -102,7 +102,7 @@ var drawers = [
       return null;
     },
     populate_with_defaults: function() {
-      var rng = InlineEditor.Range.getCurrent();
+      var rng = InlineEditor.Selection.getCurrent();
       // Consider using the selected text, if it looks like it could be a URL
       if (rng.range.startContainer.nodeName == '#text') {
         var val = rng.range.startContainer.nodeValue;
@@ -149,7 +149,7 @@ var drawers = [
       // TODO: push this into core as InlineEditor.Selection.getOnlyContained('img') or some such?
       var editor = InlineEditor.focusedEditor();
       if (! editor) return null;
-      var rng = InlineEditor.Range.getCurrent();
+      var rng = InlineEditor.Selection.getCurrent();
       //console.log("window.document.activeElement=", window.document.activeElement);
       var images = $(editor.node).find('img').filter(function () {
         return rng.approxEquals(new InlineEditor.Range(this));

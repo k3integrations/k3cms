@@ -758,11 +758,6 @@ $.extend(InlineEditor.Range, {
       (with_what && with_what.isInlineEditorElement) ||
       (with_what && InlineEditor.isNode(with_what) && ! InlineEditor.isDocument(with_what));
   },
-
-  // Document: how is this different from this.document.createRange()?
-  getCurrent: function() {
-    return new InlineEditor.Range(new InlineEditor.Selection(window.document));
-  },
 });
 
 
@@ -891,6 +886,11 @@ $.extend(InlineEditor.Selection, {
     if (! sel.anchorNode) {
       sel.collapse(node, 0);
     }
+  },
+
+  // Document: how is this different from this.document.createRange()?
+  getCurrent: function() {
+    return new InlineEditor.Range(new InlineEditor.Selection(window.document));
   },
 
   newForReplacingElement: function (old_elem, new_elem) {
