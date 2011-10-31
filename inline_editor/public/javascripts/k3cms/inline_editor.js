@@ -146,15 +146,12 @@ var drawers = [
         append(K3cms_Ribbon.Drawer.FloatField.fields.clone())
     ),
     get_editable: function() {
-      // TODO: push this into core as InlineEditor.Selection.getOnlyContained('img') or some such?
       var editor = InlineEditor.focusedEditor();
       if (! editor) return null;
-      var rng = InlineEditor.Selection.getCurrent();
-      //console.log("window.document.activeElement=", window.document.activeElement);
-      var images = $(editor.node).find('img').filter(function () {
-        return rng.approxEquals(new InlineEditor.Range(this));
-      });
-      return images.length > 0 ? images.get(0) : null;
+      console.log("window.document.activeElement=", window.document.activeElement);
+      var selection = InlineEditor.Selection.getCurrent();
+      console.log("selection=", selection);
+      return selection.getOnlyContained($(editor.node), 'img');
     },
     populate_with_defaults: function() {
       this.default_populate_with_defaults();

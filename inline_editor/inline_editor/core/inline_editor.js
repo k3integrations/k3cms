@@ -747,6 +747,14 @@ $.extend(InlineEditor.Range.prototype, {
       this.range.endContainer   === range.range.endContainer   && Math.abs(this.range.endOffset - range.range.endOffset) <= 1;
   },
 
+  // Searches nodes contained in selection for the selector. If it matches exactly once, return it. Otherwise returns null.
+  getOnlyContained: function(container, selector) {
+    var self = this;
+    var matches = container.find(selector).filter(function () {
+      return self.approxEquals(new InlineEditor.Range(this));
+    });
+    return matches.length > 0 ? matches.get(0) : null;
+  },
 });
 
 //--------------------------------------------------------------------------------------------------
@@ -824,11 +832,6 @@ $.extend(InlineEditor.Selection.prototype, {
   // tests if selection intersects indicated InlineEditor.Range
   intersectsRange: function (range) {
     return new InlineEditor.Range(this).intersectsRange(range);
-  },
-
-  // Searches nodes contained in selection for the selector. If it matches exactly once, return it. Otherwise return null? 
-  getOnlyContained: function(selector) {
-    // TODO: implement
   },
 
   // change this selection to be in relation to a new node about to be inserted where an old node exists
