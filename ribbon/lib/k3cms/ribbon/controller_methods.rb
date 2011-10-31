@@ -1,3 +1,12 @@
+# This is a workaround to allow us to use this helper from within Cells. Cells automatically delegates :session to parent_controller but not :cookies.
+module Cell
+  class Rails
+    module Metal
+      delegate :cookies, :to => :parent_controller
+    end 
+  end
+end
+
 module K3cms
   module Ribbon
     module ControllerMethods
@@ -10,9 +19,6 @@ module K3cms
       end
 
       def edit_mode?
-        # This is a workaround to allow us to use this helper from within Cells. Cells automatically delegates :session to parent_controller but not :cookies.
-        cookies = respond_to?(:parent_controller) ? parent_controller.send(:cookies) : cookies()
-
         # This wouldn't work if we ever wanted GuestUser's to be able to edit too (like a wiki), but this works for now...
         if cookies[:edit_mode] && K3cms::Authorization::GuestUser === k3cms_user
           Rails.logger.debug "... Logged in as guest. Resetting edit_mode to false."
