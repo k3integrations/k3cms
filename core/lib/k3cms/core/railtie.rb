@@ -11,10 +11,10 @@ module K3cms
 
       config.k3cms = ActiveSupport::OrderedOptions.new
 
-      config.action_view.javascript_expansions.merge! :k3cms_viewing     => [] # TODO: rename to k3cms since it is used unconditionally
+      config.action_view.javascript_expansions.merge! :k3cms             => []
       config.action_view.javascript_expansions.merge! :k3cms_editing     => []
       config.action_view.javascript_expansions.merge! :k3cms_not_editing => []
-      config.action_view.stylesheet_expansions.merge! :k3cms => []
+      config.action_view.stylesheet_expansions.merge! :k3cms             => []
 
       # A placeholder that other gems can hook into before or after
       initializer 'k3cms.core' do
