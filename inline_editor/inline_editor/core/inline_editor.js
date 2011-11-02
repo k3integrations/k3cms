@@ -505,13 +505,13 @@ $.extend(InlineEditor, {
   },
 
   saveIfChanged: function (evt) {
-    var $this = $(this), editor = InlineEditor.getEditor(this);
+    var editor = InlineEditor.getEditor(this);
     if (editor.node.innerHTML != editor.lastSourceSaved) {
-      //console.log('need to save:', editor.node.innerHTML)
-      $this.trigger('save');
-      editor.lastSourceSaved = editor.node.innerHTML
+      //console.log("editor.node.innerHTML (changed  )=", editor.node.innerHTML);
+      $(this).trigger('save');
     } else {
       //console.log("don't need to save (content is the same as last time we saved)")
+      //console.log("editor.node.innerHTML (unchanged)=", editor.node.innerHTML);
     };
   },
 
@@ -531,6 +531,7 @@ $.extend(InlineEditor, {
     if (e.isDefaultPrevented()) { return this; }
 
     var editor = InlineEditor.getEditor(this);
+
     if ($this.data('url')) {
       // TODO: can we just use type: PUT instead?
       var data = '_method=put';
@@ -545,6 +546,7 @@ $.extend(InlineEditor, {
         dataType: 'json',
         data: data,
         success: function(data, msg, xhr) {
+          editor.lastSourceSaved = editor.node.innerHTML
           $this.trigger('save_success', [data, msg, xhr]);
         },
         error:   function(xhr,  msg, err) {
