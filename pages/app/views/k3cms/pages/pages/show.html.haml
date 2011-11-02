@@ -1,0 +1,34 @@
+.k3cms_pages_pages_show
+  - content_for :title do
+    = strip_tags @page.title
+  - content_for :meta_description do
+    = @page.meta_description
+  - content_for :meta_keywords do
+    = @page.meta_keywords
+
+  - if edit_mode? and can?(:edit, K3cms::Page)
+    :javascript
+      $(function() {
+        K3cms.current_object = {
+          url:   '#{ url_for(@page) }',
+          class: '#{ dom_class(@page) }',
+        }
+        $('#k3cms_ribbon').k3cms_ribbon('enable', '.k3cms_pages .page_metadata.button');
+        $('#k3cms_ribbon').k3cms_ribbon('enable', '.k3cms_pages .page_delete.button');
+      })
+    - k3cms_ribbon_add_drawer :k3cms_page_metadata do
+      = render_cell('k3cms/pages', :metadata_drawer, :page => @page)
+
+  %div{:class => dom_class(@page), :id => dom_id(@page)}
+    %h1
+      - if edit_mode? and can?(:edit, K3cms::Page)
+        - inline_editable('span', @page, :title) do
+          = raw(@page.title)
+      - else
+        = raw(@page.title)
+
+    - if edit_mode? and can?(:edit, K3cms::Page)
+      - inline_editable('div', @page, :body) do
+        = raw(@page.body)
+    - else
+      = raw(@page.body)
