@@ -80,12 +80,12 @@ InlineEditor.DEFAULT_OPTIONS = {
   'editing-class': 'editing',
   'idle-save-time': 3000, // milliseconds
   'save-type': 'POST',
-  focus:      null,
-  blur:       InlineEditor.defaultBlurHandler,
-  liveChange: InlineEditor.defaultLiveChangeHandler,
-  save:       InlineEditor.defaultSaveHandler,
-  saveError:  InlineEditor.defaultErrorHandler,
-  onChange:   null,
+  focus:        null,
+  blur:         InlineEditor.defaultBlurHandler,
+  liveChange:   InlineEditor.defaultLiveChangeHandler,
+  save:         InlineEditor.defaultSaveHandler,
+  saveError:    InlineEditor.defaultErrorHandler,
+  onChange:     null,
 };
 
 //--------------------------------------------------------------------------------------------------
@@ -99,6 +99,10 @@ $.extend(InlineEditor.prototype, {
     var options = $.extend($node.data(), options);
     $node.data(options);
     this.bindEventHandlers();
+  },
+
+  $node: function() {
+    return $(this.node);
   },
 
   getConf: function () {
@@ -115,6 +119,7 @@ $.extend(InlineEditor.prototype, {
     $node.bind('custom_focus.inline_editor'   , {}, options.focus);
     $node.bind('blur.inline_editor'           , {}, options.blur);
     $node.bind('live_change.inline_editor'    , {}, options.liveChange);
+    $node.bind('onBeforeSave.inline_editor'   , {}, options.onBeforeSave);
     $node.bind('saving.inline_editor'         , {}, options.saving);
     $node.bind('save.inline_editor'           , {}, options.save);
     $node.bind('save_success.inline_editor'   , {}, options.saveSuccess);
@@ -507,7 +512,12 @@ $.extend(InlineEditor, {
   // Compare: defaultSaveHandler, saveMultipleElements
   defaultSaveHandler: function(evt) {
     //console.log('in defaultSaveHandler')
-    var $this = $(this)
+    var $this = $(this);
+
+    var e = $.Event('onBeforeSave');
+    $this.trigger(e);
+    if (e.isDefaultPrevented()) { return this; }
+
     var editor = InlineEditor.getEditor(this);
     if ($this.data('url')) {
       // TODO: can we just use type: PUT instead?

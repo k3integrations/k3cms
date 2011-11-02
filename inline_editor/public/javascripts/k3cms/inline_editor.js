@@ -351,6 +351,7 @@ K3cms_InlineEditor = {
   },  
 
   mainSaveHandler: function(data, msg, xhr, options) {
+    //console.log("mainSaveHandler");
     var object_identifier = {
       object:      options.object_name,
       'object-id': options.object_id,
@@ -438,6 +439,9 @@ K3cms_InlineEditor.initInlineEditor = function(options) {
 
     onChange: function(event) {
       K3cms_Ribbon.set_dirty_status(true);
+    },
+    onBeforeSave: function(event) {
+      //console.log("onBeforeSave test");
     },
 
     saveSuccess : function(event, data, msg, xhr) {
