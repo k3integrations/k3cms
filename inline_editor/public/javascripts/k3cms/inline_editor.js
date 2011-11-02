@@ -330,6 +330,9 @@ K3cms_InlineEditor = {
         }
       })
     })
+    if (object.updated_at) {
+      K3cms_Ribbon.set_saved_status(new Date(object.updated_at));
+    }
   },
 
   showPurrMessage: function(message) {
@@ -376,7 +379,7 @@ K3cms_InlineEditor = {
 
       method(options.object_name, options['object-id'], options.object, options.element)
 
-      $('#last_saved_status').html('Saved seconds ago');
+      //$('#last_saved_status').html('Saved seconds ago');
     }
   },
 
