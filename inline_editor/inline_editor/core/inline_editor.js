@@ -282,7 +282,14 @@ $.extend(InlineEditor.prototype, {
     }
   },
 
-  checkLiveChange: function () {
+  hasUnsavedChanges: function() {
+    return this.node.innerHTML != this.lastSourceSaved;
+  },
+  save: function() {
+    $(this).trigger('save_if_changed');
+  },
+
+  checkLiveChange: function() {
     var node = this.node;
     if (node.innerHTML !== this.lastSource) {
       $(node).trigger('live_change');
@@ -506,7 +513,7 @@ $.extend(InlineEditor, {
 
   saveIfChanged: function (evt) {
     var editor = InlineEditor.getEditor(this);
-    if (editor.node.innerHTML != editor.lastSourceSaved) {
+    if (editor.hasUnsavedChanges()) {
       //console.log("editor.node.innerHTML (changed  )=", editor.node.innerHTML);
       $(this).trigger('save');
     } else {

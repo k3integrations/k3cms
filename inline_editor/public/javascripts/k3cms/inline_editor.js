@@ -756,3 +756,16 @@ jQuery(function() {
   }
 });
 
+// Note: If we ever need to register multiple beforeunload handlers, consider
+// checking out https://github.com/silkster/Clean-Page-Unload-jQuery-Plugin
+$(window).bind("beforeunload", function(event) {
+  var editor = InlineEditor.focusedEditor();
+
+  // We can try to trigger saving, but to seems to have no effect. Even if you cancel and stay on page, it appears that this Ajax request doesn't even fire.
+  //editor.save();
+
+  //console.log("editor.hasUnsavedChanges()=", editor.hasUnsavedChanges());
+  if (editor && editor.hasUnsavedChanges()) {
+    return "You have unsaved changes";
+  }
+});
