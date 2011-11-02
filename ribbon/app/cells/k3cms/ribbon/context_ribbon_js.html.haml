@@ -11,11 +11,12 @@
       // By default, the tooltip closes when you mouseenter the tooltip and then mouseleave it (widget:  "mouseover,mouseout"). This would be a problem (at least with the table view). If they are moving their mouse right back down to the trigger, then the mouseleave from the tooltip should not trigger it to close!
       events: {tooltip: ","},
       delay: 100,
-      position: 'top left',
+      position: 'top center',
       relative: true,
       tip: this_context_ribbon.selector,
       offset: #{@ribbon_offset.to_json},
       onBeforeShow: function() {
+        //this.getTip().left(left + tip.outerWidth());
         this.getTip().css('width', this.getTrigger().innerWidth() + 'px');
       },
       onShow: function() {
