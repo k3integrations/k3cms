@@ -336,6 +336,18 @@ $.extend(InlineEditor, {
     return null;
   },
 
+  // restores focus to the InlineEditor editable element that had focus last
+  restore_last_focused_element: function() {
+    InlineEditor.last_focused_element && InlineEditor.last_focused_element.focus();
+  },
+  restore_last_selection: function() {
+    InlineEditor.last_selection       && InlineEditor.last_selection.restore();
+  },
+  restore_last_focused_element_and_selection: function() {
+    InlineEditor.restore_last_focused_element();
+    InlineEditor.restore_last_selection();
+  },
+
   // event handlers to check if custom events should fire
   checkMoveOrChangeHandler: function (evt) {
     var editor = InlineEditor.getEditor(this);

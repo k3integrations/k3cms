@@ -473,10 +473,10 @@ K3cms_InlineEditor.initRibbon = function() {
       new K3cms_Ribbon.Section('insert',        {label: 'Insert', items: []}),
       new K3cms_Ribbon.Section('block_styles',  {label: 'Paragraph/block styles', items: []}),
     ],
-    onClick: function() {
-      InlineEditor.last_focused_element && InlineEditor.last_focused_element.focus();
-      InlineEditor.last_selection       && InlineEditor.last_selection.restore();
-    },
+    //onClick: function() {
+      //InlineEditor.restore_last_focused_element();
+      //InlineEditor.restore_last_selection();
+    //},
   })
 
   //------------------------------------------------------------------------------------------------
