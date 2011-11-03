@@ -253,9 +253,7 @@ $.extend(InlineEditor.prototype, {
     this.lastSourceSaved = this.node.innerHTML;
   },
   hasUnsavedChanges: function() {
-    var options = this.getConf();
-    return (options.hasUnsavedChanges() ||
-            this.node.innerHTML != this.lastSourceSaved);
+    return (this.node.innerHTML != this.lastSourceSaved);
   },
   save: function() {
     $(this).trigger('save_if_changed');
@@ -585,7 +583,6 @@ InlineEditor.DEFAULT_OPTIONS = {
   save:         InlineEditor.defaultSaveHandler,
   saveError:    InlineEditor.defaultAjaxErrorHandler,
   onChange:     null,
-  hasUnsavedChanges: $.noop,
 };
 
 //==================================================================================================
