@@ -281,7 +281,7 @@ $.extend(InlineEditor.prototype, {
         success: function(data, msg, xhr) {
           callback.call($this, data, msg, xhr);
         },
-        error: InlineEditor.defaultErrorHandler,
+        error: InlineEditor.defaultAjaxErrorHandler,
       })
     }
   },
@@ -402,7 +402,7 @@ $.extend(InlineEditor, {
       dataType: 'json',
       data: data,
       success: options.save_success,
-      error: InlineEditor.defaultErrorHandler,
+      error: InlineEditor.defaultAjaxErrorHandler,
     }, {}));
 
   },
@@ -538,9 +538,10 @@ $.extend(InlineEditor, {
     }
   },
 
-  defaultErrorHandler: function(event, xhr, msg, err) {
-    if (typeof msg != "undefined" && !(msg == "error" && typeof err == "undefined")) {
-      alert("defaultErrorHandler:\n'" + msg + "'\n'" + err + "'");
+  defaultAjaxErrorHandler: function(event, xhr, msg, err) {
+    //console.log("arguments=", arguments);
+    if (typeof msg != "undefined" && msg != "error") {
+      alert("defaultAjaxErrorHandler:\n'" + msg + "'\n'" + err + "'");
     }
   },
 });
@@ -576,7 +577,7 @@ InlineEditor.DEFAULT_OPTIONS = {
   blur:         InlineEditor.defaultBlurHandler,
   liveChange:   InlineEditor.defaultLiveChangeHandler,
   save:         InlineEditor.defaultSaveHandler,
-  saveError:    InlineEditor.defaultErrorHandler,
+  saveError:    InlineEditor.defaultAjaxErrorHandler,
   onChange:     null,
   hasUnsavedChanges: $.noop,
 };
