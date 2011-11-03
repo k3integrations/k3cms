@@ -5,14 +5,14 @@
 <%= stylesheet_link_tag    :k3cms %>
 <%= javascript_include_tag :k3cms %>
 
-<% if edit_mode? %>
+<% if can_enable_edit_mode? %>
   <!--[if gte IE 9]><!-->
     <%= javascript_include_tag :k3cms_editing %>
   <!--<![endif]-->
   <!--[if lt IE 9]><!-->
     <%# javascript_include_tag 'upgrade_browser_warning.js' %>
     <script>
-      if ($.browser.msie && parseInt($.browser.version, 10) < 9 ) {
+      if (K3cms_Ribbon.edit_mode_on() && $.browser.msie && parseInt($.browser.version, 10) < 9 ) {
         alert("K3cms edit mode is not compatible with your browser. Please upgrade to Internet Explorer 9 or later or use a different browser.");
       }
     </script>
