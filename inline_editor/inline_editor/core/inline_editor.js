@@ -235,7 +235,6 @@ $.extend(InlineEditor.prototype, {
   },
 
   // if a move or change has occurred, trigger the custom 'live_change' and 'cursormove' events
-  // (normal dom 'change' events happen when focus is lost, not live as the change happens)
   checkCursorMove: function () {
     var sel = new InlineEditor.Selection(this.document), node = this.node;
     if (sel.anchorNode && sel.intersectsNode(this.node)) {
@@ -250,6 +249,7 @@ $.extend(InlineEditor.prototype, {
   },
 
   _onSaveSuccess: function() {
+    this.lastSource      =
     this.lastSourceSaved = this.node.innerHTML;
   },
   hasUnsavedChanges: function() {
@@ -261,11 +261,17 @@ $.extend(InlineEditor.prototype, {
     $(this).trigger('save_if_changed');
   },
 
+  // (normal dom 'change' events happen when focus is lost, not live as the change happens)
   checkLiveChange: function() {
     var node = this.node;
     if (node.innerHTML !== this.lastSource) {
+      //console.log("node.innerHTML !== this.lastSource");
+      //console.log("this.lastSource=", this.lastSource);
+      //console.log("node.innerHTML=", node.innerHTML);
       $(node).trigger('live_change');
       this.lastSource = node.innerHTML;
+    } else {
+      //console.log("node.innerHTML === this.lastSource");
     }
   },
 
@@ -387,7 +393,7 @@ $.extend(InlineEditor, {
     options.elements.each(function () {
       $this = $(this);
       var editor = InlineEditor.getEditor(this);
-      data += '&' + $this.data('object') + '[' + $this.data('attribute') + ']=' + encodeURIComponent(editor.lastSource);
+      data += '&' + $this.data('object') + '[' + $this.data('attribute') + ']=' + encodeURIComponent(editor.node.innerHTML);
     });
     data += (options.data.match(/^&/) ? '' : '&') + options.data;
     if (window.rails_authenticity_token) {
@@ -503,19 +509,19 @@ $.extend(InlineEditor, {
 
   // Compare: defaultSaveHandler, saveMultipleElements
   defaultSaveHandler: function(evt) {
-    console.log('in defaultSaveHandler')
     var $this = $(this);
 
     var e = $.Event('onBeforeSave');
     $this.trigger(e);
     if (e.isDefaultPrevented()) { return this; }
 
+    console.log('defaultSaveHandler: saving')
     var editor = InlineEditor.getEditor(this);
 
     if ($this.data('url')) {
       // TODO: can we just use type: PUT instead?
       var data = '_method=put';
-      data += '&' + $this.data('object') + '[' + $this.data('attribute') + ']=' + encodeURIComponent(editor.lastSource);
+      data += '&' + $this.data('object') + '[' + $this.data('attribute') + ']=' + encodeURIComponent(editor.node.innerHTML);
       if (window.rails_authenticity_token) {
         data += "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token);
       }
@@ -540,7 +546,7 @@ $.extend(InlineEditor, {
 
   defaultAjaxErrorHandler: function(event, xhr, msg, err) {
     //console.log("arguments=", arguments);
-    if (typeof msg != "undefined" && msg != "error") {
+    if (typeof msg != "undefined" && msg != "error" && err != "undefined") {
       alert("defaultAjaxErrorHandler:\n'" + msg + "'\n'" + err + "'");
     }
   },
