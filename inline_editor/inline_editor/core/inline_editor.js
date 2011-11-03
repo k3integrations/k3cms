@@ -29,6 +29,7 @@ InlineEditor = function (node, options) {
 
   //console.log("merging options=", options, " and $node.data()=", $.extend({}, $node.data()));
   options = $.extend({}, InlineEditor.DEFAULT_OPTIONS, options, $node.data());
+  // TODO: store 'this' instead and access options as a property of InlineEditor object
   $node.data(options);
 
   // set to editable, and hack for browsers that don't support isContentEditable (like FF3.6)
@@ -50,42 +51,7 @@ InlineEditor = function (node, options) {
   // special command to some browsers to coax them not to use style attributes as much!
   try {
     node.ownerDocument.execCommand('styleWithCSS', false, false);
-  } catch (e) {
-  }
-};
-
-//--------------------------------------------------------------------------------------------------
-// Class attributes
-
-$.extend(InlineEditor, {
-  last_focused_element: null,
-  last_selection: null,
-  //in_focusHandler: false,
-
-});
-
-InlineEditor.SUB_FOCUSABLE_TYPES = ['video', 'audio', 'iframe', 'object'];
-InlineEditor.SUB_FOCUSABLE_SELECTOR = InlineEditor.SUB_FOCUSABLE_TYPES.join(', ');
-
-// Innards of getCurrentBlocks/getCurrentBlocklessContainers.
-// Need to find a proper home for it, it feels like cruft laying here...
-// As we reimplement more of the built-in execCommand things for cross browser consistency, proper structure should become clear...
-InlineEditor.TOGGLEABLE_BLOCK_TYPES = ['address', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre'];
-InlineEditor.TOGGLEABLE_BLOCK_CONTAINER_TYPES = ['blockquote', 'dd', 'dt', 'li', 'td', 'th'];
-InlineEditor.ALL_BLOCK_TYPES = ['address', 'blockquote', 'dd', 'div', 'dl', 'dt', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'pre', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul'];
-InlineEditor.TOGGLEABLE_BLOCKS_SELECTOR = InlineEditor.TOGGLEABLE_BLOCK_TYPES.join(', ');
-InlineEditor.TOGGLEABLE_BLOCK_CONTAINERS_SELECTOR = InlineEditor.TOGGLEABLE_BLOCK_CONTAINER_TYPES.join(', ');
-
-InlineEditor.DEFAULT_OPTIONS = {
-  'editing-class': 'editing',
-  'idle-save-time': 3000, // milliseconds
-  'save-type': 'POST',
-  focus:        null,
-  blur:         InlineEditor.defaultBlurHandler,
-  liveChange:   InlineEditor.defaultLiveChangeHandler,
-  save:         InlineEditor.defaultSaveHandler,
-  saveError:    InlineEditor.defaultErrorHandler,
-  onChange:     null,
+  } catch (e) { }
 };
 
 //--------------------------------------------------------------------------------------------------
@@ -106,6 +72,7 @@ $.extend(InlineEditor.prototype, {
   },
 
   getConf: function () {
+    // TODO: store this in data instead so we can just use this.options here instead
     var $node = $(this.node);
     return $node.data();
   },
@@ -282,8 +249,13 @@ $.extend(InlineEditor.prototype, {
     }
   },
 
+  _onSaveSuccess: function() {
+    this.lastSourceSaved = this.node.innerHTML;
+  },
   hasUnsavedChanges: function() {
-    return this.node.innerHTML != this.lastSourceSaved;
+    var options = this.getConf();
+    return (options.hasUnsavedChanges() ||
+            this.node.innerHTML != this.lastSourceSaved);
   },
   save: function() {
     $(this).trigger('save_if_changed');
@@ -436,6 +408,7 @@ $.extend(InlineEditor, {
   },
 });
 
+
 //--------------------------------------------------------------------------------------------------
 // Default event handlers
 
@@ -530,7 +503,7 @@ $.extend(InlineEditor, {
 
   // Compare: defaultSaveHandler, saveMultipleElements
   defaultSaveHandler: function(evt) {
-    //console.log('in defaultSaveHandler')
+    console.log('in defaultSaveHandler')
     var $this = $(this);
 
     var e = $.Event('onBeforeSave');
@@ -553,7 +526,7 @@ $.extend(InlineEditor, {
         dataType: 'json',
         data: data,
         success: function(data, msg, xhr) {
-          editor.lastSourceSaved = editor.node.innerHTML
+          editor._onSaveSuccess();
           $this.trigger('save_success', [data, msg, xhr]);
         },
         error:   function(xhr,  msg, err) {
@@ -572,16 +545,40 @@ $.extend(InlineEditor, {
   },
 });
 
+
+//--------------------------------------------------------------------------------------------------
+// Class attributes
+
+$.extend(InlineEditor, {
+  last_focused_element: null,
+  last_selection: null,
+  //in_focusHandler: false,
+
+});
+
+InlineEditor.SUB_FOCUSABLE_TYPES = ['video', 'audio', 'iframe', 'object'];
+InlineEditor.SUB_FOCUSABLE_SELECTOR = InlineEditor.SUB_FOCUSABLE_TYPES.join(', ');
+
+// Innards of getCurrentBlocks/getCurrentBlocklessContainers.
+// Need to find a proper home for it, it feels like cruft laying here...
+// As we reimplement more of the built-in execCommand things for cross browser consistency, proper structure should become clear...
+InlineEditor.TOGGLEABLE_BLOCK_TYPES = ['address', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre'];
+InlineEditor.TOGGLEABLE_BLOCK_CONTAINER_TYPES = ['blockquote', 'dd', 'dt', 'li', 'td', 'th'];
+InlineEditor.ALL_BLOCK_TYPES = ['address', 'blockquote', 'dd', 'div', 'dl', 'dt', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'pre', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul'];
+InlineEditor.TOGGLEABLE_BLOCKS_SELECTOR = InlineEditor.TOGGLEABLE_BLOCK_TYPES.join(', ');
+InlineEditor.TOGGLEABLE_BLOCK_CONTAINERS_SELECTOR = InlineEditor.TOGGLEABLE_BLOCK_CONTAINER_TYPES.join(', ');
+
 InlineEditor.DEFAULT_OPTIONS = {
   'editing-class': 'editing',
   'idle-save-time': 3000, // milliseconds
   'save-type': 'POST',
-  focus:      null,
-  blur:       InlineEditor.defaultBlurHandler,
-  liveChange: InlineEditor.defaultLiveChangeHandler,
-  save:       InlineEditor.defaultSaveHandler,
-  saveError:  InlineEditor.defaultErrorHandler,
-  onChange:   null,
+  focus:        null,
+  blur:         InlineEditor.defaultBlurHandler,
+  liveChange:   InlineEditor.defaultLiveChangeHandler,
+  save:         InlineEditor.defaultSaveHandler,
+  saveError:    InlineEditor.defaultErrorHandler,
+  onChange:     null,
+  hasUnsavedChanges: $.noop,
 };
 
 //==================================================================================================
