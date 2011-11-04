@@ -398,9 +398,6 @@ $.extend(InlineEditor, {
       data += '&' + InlineEditor.postDataFromInlineEditableElement(this);
     });
     data += (options.data.match(/^&/) ? '' : '&') + options.data;
-    if (window.rails_authenticity_token) {
-      data += "&authenticity_token=" + encodeURIComponent(window.rails_authenticity_token);
-    }
     //console.debug("data=", data);
     $this.trigger('saving');
 
@@ -524,10 +521,6 @@ $.extend(InlineEditor, {
 
     if ($this.data('url')) {
       data += '&' + InlineEditor.postDataFromInlineEditableElement(this);
-      if (window.rails_authenticity_token) {
-        data += "&authenticity_token=" + encodeURIComponent(window.rails_authenticity_token);
-      }
-
       var type = $this.data('save-type') || $this.data('object-id') ? 'PUT' : 'POST';
       $.ajax($.extend({
         type: type,
