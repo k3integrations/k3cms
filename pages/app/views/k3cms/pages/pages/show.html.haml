@@ -33,5 +33,6 @@
     - else
       = raw(@page.body)
 
-:javascript
-  k3cms_page.updatePage('#{dom_class(@page)}', '#{dom_class(@page)}', #{@page.to_json}.page, null);
+- if edit_mode?
+  :javascript
+    k3cms_page.updatePage('#{dom_class(@page)}', '#{dom_class(@page)}', #{@page.to_json}.page, null);
