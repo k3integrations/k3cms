@@ -36,9 +36,19 @@ module K3cms
         end
       end
 
-      initializer 'k3cms.ribbon.action_view' do
-        ActiveSupport.on_load(:action_view) do
-          include K3cms::Ribbon::RibbonHelper
+      initializer 'k3cms.ribbon.helpers' do
+        config.after_initialize do
+          # Prevent "undefined method `inline_editor_object_class' for #<#<Class:0x00000005326590>:0x000000053200a0>" in ribbon/app/cells/k3cms/ribbon/context_ribbon_js.html.haml, etc.
+          helpers = proc {
+            helper K3cms::Ribbon::RibbonHelper
+          }
+          ActiveSupport.on_load(:action_controller, &helpers)
+          Cell::Rails.class_eval(                   &helpers)
+
+          # Prevent "undefined method `k3cms_ribbon_add_drawer' for #<#<Class:0x000000045112c0>:0x000000045023d8>" in pages/app/views/k3cms/pages/init.html.haml, etc.
+          ActiveSupport.on_load(:action_view) do
+            include K3cms::Ribbon::RibbonHelper
+          end
         end
       end
 
