@@ -3,6 +3,7 @@ require File.expand_path('../../../../lib/route_set_decorator', __FILE__)
 
 module K3cms
   class Page < ActiveRecord::Base
+    self.include_root_in_json = false
     set_table_name 'k3cms_pages'
 
     belongs_to :author, :class_name => 'User'

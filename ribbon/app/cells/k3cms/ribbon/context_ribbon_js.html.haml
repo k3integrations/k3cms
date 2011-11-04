@@ -94,7 +94,7 @@
       K3cms_InlineEditor.saveMultipleElements({
         url: #{polymorphic_url(@record, :only_path => true).to_json},
         'save-type': 'POST',
-        object_name: #{dom_class(@record).to_json},
+        object_class: #{inline_editor_object_class(@record).to_json},
         elements: $('##{dom_id(@record)} .editable, ##{dom_id(@record)} :input'),
         save_success: function(data, msg, xhr, options) {
           if (data.error) {

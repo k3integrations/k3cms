@@ -307,15 +307,15 @@ Object.keys = Object.keys || (function () {
 //==================================================================================================
 K3cms_InlineEditor = {
   /*
-   * object_name: for example, 'k3cms_blog_blog_post'    -- in Rails, you can get this from dom_class(object)
-   * object_id:   for example, 'k3cms_blog_blog_post_18' -- in Rails, you can get this from dom_id(object)
-   * object:      an object representing the state of the object in the database -- in Rails, you can get this from object.to_json
+   * object_class:   for example, 'K3cms_Blog_BlogPost' -- in Rails, you can get this from inline_editor_object_class(object).to_json
+   * object_id:      for example, 18                    -- in Rails, you can get this from object.id.to_json
+   * object:         an object representing the state of the object in the database -- in Rails, you can get this from object.to_json
    * source_element: a jQuery object that selects which element *not* to update from the data in object. May be null.
    */
-  updatePageFromObject: function(object_name, object_id, object, source_element) {
+  updatePageFromObject: function(object_class, object_id, object, source_element) {
     $.each(object, function(attr_name, value) {
       if (value === null) value = '';
-      $('[data-object=' + object_name + '][data-object-id=' + object_id + '][data-attribute=' + attr_name + ']').each(function (index) {
+      $('[data-object-class=' + object_class + '][data-object-id=' + object_id + '][data-attribute=' + attr_name + ']').each(function (index) {
         var element = $(this);
         if (source_element && element.get(0) == source_element.get(0)) {
           // Don't update the element they just saved with the data loaded from the database because they may have continued editing immediately after saving and we don't want to blow those changes away
@@ -355,11 +355,14 @@ K3cms_InlineEditor = {
 
   mainSaveHandler: function(data, msg, xhr, options) {
     //console.log("mainSaveHandler");
+    console.log("mainSaveHandler: options=", options);
     var object_identifier = {
-      object:      options.object_name,
-      'object-id': options.object_id,
+      objectClass: options.objectClass,
+      'object-id': options.objectId,
     }
-    object_selector = '[data-object=' + options.object_name + '][data-object-id=' + options.object_id + ']';
+    object_selector = '[data-object-class=' + options.objectClass + '][data-object-id=' + options.objectId + ']';
+    //console.log("object_selector=", object_selector);
+    //console.log("$('.editable' + object_selector + ':visible')=", $('.editable' + object_selector + ':visible'));
 
     if (data['error']) {
       // There were no HTTP errors, but there was an application-layer error, so show it to the user
@@ -369,15 +372,16 @@ K3cms_InlineEditor = {
       $('#last_saved_status').html('<span style="color: #8A1F11">Not saved</span>');
 
     } else {
-      if (window[options.object_name] && window[options.object_name].updatePage) {
+      console.log("window["+options.objectClass+"]=", window[options.objectClass]);
+      if (window[options.objectClass] && window[options.objectClass].updatePage) {
         // Special handler for this object class
-        method = window[options.object_name].updatePage;
+        method = window[options.objectClass].updatePage;
       } else {
         // Default handler
         method = K3cms_InlineEditor.updatePageFromObject;
       }
 
-      method(options.object_name, options['object-id'], options.object, options.element)
+      method(options.objectClass, options['object-id'], options.object, options.element)
 
       //$('#last_saved_status').html('Saved seconds ago');
     }
@@ -388,17 +392,17 @@ K3cms_InlineEditor = {
   // * url: where to save the data to via an Ajax post/put
   //     This REST resource should return the created/updated object in JSON format (can simply redirect to the show page in Rails), or {error: 'the error'} if there's a validation error.
   // * save-type: 'POST' (for creating new records) or 'PUT' (for updating existing records)
-  // * object_name: allows us to update the page with the response from the Ajax save
-  // * object-id:   allows us to update the page with the response from the Ajax save
+  // * object_class: allows us to update the page with the response from the Ajax save
+  // * object-id:    allows us to update the page with the response from the Ajax save
   // * replace_element
   saveMultipleElements: function(options) {
     var save_success = options.save_success;
     options.save_success = function(data, msg, xhr) {
       if (!data.error) {
-        //options.object = data;
-        options.object_name = Object.keys(data)[0]
-        options.object = data[options.object_name];
-        //console.debug("options.object=", options.object);
+        options.object = data;
+        //options.object_class = Object.keys(data)[0]
+        //options.object = data[options.object_class];
+        console.debug("options.object=", options.object);
       }
       K3cms_InlineEditor.mainSaveHandler(data, msg, xhr, options);
       // If it was a POST, we have to actually replace the New Object box with an Update Object box so that the url and save-type gets updated and inline-editing will work.
@@ -406,9 +410,9 @@ K3cms_InlineEditor = {
       /*
       if (options['save-type'] == 'POST' && options.replace_element) {
         //console.debug("post, new obj:", options.object.id);
-        //console.debug("window[options.object_name]=", window[options.object_name]);
-        if (window[options.object_name] && window[options.object_name].url_for) {
-          var render_url = window[options.object_name].url_for(options.object.id);
+        //console.debug("window[options.object_class]=", window[options.object_class]);
+        if (window[options.object_class] && window[options.object_class].url_for) {
+          var render_url = window[options.object_class].url_for(options.object.id);
           var element = $(options.replace_element).eq(0);
           //console.debug("url=", url);
           //console.debug("element=", element);
@@ -448,15 +452,13 @@ K3cms_InlineEditor.initInlineEditor = function(options) {
     },
 
     saveSuccess : function(event, data, msg, xhr) {
-      var element_data = $(this).data();
-      // TODO: simplify after we change object to object_name
-      var options = $.extend({object_name: element_data.object}, element_data); delete options.object;
+      var options = $(this).data();
       options.element = $(this);
       var editor = InlineEditor.getEditor(this);
-      editor.getObject(function(object) {
-        var object_name = Object.keys(object)[0]
-        options.object = object[object_name];
-        //console.debug("fetched options.object=", options.object);
+      editor.ajaxGetObject(function(object) {
+        //var object_class = Object.keys(object)[0]
+        options.object = object;
+        //console.debug("fetched object=", options.object);
         K3cms_InlineEditor.mainSaveHandler(data, msg, xhr, options);
       })
     },

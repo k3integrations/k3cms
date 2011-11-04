@@ -35,4 +35,4 @@
 
 - if edit_mode?
   :javascript
-    k3cms_page.updatePage('#{dom_class(@page)}', '#{dom_class(@page)}', #{@page.to_json}.page, null);
+    #{inline_editor_update_page_from_object(@page)}

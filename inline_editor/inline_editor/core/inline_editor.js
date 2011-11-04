@@ -274,8 +274,7 @@ $.extend(InlineEditor.prototype, {
   },
 
   // Does an Ajax Get request to get the current state of the object from the database
-  // TODO: rename to ajaxGetObject?
-  getObject: function(callback) {
+  ajaxGetObject: function(callback) {
     var $this = $(this.node);
     if ($this.data('url')) {
       $.ajax({
@@ -382,6 +381,13 @@ $.extend(InlineEditor, {
     return selection.getOnlyContained($(editor.node), 'img');
   },
 
+  postDataFromInlineEditableElement: function(element) {
+    $element = $(element)
+    var editor = InlineEditor.getEditor(element);
+    return $element.data('object-class').underscore() + '[' + $element.data('attribute') + ']=' +
+           encodeURIComponent(editor.node.innerHTML)
+  },
+
   // Compare: defaultSaveHandler, saveMultipleElements
   // options.data: you can pass in additional data to be saved, for example by serializing a form
   // TODO: Maybe make it automatically get url and save-type from the elements that the user wants to save. (That would only work if they were all for the same object and could be sent to the same URL. Although we could theoretically make separate requests for each object that they're trying to save...)
@@ -389,13 +395,11 @@ $.extend(InlineEditor, {
     var data = '';
     var $this;
     options.elements.each(function () {
-      $this = $(this);
-      var editor = InlineEditor.getEditor(this);
-      data += '&' + $this.data('object') + '[' + $this.data('attribute') + ']=' + encodeURIComponent(editor.node.innerHTML);
+      data += '&' + InlineEditor.postDataFromInlineEditableElement(this);
     });
     data += (options.data.match(/^&/) ? '' : '&') + options.data;
     if (window.rails_authenticity_token) {
-      data += "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token);
+      data += "&authenticity_token=" + encodeURIComponent(window.rails_authenticity_token);
     }
     //console.debug("data=", data);
     $this.trigger('saving');
@@ -507,6 +511,8 @@ $.extend(InlineEditor, {
 
   // Compare: defaultSaveHandler, saveMultipleElements
   defaultSaveHandler: function(evt) {
+    //var data = '_method=put';
+    var data = '';
     var $this = $(this);
 
     var e = $.Event('onBeforeSave');
@@ -517,15 +523,14 @@ $.extend(InlineEditor, {
     var editor = InlineEditor.getEditor(this);
 
     if ($this.data('url')) {
-      // TODO: can we just use type: PUT instead?
-      var data = '_method=put';
-      data += '&' + $this.data('object') + '[' + $this.data('attribute') + ']=' + encodeURIComponent(editor.node.innerHTML);
+      data += '&' + InlineEditor.postDataFromInlineEditableElement(this);
       if (window.rails_authenticity_token) {
-        data += "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token);
+        data += "&authenticity_token=" + encodeURIComponent(window.rails_authenticity_token);
       }
 
+      var type = $this.data('save-type') || $this.data('object-id') ? 'PUT' : 'POST';
       $.ajax($.extend({
-        type: $this.data('save-type'),
+        type: type,
         url:  $this.data('url'),
         dataType: 'json',
         data: data,
@@ -576,7 +581,7 @@ InlineEditor.TOGGLEABLE_BLOCK_CONTAINERS_SELECTOR = InlineEditor.TOGGLEABLE_BLOC
 InlineEditor.DEFAULT_OPTIONS = {
   'editing-class': 'editing',
   'idle-save-time': 3000, // milliseconds
-  'save-type': 'POST',
+  //'save-type': 'POST',
   focus:        null,
   blur:         InlineEditor.defaultBlurHandler,
   liveChange:   InlineEditor.defaultLiveChangeHandler,
@@ -948,6 +953,8 @@ $.extend(InlineEditor.Selection, {
 });
 
 //==================================================================================================
+// Misc
+
 // no-op if console logger doesn't exist, so that errors aren't thrown
 // this can be commented out if all debugging is commented out...
 if (! window.console) {
@@ -956,5 +963,20 @@ if (! window.console) {
     debug: function () {}
   }
 }
+
+$.extend(String.prototype, {
+  // (Ported from activesupport)
+  //    'K3cms::S3Podcast::Episode'.underscore()
+  // => "k3cms/s3_podcast/episode"
+  underscore: function(){
+    word = String(this)
+    word = word.replace(/::/g, '/')
+    word = word.replace(/([A-Z]+)([A-Z][a-z])/g, "$1_$2")
+    word = word.replace(/([a-z\d])([A-Z])/g,     "$1_$2")
+    word = word.replace(/-/g, "_")
+    word = word.toLowerCase();
+    return word
+  }
+})
 
 //==================================================================================================

@@ -16,11 +16,11 @@ For example, to add inline-editing to all elements with the class 'editable', yo
 
 Saving will be triggered after 3 seconds of inactivity while the element is being edited (the length of the delay can be configured with 'idle-save-time' option), or by tabbing out of the field.
 
-InlineEditor will attempt to save the element's contents by posting it to a RESTful url specified with the 'url' option. The params will be based on the 'object' and 'attribute' options. For example, if you had this inline-editable element:
+InlineEditor will attempt to save the element's contents by posting it to a RESTful url specified with the 'url' option. The params will be based on the 'object-class' and 'attribute' options. For example, if you had this inline-editable element:
 
-    <span class="editable" data-url="/books/3" data-object="book" data-attribute="title">Title</span>
+    <span class="editable" data-url="/books/3" data-object-class="K3cms_Book" data-attribute="title">Title</span>
 
-, it would POST to "/books/3" with this data: book[title]=Title
+, it would POST to "/books/3" with this data: k3cms_book[title]=Title
 
 Options can either be passed in to inlineEditor() or specified as attributes of your element -- for example, <div data-idle-save-time="1000" ...>.
 
@@ -51,13 +51,13 @@ After the content is saved, it will do a GET to the same RESTful resource URL th
 This is useful in case any other attributes of the resource have changed as a result of the save you just did (perhaps updating one attribute of your model automatically causes another one to be changed) or as a result of someone else editing the record at the same time as you.
 It also solves the problem of the same field appearing on the page in multiple places.
 
-After the object is retrieved, K3cms_InlineEditor will attempt to call {object_name}.updatePage(object_name, object) if this method exists. For example, if the 'object' option for your inline editor is 'book', it will attempt to call book.updatePage(), passing in the object_name and object.
+After the object is retrieved, K3cms_InlineEditor will attempt to call {object_class}.updatePage(object_class, object_id, object) if this method exists. For example, if the 'object' option for your inline editor is a 'K3cms_Book', it will attempt to call K3cms_Book.updatePage(), passing in the object_class, object_id, and object.
 So you may supply a custom updatePage method for each type of object in your application that knows about any custom things on your page that need to get updated any time that model changes.
 
 Or you can use the default behavior, which simply looks for and updates all elements that match the following selector:
 
     $.each(object, function(index, value) { 
-      var element = $('[data-object=' + object_name + '][data-attribute=' + index + ']')
+      var element = $('[data-object-class=' + object_class + '][data-attribute=' + index + ']')
       if (element.length > 0) {
         element.html(value)
       }

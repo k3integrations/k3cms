@@ -15,18 +15,7 @@ module K3cms
         respond_to do |format|
           format.html # show.html.erb
           format.xml  { render :xml  => @page }
-
-          format.json {
-            # So we have data-object="k3cms_page" for rest_in_place so that the params come in as params[:k3cms_page] like the controller expects (and which works well since form_for @page creates fields named that way).
-            # But that causes rest_in_place to expect the json object to be in the form {"k3cms_page":...}
-            # But K3cms::Page.model_name.element drops the namespace and returns 'page' by default. Here is my workaround:
-            K3cms::Page.model_name.instance_variable_set('@element', 'k3cms_page')
-            # Other options:
-            # * Pass include_root_in_json => false in the as_json options?
-            # * ActiveRecord::Base.include_root_in_json = false and do render :json => { :k3cms_page => @page }
-            # * ActiveRecord::Base.include_root_in_json = false and modify rest_in_place to not require/expect the element name to be in the JSON object response.
-            render :json => @page
-          }
+          format.json { render :json => @page }
         end
       end
 
