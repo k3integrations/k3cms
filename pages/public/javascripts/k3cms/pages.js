@@ -1,3 +1,6 @@
+if (typeof K3cms == 'undefined') K3cms = { }
+K3cms.current_object = null;
+
 K3cms_Pages = {
 }
 
