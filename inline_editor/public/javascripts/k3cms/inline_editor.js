@@ -381,7 +381,7 @@ K3cms_InlineEditor = {
         method = K3cms_InlineEditor.updatePageFromObject;
       }
 
-      method(options.objectClass, options['object-id'], options.object, options.element)
+      method(options.objectClass, options.objectId, options.object, options.element)
 
       //$('#last_saved_status').html('Saved seconds ago');
     }
