@@ -395,6 +395,7 @@ $.extend(InlineEditor, {
     var data = '';
     var $this;
     options.elements.each(function () {
+      $this = $(this);
       data += '&' + InlineEditor.postDataFromInlineEditableElement(this);
     });
     data += (options.data.match(/^&/) ? '' : '&') + options.data;
