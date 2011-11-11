@@ -306,6 +306,20 @@ Object.keys = Object.keys || (function () {
 
 //==================================================================================================
 K3cms_InlineEditor = {
+
+  // Returns a selector for use by jQuery
+  selector_for_editable: function(options) {
+    var selector = '';
+    if (options.objectClass) { selector += '[data-object-class="' + options.objectClass + '"]'; }
+    if (options.objectId)    { selector += '[data-object-id="'    + options.objectId    + '"]'; }
+    if (options.attribute)   { selector += '[data-attribute="'    + options.attribute   + '"]'; }
+    if (selector === '') {
+      return null;
+    } else {
+      return selector;
+    }
+  },
+
   /*
    * object_class:   for example, 'K3cms_Blog_BlogPost' -- in Rails, you can get this from inline_editor_object_class(object).to_json
    * object_id:      for example, 18                    -- in Rails, you can get this from object.id.to_json
@@ -315,14 +329,16 @@ K3cms_InlineEditor = {
   updatePageFromObject: function(object_class, object_id, object, source_element) {
     $.each(object, function(attr_name, value) {
       if (value === null) value = '';
-      $('[data-object-class=' + object_class + '][data-object-id=' + object_id + '][data-attribute=' + attr_name + ']').each(function (index) {
+      var selector_for_editable = K3cms_InlineEditor.selector_for_editable({objectClass: object_class, objectId: object_id, attribute: attr_name})
+      //console.log("$('" + selector_for_editable + "')=", $(selector_for_editable).length);
+      $(selector_for_editable).each(function (index) {
         var element = $(this);
         if (source_element && element.get(0) == source_element.get(0)) {
           // Don't update the element they just saved with the data loaded from the database because they may have continued editing immediately after saving and we don't want to blow those changes away
           //console.log('Skipping', element)
         } else {
           if (element.html() != value) {
-            //console.log("Updating", element, "to: " + value, "differs from old value: " + element.html());
+            //console.log("Updating", element, "to: '" + value + "'", "differs from old value: '" + element.html() + "'");
             element.html(value)
           } else {
             //console.log("Not updating", element, "to: '" + value, "'; doesn't differ from old value: '" + element.html() + "'");
@@ -360,15 +376,15 @@ K3cms_InlineEditor = {
       objectClass: options.objectClass,
       'object-id': options.objectId,
     }
-    object_selector = '[data-object-class=' + options.objectClass + '][data-object-id=' + options.objectId + ']';
-    //console.log("object_selector=", object_selector);
-    //console.log("$('.editable' + object_selector + ':visible')=", $('.editable' + object_selector + ':visible'));
+    var selector_for_editable = K3cms_InlineEditor.selector_for_editable(options);
+    //console.log("selector_for_editable=", selector_for_editable);
+    //console.log("$('.editable' + selector_for_editable + ':visible')=", $('.editable' + selector_for_editable + ':visible'));
 
     if (data['error']) {
       // There were no HTTP errors, but there was an application-layer error, so show it to the user
       K3cms_InlineEditor.showPurrMessage(data['error']);
       // Focus the editable element again so they can correct their mistake (in case they just tabbed out of it)
-      $('.editable' + object_selector + ':visible').eq(0).focus();
+      $('.editable' + selector_for_editable + ':visible').eq(0).focus();
       $('#last_saved_status').html('<span style="color: #8A1F11">Not saved</span>');
 
     } else {
