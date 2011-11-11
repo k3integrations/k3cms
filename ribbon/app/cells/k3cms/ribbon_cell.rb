@@ -1,6 +1,7 @@
 class K3cms::RibbonCell < Cell::Base
 
   helper K3cms::Ribbon::RibbonHelper
+  helper K3cms::InlineEditor::InlineEditorHelper
   include ActionController::RecordIdentifier
 
   def show
