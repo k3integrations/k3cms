@@ -71,8 +71,8 @@
       // Focus first editable field
       this_context_ribbon.find('.editable,:input').eq(0).focus()
 
-      if (#{dom_class(@record)}.onRecordBoxOpen)
-          #{dom_class(@record)}.onRecordBoxOpen();
+      if (#{inline_editor_object_class(@record)}.onRecordBoxOpen)
+          #{inline_editor_object_class(@record)}.onRecordBoxOpen();
     });
 
 
@@ -83,8 +83,8 @@
         $(this).hide();
         $(this).removeClass('visible'); // for CSS
         $(this).data('closing', false)
-        if (#{dom_class(@record)}.onRecordBoxClose)
-            #{dom_class(@record)}.onRecordBoxClose();
+        if (#{inline_editor_object_class(@record)}.onRecordBoxClose)
+            #{inline_editor_object_class(@record)}.onRecordBoxClose();
       }
 
       this_context_ribbon.hide();
@@ -113,10 +113,10 @@
           // Now that we've created the record, we need to do an Ajax request and actually replace the New Object box with an Update Object box
           // so that we have an object_id and the correct url and save-type for updating, so that inline-editing will work.
           // We could probably update the existing DOM elements, but this is easier...
-          $.get(#{dom_class(@record)}.url_for(options.object), #{@extra_params.to_json}, function(data) {
+          $.get(#{inline_editor_object_class(@record)}.url_for(options.object), #{@extra_params.to_json}, function(data) {
             $('##{dom_id(@record)}').eq(0).replaceWith(data);
 
-            // Add the #new_#{dom_class(@record)} box back into the DOM (initially hidden) so they can add another New record
+            // Add the #new_#{inline_editor_object_class(@record)} box back into the DOM (initially hidden) so they can add another New record
             $.get(#{@new_record_path.to_json}, #{@extra_params.to_json}, function(data) {
               $('.#{dom_class(@record)}_list .the_list>.#{dom_class(@record)}:visible:eq(0)').before(data);
 
